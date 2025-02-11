@@ -1,8 +1,9 @@
 
 
 class LeyGrupo():
-    def __init__(self, movimiento):
+    def __init__(self, movimiento, nombre):
         self.movimiento = movimiento
+        self.nombre = nombre
     
     def generar_movimiento(self, ciclo_alpha, pos_a, ciclo_beta, pos_b):
         ciclo_alpha = self.crear_ciclo()
@@ -51,9 +52,8 @@ class LeyGrupo():
     '''Esta funcion indica si el color del vertice está en su lugar (0), si está girado 1/3 a la izquierda (1) o 2/3 a la izquierda (2), mirándolo desde la esquina'''
 
     def __str__(self):
-       
+        return f"El movimiento {self.nombre} es: {self.movimiento}"
     
-
 def main():
     ciclo_alpha = []
     pos_a = []
