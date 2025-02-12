@@ -5,12 +5,14 @@ class LeyGrupo():
         self.movimiento = movimiento
         self.nombre = nombre
     
-    def generar_movimiento(self, ciclo_alpha, pos_a, ciclo_beta, pos_b):
+    
+    def generar_movimiento(self):
         ciclo_alpha = self.crear_ciclo()
         pos_a = self.crear_posicion_arista()
         ciclo_beta = self.crear_ciclo()
         pos_b = self.crear_posicion_verice()
         self.movimiento = [ciclo_alpha, pos_a, ciclo_beta, pos_b]
+        self.nombre = input("Ingrese el nombre (los giros) del movimiento: ")
         return self.movimiento
     '''Esta funcion genera un movimiento a partir de dos ciclos y dos posiciones'''
     
@@ -54,16 +56,30 @@ class LeyGrupo():
     def __str__(self):
         return f"El movimiento {self.nombre} es: {self.movimiento}"
     
-def main():
-    ciclo_alpha = []
-    pos_a = []
-    ciclo_beta = []
-    pos_b = []
-    movimiento = []
-    ley = LeyGrupo(movimiento)
-    movimiento = ley.generar_movimiento(ciclo_alpha, pos_a, ciclo_beta, pos_b)
-    print(ley)
     
+    def componer_movimientos(self, m1, m2):
+        print(m1)
+        print(m2)
+        ciclo_alpha = []
+        pos_a = []
+        ciclo_beta = []
+        pos_b = []
+        print(m1[0][-1])
+        
+    
+def main():
+    movimiento1 = []
+    nombre1 = ""
+    ley = LeyGrupo(movimiento1, nombre1)
+    movimiento1 = ley.generar_movimiento()
+    print(ley)
+    movimiento2 = []
+    nombre2 = ""
+    ley2 = LeyGrupo(movimiento2, nombre2)
+    movimiento2 = ley2.generar_movimiento()
+    print(ley2)
+    print(movimiento1)
+    print(movimiento2)
 
 if __name__ == "__main__":
     main()
