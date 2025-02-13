@@ -18,16 +18,12 @@ class LeyGrupo():
     
     def crear_ciclo(self):
         ciclo = []
-        for i in range(4):
-            rotacion = input("Ingrese 1, 2, 3, 4, o no conteste si no cambia de posición: ")
-            if rotacion != "1" and rotacion != "2" and rotacion != "3" and rotacion != "4" and rotacion != "":
-                print("Error: Ingrese 1, 2, 3, 4, o no conteste")
-                return None
-            if rotacion == "":
-                return ciclo
-            ciclo.append(rotacion)
+        uno = int(input("¿A qué posición va la posición 1? "))
+        dos = int(input("¿A qué posición va la posición 2? "))
+        tres = int(input("¿A qué posición va la posición 3? "))
+        cuatro = int(input("¿A qué posición va la posición 4? "))
+        ciclo = {1: uno, 2: dos, 3: tres, 4: cuatro}
         return ciclo
-    ''' Esta funcion crea un ciclo a partir de las rotaciones que se le ingresen. En caso de que no se inserte un valor, se toma el ciclo por terminado'''
     
     def crear_posicion_arista(self):
         pos = []
@@ -60,12 +56,30 @@ class LeyGrupo():
     def componer_movimientos(self, m1, m2):
         print(m1)
         print(m2)
-        ciclo_alpha = []
-        pos_a = []
-        ciclo_beta = []
-        pos_b = []
+        nuevo_mov = []
+        nuevo_mov.append(self.componer_ciclos(m1[0], m2[0]))
+        nuevo_mov.append(self.componer_posiciones(m1[1], m2[1], m2[0]))
+        nuevo_mov.append(self.componer_ciclos(m1[2], m2[2]))
+        nuevo_mov.append(self.componer_posiciones(m1[3], m2[3]))
         print(m1[0][-1])
         
+    def componer_ciclos(self, c1, c2):
+        nuevo_ciclo = {}
+        for i in range(len(c1)):
+            valor = c1[i]
+            valor2 = c2[valor]
+            nuevo_ciclo[i] = valor2
+        print(nuevo_ciclo)
+        return nuevo_ciclo
+    
+def componer_posiciones(self, p1, p2, c2):
+    nueva_pos = []
+    # se aplica la inversa de la permutación c2 a p1 y el resultado se suma a p2
+    for i, j in c2.items():
+        ciclo_inverso = {j: i}
+        print(ciclo_inverso)
+    
+    
     
 def main():
     movimiento1 = []
