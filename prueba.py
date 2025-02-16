@@ -72,23 +72,23 @@ class LeyGrupo():
         print(nuevo_ciclo)
         return nuevo_ciclo
     
-def componer_posiciones(self, p1, p2, c2):
-    nueva_pos = []
-    # se aplica la inversa de la permutación c2 a p1 y el resultado se suma a p2
-    for i, j in c2.items():
-        ciclo_inverso = {j: i}
-        print(ciclo_inverso)
-        # ordenar el ciclo inverso
-        ciclo_inverso = dict(sorted(ciclo_inverso.items()))
-        print(ciclo_inverso)
-        # aplicar el ciclo inverso a p1
-        pos = []
-        for k in range(4):
-            pos[c2[k]] = p1[k]
-        print(pos)
-        nueva_pos = [pos[i] + p2[i] for i in range(4)]
-        print(nueva_pos)
-        return nueva_pos
+    def componer_posiciones(self, p1, p2, c2):
+        nueva_pos = []
+        # se aplica la inversa de la permutación c2 a p1 y el resultado se suma a p2
+        for i, j in c2.items():
+            ciclo_inverso = {j: i}
+            print(ciclo_inverso)
+            # ordenar el ciclo inverso
+            ciclo_inverso = dict(sorted(ciclo_inverso.items()))
+            print(ciclo_inverso)
+            # aplicar el ciclo inverso a p1
+            pos = []
+            for k in range(4):
+                pos[c2[k]] = p1[k]
+            print(pos)
+            nueva_pos = [pos[i] + p2[i] for i in range(4)]
+            print(nueva_pos)
+            return nueva_pos
 
     
     
