@@ -77,7 +77,7 @@ class LeyGrupo():
         return dict(sorted(ciclo_inverso.items()))  # Ordenarlo
     
     def componer_posiciones_mod2(self, p1, p2, c2):
-        ciclo_inverso = self.calcular_ciclo_inverso(c2)
+        '''ciclo_inverso = self.calcular_ciclo_inverso(c2)
         print("Ciclo inverso:", ciclo_inverso)
 
         pos = [0] * 4
@@ -87,10 +87,10 @@ class LeyGrupo():
 
         nueva_pos = [(pos[i] + p2[i]) % 2 for i in range(4)]
         print("Nueva posición mod 2:", nueva_pos)
-        return nueva_pos
+        return nueva_pos'''
 
     def componer_posiciones_mod3(self, p1, p2, c2):
-        ciclo_inverso = self.calcular_ciclo_inverso(c2)
+        '''ciclo_inverso = self.calcular_ciclo_inverso(c2)
         print("Ciclo inverso:", ciclo_inverso)
 
         pos = [0] * 4
@@ -100,7 +100,7 @@ class LeyGrupo():
 
         nueva_pos = [(pos[i] + p2[i]) % 3 for i in range(4)]
         print("Nueva posición mod 3:", nueva_pos)
-        return nueva_pos
+        return nueva_pos'''
         
     '''def componer_posiciones(self, p1, p2, c2):
         nueva_pos = []
