@@ -17,7 +17,7 @@ class LeyGrupo():
     '''Esta funcion genera un movimiento a partir de dos ciclos y dos posiciones'''
     
     def crear_ciclo(self):
-        ciclo = []
+        #ciclo = []
         uno = int(input("¿A qué posición va la posición 1? "))
         dos = int(input("¿A qué posición va la posición 2? "))
         tres = int(input("¿A qué posición va la posición 3? "))
@@ -28,8 +28,8 @@ class LeyGrupo():
     def crear_posicion_arista(self):
         pos = []
         for i in range(4):
-            color = input("Ingrese 0 o 1: ")
-            if color != "0" and color != "1":
+            color = int(input("Ingrese 0 o 1: "))
+            if color != 0 and color != 1:
                 print("Error: Ingrese 0 o 1")
                 return None
             pos.append(color)
@@ -40,10 +40,10 @@ class LeyGrupo():
     def crear_posicion_verice(self):
         pos = []
         for i in range(4):
-            color = input("Ingrese 0, 1 o 2: ")
-            if color != "0" and color != "1" and color != "2":
+            color = int(input("Ingrese 0, 1 o 2: "))
+            if color != 0 and color != 1 and color != 2:
                 print("Error: Ingrese 0, 1, o 2")
-                return None
+                break
             pos.append(color)
             i += 1
         return pos
@@ -52,60 +52,93 @@ class LeyGrupo():
     def __str__(self):
         return f"El movimiento {self.nombre} es: {self.movimiento}"
     
-    
     def componer_movimientos(self, m1, m2):
         print(m1)
         print(m2)
         nuevo_mov = []
         nuevo_mov.append(self.componer_ciclos(m1[0], m2[0]))
-        nuevo_mov.append(self.componer_posiciones(m1[1], m2[1], m2[0]))
+        nuevo_mov.append(self.componer_posiciones_mod2(m1[1], m2[1], m2[0]))
         nuevo_mov.append(self.componer_ciclos(m1[2], m2[2]))
-        nuevo_mov.append(self.componer_posiciones(m1[3], m2[3]))
-        print(m1[0][-1])
+        nuevo_mov.append(self.componer_posiciones_mod3(m1[3], m2[3], m2[2]))
+        print(nuevo_mov)
+        return nuevo_mov
         
     def componer_ciclos(self, c1, c2):
         nuevo_ciclo = {}
         for i in range(len(c1)):
-            valor = c1[i]
+            valor = c1[i+1]
             valor2 = c2[valor]
-            nuevo_ciclo[i] = valor2
+            nuevo_ciclo[i+1] = valor2
         print(nuevo_ciclo)
         return nuevo_ciclo
     
-    def componer_posiciones(self, p1, p2, c2):
+    def calcular_ciclo_inverso(self, c2):
+        ciclo_inverso = {j: i for i, j in c2.items()}  # Generar inversa
+        return dict(sorted(ciclo_inverso.items()))  # Ordenarlo
+    
+    def componer_posiciones_mod2(self, p1, p2, c2):
+        ciclo_inverso = self.calcular_ciclo_inverso(c2)
+        print("Ciclo inverso:", ciclo_inverso)
+
+        pos = [0] * 4
+        for k in range(4):
+            pos[ciclo_inverso[k+1] - 1] = p1[k]
+        print("Pos mod 2:", pos)
+
+        nueva_pos = [(pos[i] + p2[i]) % 2 for i in range(4)]
+        print("Nueva posición mod 2:", nueva_pos)
+        return nueva_pos
+
+    def componer_posiciones_mod3(self, p1, p2, c2):
+        ciclo_inverso = self.calcular_ciclo_inverso(c2)
+        print("Ciclo inverso:", ciclo_inverso)
+
+        pos = [0] * 4
+        for k in range(4):
+            pos[ciclo_inverso[k+1] - 1] = p1[k]
+        print("Pos mod 3:", pos)
+
+        nueva_pos = [(pos[i] + p2[i]) % 3 for i in range(4)]
+        print("Nueva posición mod 3:", nueva_pos)
+        return nueva_pos
+        
+    '''def componer_posiciones(self, p1, p2, c2):
         nueva_pos = []
+        print(p1)
+        print(p2)
+        print(c2)
         # se aplica la inversa de la permutación c2 a p1 y el resultado se suma a p2
+        ciclo_inverso = {}
         for i, j in c2.items():
-            ciclo_inverso = {j: i}
-            print(ciclo_inverso)
-            # ordenar el ciclo inverso
-            ciclo_inverso = dict(sorted(ciclo_inverso.items()))
-            print(ciclo_inverso)
-            # aplicar el ciclo inverso a p1
-            pos = []
-            for k in range(4):
-                pos[c2[k]] = p1[k]
-            print(pos)
-            nueva_pos = [pos[i] + p2[i] for i in range(4)]
-            print(nueva_pos)
-            return nueva_pos
+            ciclo_inverso[j] = i
+            
+        # ordenar el ciclo inverso
+        ciclo_inverso = dict(sorted(ciclo_inverso.items()))
+        print(ciclo_inverso) # ESTO ESTA BIEN
+        # aplicar el ciclo inverso a p1
+        pos = [0] * 4
+        for k in range(4):
+            print(f"k: {k}, ciclo_inverso[k+1]: {ciclo_inverso.get(k+1, 'No existe')}")
+            pos[ciclo_inverso[k+1] - 1] = p1[k]
+        print(pos)
+        nueva_pos = [pos[i] + p2[i] for i in range(4)]
+        print(nueva_pos)
+        return nueva_pos'''
 
     
-    
-    
 def main():
-    movimiento1 = []
-    nombre1 = ""
-    ley = LeyGrupo(movimiento1, nombre1)
-    movimiento1 = ley.generar_movimiento()
-    print(ley)
-    movimiento2 = []
-    nombre2 = ""
-    ley2 = LeyGrupo(movimiento2, nombre2)
-    movimiento2 = ley2.generar_movimiento()
-    print(ley2)
-    print(movimiento1)
-    print(movimiento2)
+   # en este codigo de prueba se van a crear dos movimientos m1 y m2 y se van a componer entre ellos para obtener un nuevo movimiento m3
+    m1 = LeyGrupo([], "movimiento 1")
+    m2 = LeyGrupo([], "movimiento 2")
+    m3 = LeyGrupo([], "movimiento 3")
+    print("generando el movimiento 1")
+    m1.generar_movimiento()
+    print("generando el movimiento 2")
+    m2.generar_movimiento()
+    print("componiendo los movimientos")
+    m3.componer_movimientos(m1.movimiento, m2.movimiento)
+    print(m3.movimiento)
+    
 
 if __name__ == "__main__":
     main()
