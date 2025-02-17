@@ -103,6 +103,22 @@ class LeyGrupo():
         nueva_pos = [(pos[i] + p2[i]) % 3 for i in range(4)]
         #print("Nueva posición mod 3:", nueva_pos)
         return nueva_pos
+    
+    def comprobar_restricciones(self, m1):
+        # primero comprobamos que el sumatorio de las posiciones de las aristas sea cero
+        if sum(m1[1]) % 2 != 0:
+            return False
+        # luego comprobamos que el sumatorio de las posiciones de los vertices sea cero
+        if sum(m1[3]) % 3 != 0:
+            return False
+        # por último comprobamos que la composicion de los ciclos sea la identidad
+        identidad = self.componer_ciclos(m1[0], m1[2])
+        if identidad != {1: 1, 2: 2, 3: 3, 4: 4}:  # si no es la identidad
+            return False
+        else:
+            return True
+        
+        
 
     
 def main():
@@ -112,8 +128,10 @@ def main():
     m3 = LeyGrupo([], "movimiento 3")
     print("generando el movimiento 1")
     m1.generar_movimiento()
+    m1.comprobar_restricciones(m1.movimiento)
     print("generando el movimiento 2")
     m2.generar_movimiento()
+    m2.comprobar_restricciones(m2.movimiento)
     print("componiendo los movimientos")
     m3 = m3.componer_movimientos(m1.movimiento, m2.movimiento)
     print("--------------------------------------------------------------------------------")
