@@ -135,7 +135,7 @@ def main():
     print("componiendo los movimientos")
     m3 = m3.componer_movimientos(m1.movimiento, m2.movimiento)
     print("--------------------------------------------------------------------------------")
-    print("                    EL MOVIMIENTO COMPUESO ES:")
+    print("                    EL MOVIMIENTO COMPUESTO ES:")
     print(m3)
     print("--------------------------------------------------------------------------------")
 
