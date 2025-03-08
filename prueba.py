@@ -1,4 +1,4 @@
-
+import csv
 
 class LeyGrupo():
     def __init__(self, movimiento, nombre):
@@ -48,6 +48,34 @@ class LeyGrupo():
             i += 1
         return pos
     '''Esta funcion indica si el color del vertice está en su lugar (0), si está girado 1/3 a la izquierda (1) o 2/3 a la izquierda (2), mirándolo desde la esquina'''
+    
+    def guardar_en_csv(self, archivo_csv):
+        """Guarda el movimiento actual en un archivo CSV"""
+        if self.movimiento and self.nombre:
+            with open(archivo_csv, mode='a', newline='') as file:
+                writer = csv.writer(file)
+                writer.writerow([self.nombre, self.movimiento[0], self.movimiento[1], self.movimiento[2], self.movimiento[3]])
+            print(f"Movimiento {self.nombre} guardado en {archivo_csv}")
+        else:
+            print("No hay movimiento generado para guardar.")
+
+    @staticmethod
+    def cargar_desde_csv(archivo_csv):
+        """Carga los movimientos desde un archivo CSV"""
+        movimientos = []
+        try:
+            with open(archivo_csv, mode='r') as file:
+                reader = csv.reader(file)
+                for row in reader:
+                    nombre = row[0]
+                    perm_aristas = eval(row[1])  
+                    colores_aristas = eval(row[2])  
+                    perm_vertices = eval(row[3])
+                    colores_vertices = eval(row[4])
+                    movimientos.append((nombre, [perm_aristas, colores_aristas, perm_vertices, colores_vertices]))
+        except FileNotFoundError:
+            print("No se encontró el archivo CSV.")
+        return movimientos
 
     def __str__(self):
         return f"El movimiento {self.nombre} es: {self.movimiento}"
@@ -118,10 +146,16 @@ class LeyGrupo():
         else:
             return True
         
+    def comparar_movimientos(self, m1, m2):
+        if m1 == m2:
+            return True
+        else:
+            return False
+        
         
 
     
-def main():
+'''def main():
    # en este codigo de prueba se van a crear dos movimientos m1 y m2 y se van a componer entre ellos para obtener un nuevo movimiento m3
     m1 = LeyGrupo([], "movimiento 1")
     m2 = LeyGrupo([], "movimiento 2")
@@ -140,4 +174,23 @@ def main():
     print("--------------------------------------------------------------------------------")
 
 if __name__ == "__main__":
-    main()
+    main()'''
+    
+    
+# creamos un csv con los movimientos base de datos (son 34)
+while True:
+    print("-------------------- GENERANDO MOVIMIENTO --------------------")
+    mov = LeyGrupo([], "")
+    mov.generar_movimiento()
+    mov.guardar_en_csv("movimientos.csv")
+    
+    continuar = input("¿Desea continuar? (s/n): ").strip().lower()
+    if continuar != "s":
+        break
+    
+# cargamos los movimientos del csv
+movimientos = LeyGrupo.cargar_desde_csv("movimientos.csv")
+print("Movimientos cargados:")
+for nombre, movimiento in movimientos:
+    print(f"{nombre}: {movimiento}")
+    
