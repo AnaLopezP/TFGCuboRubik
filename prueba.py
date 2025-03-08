@@ -13,6 +13,9 @@ class LeyGrupo():
         pos_b = self.crear_posicion_verice()
         self.movimiento = [ciclo_alpha, pos_a, ciclo_beta, pos_b]
         self.nombre = input("Ingrese el nombre (los giros) del movimiento: ")
+        if not self.comprobar_restricciones(self.movimiento):
+            print("Error: No se cumplieron las restricciones.")
+            return None
         return self.movimiento
     '''Esta funcion genera un movimiento a partir de dos ciclos y dos posiciones'''
     
@@ -54,12 +57,12 @@ class LeyGrupo():
         if self.movimiento and self.nombre:
             with open(archivo_csv, mode='a', newline='') as file:
                 writer = csv.writer(file)
-                writer.writerow([self.nombre, self.movimiento[0], self.movimiento[1], self.movimiento[2], self.movimiento[3]])
+                writer.writerow([self.nombre, self.movimiento])
             print(f"Movimiento {self.nombre} guardado en {archivo_csv}")
         else:
             print("No hay movimiento generado para guardar.")
 
-    @staticmethod
+    '''@staticmethod
     def cargar_desde_csv(archivo_csv):
         """Carga los movimientos desde un archivo CSV"""
         movimientos = []
@@ -75,7 +78,7 @@ class LeyGrupo():
                     movimientos.append((nombre, [perm_aristas, colores_aristas, perm_vertices, colores_vertices]))
         except FileNotFoundError:
             print("No se encontró el archivo CSV.")
-        return movimientos
+        return movimientos'''
 
     def __str__(self):
         return f"El movimiento {self.nombre} es: {self.movimiento}"
@@ -152,45 +155,96 @@ class LeyGrupo():
         else:
             return False
         
+
+    
+    
+# creamos un csv con los movimientos base de datos (son 34) solo si no existe
+def crear_csv():
+    while True:
+        print("-------------------- GENERANDO MOVIMIENTO --------------------")
+        mov = LeyGrupo([], "")
+        mov.generar_movimiento()
+        mov.guardar_en_csv("movimientos.csv")
         
-
-    
-'''def main():
-   # en este codigo de prueba se van a crear dos movimientos m1 y m2 y se van a componer entre ellos para obtener un nuevo movimiento m3
-    m1 = LeyGrupo([], "movimiento 1")
-    m2 = LeyGrupo([], "movimiento 2")
-    m3 = LeyGrupo([], "movimiento 3")
-    print("generando el movimiento 1")
-    m1.generar_movimiento()
-    m1.comprobar_restricciones(m1.movimiento)
-    print("generando el movimiento 2")
-    m2.generar_movimiento()
-    m2.comprobar_restricciones(m2.movimiento)
-    print("componiendo los movimientos")
-    m3 = m3.componer_movimientos(m1.movimiento, m2.movimiento)
-    print("--------------------------------------------------------------------------------")
-    print("                    EL MOVIMIENTO COMPUESTO ES:")
-    print(m3)
-    print("--------------------------------------------------------------------------------")
-
-if __name__ == "__main__":
-    main()'''
-    
-    
-# creamos un csv con los movimientos base de datos (son 34)
-while True:
-    print("-------------------- GENERANDO MOVIMIENTO --------------------")
-    mov = LeyGrupo([], "")
-    mov.generar_movimiento()
-    mov.guardar_en_csv("movimientos.csv")
-    
-    continuar = input("¿Desea continuar? (s/n): ").strip().lower()
-    if continuar != "s":
-        break
-    
-# cargamos los movimientos del csv
+        continuar = input("¿Desea continuar? (s/n): ").strip().lower()
+        if continuar != "s":
+            break
+        
+'''# cargamos los movimientos del csv
 movimientos = LeyGrupo.cargar_desde_csv("movimientos.csv")
 print("Movimientos cargados:")
 for nombre, movimiento in movimientos:
     print(f"{nombre}: {movimiento}")
+    '''
     
+# creamos una clase Nodo para almacenar los movimientos
+class Nodo():
+    def __init__(self, numero, nombre, movimiento):
+        self.numero = numero
+        self.nombre = nombre
+        self.movimiento = movimiento
+        self.adyacentes = []
+    
+    def agregar_adyacente(self, nodo):
+        self.adyacentes.append(nodo)
+    
+    def __str__(self):
+        return f"El movimiento es: {self.movimiento}"    
+
+# creamos un grafo con los movimientos del csv
+class Grafo():
+    def __init__(self):
+        self.nodos = {} # diccionario {numero del nodo: nodo}
+    
+    def agregar_nodo(self, numero, nombre, movimiento):
+        if numero not in self.nodos:
+            self.nodos[numero] = Nodo(numero, nombre, movimiento)
+        else:
+            print("Ya existe un nodo con ese número.")
+    
+    def agregar_arista(self, numero1, numero2):
+        if numero1 in self.nodos and numero2 in self.nodos:
+            self.nodos[numero1].agregar_adyacente(self.nodos[numero2])
+            self.nodos[numero2].agregar_adyacente(self.nodos[numero1])
+        else:
+            print("Al menos uno de los nodos no existe.")
+    
+    def mostrar_grafo(self):
+        for num, nodo in self.nodos.items():
+            print(f"Nodo {num} ({nodo.movimiento}): {[n.numero for n in nodo.adyacentes]}")
+            
+    def expandir_grafo(self):
+        lg = LeyGrupo([], "")
+        nuevos_nodos = []
+        for num1, nodo1 in self.nodos.items():
+            for num2, nodo2 in self.nodos.items():
+                if num1 != num2:
+                    nuevo_mov = lg.componer_movimientos(nodo1.movimiento, nodo2.movimiento)
+                    if not any(lg.comparar_movimientos(nuevo_mov, nodo.movimiento) for nodo in self.nodos.values()):
+                        nuevo_num = max(self.nodos.keys()) + 1
+                        self.agregar_nodo(nuevo_num, f"{nodo1.nombre}{nodo2.nombre}", nuevo_mov)
+                        nuevos_nodos.append(nuevo_mov)
+                        self.agregar_arista(num1, nuevo_num)
+                        self.agregar_arista(num2, nuevo_num)
+                    else:
+                        nodo_existente = next(n for n in self.nodos.values() if lg.comparar_movimientos(nuevo_mov, n.movimiento))
+                        self.agregar_arista(nodo1.numero, nodo_existente.numero)
+        return nuevos_nodos
+    
+                    
+                    
+
+        
+
+#cargo los movimientos del csv
+grafo = Grafo()
+with open("movimientos.csv",newline= "", mode='r', encoding="utf-8") as file:
+    reader = csv.reader(file)
+    for i, row in enumerate(reader):
+        nombre = row[0]
+        movimiento = eval(row[1])
+        grafo.agregar_nodo(i, nombre, movimiento)
+        
+grafo.mostrar_grafo()
+
+# componemos los movimientos y hay que comparar el nuevo movimiento con los que ya tenemos. si no existe, lo agregamos con un nuevo numero
