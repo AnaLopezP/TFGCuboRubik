@@ -231,10 +231,12 @@ class Grafo():
                         self.agregar_arista(nodo1.numero, nodo_existente.numero)
         return nuevos_nodos
     
-                    
-                    
-
-        
+    def guardar_grafo_csv(self, archivo_csv):
+        with open(archivo_csv, mode='w', newline='') as file:
+            writer = csv.writer(file)
+            for nodo in self.nodos.values():
+                writer.writerow([nodo.numero, nodo.nombre, nodo.movimiento])
+            print(f"Grafo guardado en {archivo_csv}")
 
 #cargo los movimientos del csv
 grafo = Grafo()
@@ -245,6 +247,8 @@ with open("movimientos.csv",newline= "", mode='r', encoding="utf-8") as file:
         movimiento = eval(row[1])
         grafo.agregar_nodo(i, nombre, movimiento)
         
+grafo.expandir_grafo()
 grafo.mostrar_grafo()
+grafo.guardar_grafo_csv("grafo.csv")
 
 # componemos los movimientos y hay que comparar el nuevo movimiento con los que ya tenemos. si no existe, lo agregamos con un nuevo numero
