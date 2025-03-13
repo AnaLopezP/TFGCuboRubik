@@ -1,4 +1,7 @@
 import csv
+from tqdm import tqdm
+import networkx as nx
+import matplotlib.pyplot as plt
 
 class LeyGrupo():
     def __init__(self, movimiento, nombre):
@@ -84,8 +87,8 @@ class LeyGrupo():
         return f"El movimiento {self.nombre} es: {self.movimiento}"
     
     def componer_movimientos(self, m1, m2):
-        print(m1)
-        print(m2)
+        '''print(m1)
+        print(m2)'''
         nuevo_mov = []
         nuevo_mov.append(self.componer_ciclos(m1[0], m2[0]))
         nuevo_mov.append(self.componer_posiciones_mod2(m1[1], m2[1], m2[0]))
@@ -186,7 +189,9 @@ class Nodo():
         self.adyacentes = []
     
     def agregar_adyacente(self, nodo):
-        self.adyacentes.append(nodo)
+        # Asegurarse de que no se agregue el propio nodo ni duplicados
+        if nodo != self and nodo not in self.adyacentes:
+            self.adyacentes.append(nodo)
     
     def __str__(self):
         return f"El movimiento es: {self.movimiento}"    
@@ -213,29 +218,64 @@ class Grafo():
         for num, nodo in self.nodos.items():
             print(f"Nodo {num} ({nodo.movimiento}): {[n.numero for n in nodo.adyacentes]}")
             
-    def expandir_grafo(self):
+    def expandir_grafo(self, max_iteraciones=63000):
         lg = LeyGrupo([], "")
         nuevos_nodos = []
-        for num1, nodo1 in self.nodos.items():
-            for num2, nodo2 in self.nodos.items():
-                if num1 != num2:
-                    nuevo_mov = lg.componer_movimientos(nodo1.movimiento, nodo2.movimiento)
-                    if not any(lg.comparar_movimientos(nuevo_mov, nodo.movimiento) for nodo in self.nodos.values()):
-                        nuevo_num = max(self.nodos.keys()) + 1
-                        self.agregar_nodo(nuevo_num, f"{nodo1.nombre}{nodo2.nombre}", nuevo_mov)
-                        nuevos_nodos.append(nuevo_mov)
-                        self.agregar_arista(num1, nuevo_num)
-                        self.agregar_arista(num2, nuevo_num)
-                    else:
-                        nodo_existente = next(n for n in self.nodos.values() if lg.comparar_movimientos(nuevo_mov, n.movimiento))
-                        self.agregar_arista(nodo1.numero, nodo_existente.numero)
+        iteraciones = 0
+        iteraciones_sin_nuevos = 0  # Contador de iteraciones sin nuevos nodos
+        nodos_existentes = list(self.nodos.items())  # Almacenamos los nodos al principio para evitar iterar sobre nodos recién añadidos
+        
+        with tqdm(total=max_iteraciones, desc="Expandiendo grafo", unit="iter") as pbar:
+            while iteraciones < max_iteraciones:
+                for num1, nodo1 in nodos_existentes:
+                    for num2, nodo2 in nodos_existentes:
+                        # Si ya alcanzamos el límite de iteraciones, terminamos
+                        if iteraciones >= max_iteraciones:
+                            print(f"⚠️ Límite de iteraciones alcanzado. Deteniendo expansión. (iteraciones: {iteraciones})")
+                            return nuevos_nodos
+
+                        nuevo_mov = lg.componer_movimientos(nodo1.movimiento, nodo2.movimiento)
+                        '''print(f"Iteración {iteraciones}: Componiendo movimientos de {nodo1.nombre} y {nodo2.nombre}")
+                        print(f"Nuevo movimiento: {nuevo_mov}")'''
+                        
+                        # Si no existe el nodo con ese movimiento, lo agregamos
+                        if not any(lg.comparar_movimientos(nuevo_mov, nodo.movimiento) for nodo in self.nodos.values()):
+                            nuevo_num = max(self.nodos.keys()) + 1
+                            self.agregar_nodo(nuevo_num, f"{nodo1.nombre}{nodo2.nombre}", nuevo_mov)
+                            nuevos_nodos.append(nuevo_mov)
+                            self.agregar_arista(num1, nuevo_num)
+                            self.agregar_arista(num2, nuevo_num)
+                            
+                            # Solo incrementamos el contador de iteraciones si se agrega un nodo nuevo
+                            iteraciones += 1
+                            iteraciones_sin_nuevos = 0  # Reseteamos el contador de iteraciones sin nuevos nodos
+                            pbar.update(1)
+                            
+                            #print(f"Nodo agregado: {nuevo_num}, iteración {iteraciones}")
+                            
+                        else:
+                            nodo_existente = next(n for n in self.nodos.values() if lg.comparar_movimientos(nuevo_mov, n.movimiento))
+                            self.agregar_arista(nodo1.numero, nodo_existente.numero)
+                            self.agregar_arista(nodo2.numero, nodo_existente.numero)
+
+                        # Si no se han agregado nuevos nodos por varias iteraciones consecutivas, terminamos
+                        '''if iteraciones_sin_nuevos >= max_iteraciones_sin_nuevos:
+                            print("⚠️ No se han agregado nuevos nodos en varias iteraciones. Deteniendo expansión.")
+                            return nuevos_nodos'''
+                        
+                        iteraciones_sin_nuevos += 1
+                        
+                # Después de cada iteración, volvemos a actualizar la lista de nodos existentes
+                nodos_existentes = list(self.nodos.items())
+        
         return nuevos_nodos
+        
     
     def guardar_grafo_csv(self, archivo_csv):
         with open(archivo_csv, mode='w', newline='') as file:
             writer = csv.writer(file)
             for nodo in self.nodos.values():
-                writer.writerow([nodo.numero, nodo.nombre, nodo.movimiento])
+                writer.writerow([nodo.numero, nodo.movimiento, [n.numero for n in nodo.adyacentes]])
             print(f"Grafo guardado en {archivo_csv}")
 
 #cargo los movimientos del csv
@@ -252,3 +292,30 @@ grafo.mostrar_grafo()
 grafo.guardar_grafo_csv("grafo.csv")
 
 # componemos los movimientos y hay que comparar el nuevo movimiento con los que ya tenemos. si no existe, lo agregamos con un nuevo numero
+
+def visualizar_grafo(grafo):
+    # Crear un grafo vacío de NetworkX
+    G = nx.Graph()
+
+    # Agregar los nodos al grafo
+    for num, nodo in grafo.nodos.items():
+        G.add_node(num, label=nodo.nombre)
+    
+    # Agregar las aristas entre los nodos
+    for num, nodo in grafo.nodos.items():
+        for adyacente in nodo.adyacentes:
+            G.add_edge(num, adyacente.numero)
+
+    # Dibujar el grafo
+    pos = nx.spring_layout(G)  # Algoritmo de disposición para los nodos
+    labels = nx.get_node_attributes(G, 'label')  # Etiquetas para los nodos
+
+    plt.figure(figsize=(10, 10))  # Tamaño de la imagen
+    nx.draw(G, pos, with_labels=True, node_size=1000, node_color='skyblue', font_size=10, font_weight='bold')
+    nx.draw_networkx_labels(G, pos, labels=labels, font_size=10, font_weight='bold')
+
+    plt.title("Visualización del Grafo de Movimientos")
+    plt.show()
+
+# Visualizar el grafo generado
+#visualizar_grafo(grafo) de momento lo quito porque es demasiado para mi ordenador
