@@ -218,58 +218,84 @@ class Grafo():
         for num, nodo in self.nodos.items():
             print(f"Nodo {num} ({nodo.movimiento}): {[n.numero for n in nodo.adyacentes]}")
             
-    def expandir_grafo(self, max_iteraciones=63000):
+    def generar_movimientos_iniciales(self, cantidad):
+        """
+        Genera combinaciones de los primeros 'cantidad' movimientos consigo mismos y devuelve un grafo auxiliar.
+        """
         lg = LeyGrupo([], "")
-        nuevos_nodos = []
+        grafo_auxiliar = Grafo()
         iteraciones = 0
-        iteraciones_sin_nuevos = 0  # Contador de iteraciones sin nuevos nodos
-        nodos_existentes = list(self.nodos.items())  # Almacenamos los nodos al principio para evitar iterar sobre nodos recién añadidos
-        
-        with tqdm(total=max_iteraciones, desc="Expandiendo grafo", unit="iter") as pbar:
-            while iteraciones < max_iteraciones:
-                for num1, nodo1 in nodos_existentes:
-                    for num2, nodo2 in nodos_existentes:
-                        # Si ya alcanzamos el límite de iteraciones, terminamos
-                        if iteraciones >= max_iteraciones:
-                            print(f"⚠️ Límite de iteraciones alcanzado. Deteniendo expansión. (iteraciones: {iteraciones})")
-                            return nuevos_nodos
 
-                        nuevo_mov = lg.componer_movimientos(nodo1.movimiento, nodo2.movimiento)
-                        '''print(f"Iteración {iteraciones}: Componiendo movimientos de {nodo1.nombre} y {nodo2.nombre}")
-                        print(f"Nuevo movimiento: {nuevo_mov}")'''
-                        
-                        # Si no existe el nodo con ese movimiento, lo agregamos
-                        if not any(lg.comparar_movimientos(nuevo_mov, nodo.movimiento) for nodo in self.nodos.values()):
-                            nuevo_num = max(self.nodos.keys()) + 1
-                            self.agregar_nodo(nuevo_num, f"{nodo1.nombre}{nodo2.nombre}", nuevo_mov)
-                            nuevos_nodos.append(nuevo_mov)
-                            self.agregar_arista(num1, nuevo_num)
-                            self.agregar_arista(num2, nuevo_num)
-                            
-                            # Solo incrementamos el contador de iteraciones si se agrega un nodo nuevo
-                            iteraciones += 1
-                            iteraciones_sin_nuevos = 0  # Reseteamos el contador de iteraciones sin nuevos nodos
-                            pbar.update(1)
-                            
-                            #print(f"Nodo agregado: {nuevo_num}, iteración {iteraciones}")
-                            
-                        else:
-                            nodo_existente = next(n for n in self.nodos.values() if lg.comparar_movimientos(nuevo_mov, n.movimiento))
-                            self.agregar_arista(nodo1.numero, nodo_existente.numero)
-                            self.agregar_arista(nodo2.numero, nodo_existente.numero)
+        print(f"Generando combinaciones de los primeros {cantidad} movimientos entre sí")
 
-                        # Si no se han agregado nuevos nodos por varias iteraciones consecutivas, terminamos
-                        '''if iteraciones_sin_nuevos >= max_iteraciones_sin_nuevos:
-                            print("⚠️ No se han agregado nuevos nodos en varias iteraciones. Deteniendo expansión.")
-                            return nuevos_nodos'''
+        with tqdm(total=cantidad**2, desc="Generando", unit="iter") as pbar:
+            for nodo1 in list(self.nodos.values())[:cantidad]:
+                for nodo2 in list(self.nodos.values())[:cantidad]:
+                    nuevo_mov = lg.componer_movimientos(nodo1.movimiento, nodo2.movimiento)
+                    #print("Este es el nodo1", nodo1.movimiento)
+                    #print("Este es el nodo2", nodo2.movimiento)
+                    #print("Este es el nuevo movimiento", nuevo_mov)
+                    
+                    # Buscar si ya existe un nodo con este movimiento en el grafo auxiliar
+                    nodo_existente = next((n for n in grafo_auxiliar.nodos.values() if lg.comparar_movimientos(nuevo_mov, n.movimiento)), None)
+                    if nodo_existente is None:
+                        nuevo_num = len(grafo_auxiliar.nodos)  # Índices nuevos en el grafo auxiliar
+                        grafo_auxiliar.agregar_nodo(nuevo_num, f"{nodo1.nombre}{nodo2.nombre}", nuevo_mov)
+                        #print("Se añade")
                         
-                        iteraciones_sin_nuevos += 1
-                        
-                # Después de cada iteración, volvemos a actualizar la lista de nodos existentes
-                nodos_existentes = list(self.nodos.items())
+                        grafo_auxiliar.agregar_arista(nodo1.numero, nuevo_num)
+                        grafo_auxiliar.agregar_arista(nodo2.numero, nuevo_num)
+                        #print(f"Nuevo nodo ({nuevo_num}) conectado con {nodo1.numero} y {nodo2.numero}")
+                    
+                    else:
+                        grafo_auxiliar.agregar_arista(nodo1.numero, nodo_existente.numero)
+                        grafo_auxiliar.agregar_arista(nodo2.numero, nodo_existente.numero)
+                        #print(f"Nodo ya existente ({nodo_existente.numero}), conectándolo con {nodo1.numero} y {nodo2.numero}")
+
+                    iteraciones += 1
+                    pbar.update(1)
+
+        print(f"{len(grafo_auxiliar.nodos)} nuevos movimientos generados")
+        return grafo_auxiliar
         
-        return nuevos_nodos
-        
+    def combinar_en_grafo_aparte(self, nodos_fuente, nodos_destino, grafo_destino):
+        """
+        Combina los movimientos de dos grupos de nodos y guarda los nuevos en un grafo diferente.
+        """
+        lg = LeyGrupo([], "")
+        iteraciones = 0
+
+        print(f"Combinando {len(nodos_fuente)} con {len(nodos_destino)} en un grafo aparte")
+
+        with tqdm(total=len(nodos_fuente) * len(nodos_destino), desc="Combinando", unit="iter") as pbar:
+            for nodo1 in nodos_fuente:
+                for nodo2 in nodos_destino:
+                    nuevo_mov = lg.componer_movimientos(nodo1.movimiento, nodo2.movimiento)
+
+                    # Verificar si ya existe en el grafo destino
+                    nodo_existente = next(
+                        (n for n in grafo_destino.nodos.values() if lg.comparar_movimientos(nuevo_mov, n.movimiento)), 
+                        None
+                    )
+
+                    if nodo_existente is None:
+                        # Si no existe, crear un nuevo nodo en el grafo destino
+                        nuevo_num = max(grafo_destino.nodos.keys(), default=-1) + 1
+                        grafo_destino.agregar_nodo(nuevo_num, f"{nodo1.nombre}{nodo2.nombre}", nuevo_mov)
+
+                        # Conectar con los nodos de origen (en el grafo destino)
+                        grafo_destino.agregar_arista(nuevo_num, nodo1.numero)
+                        grafo_destino.agregar_arista(nuevo_num, nodo2.numero)
+                    else:
+                        # Si ya existe, solo añadir aristas
+                        grafo_destino.agregar_arista(nodo_existente.numero, nodo1.numero)
+                        grafo_destino.agregar_arista(nodo_existente.numero, nodo2.numero)
+
+                    iteraciones += 1
+                    pbar.update(1)
+
+        print(f"{len(grafo_destino.nodos)} movimientos almacenados en el grafo auxiliar")
+
     
     def guardar_grafo_csv(self, archivo_csv):
         with open(archivo_csv, mode='w', newline='') as file:
@@ -287,9 +313,26 @@ with open("movimientos.csv",newline= "", mode='r', encoding="utf-8") as file:
         movimiento = eval(row[1])
         grafo.agregar_nodo(i, nombre, movimiento)
         
-grafo.expandir_grafo()
-grafo.mostrar_grafo()
+grafo_auxiliar = grafo.generar_movimientos_iniciales(34)
+#grafo.mostrar_grafo()
+#grafo_auxiliar.mostrar_grafo()
+grafo_auxiliar.guardar_grafo_csv("grafo_auxiliar.csv")
 grafo.guardar_grafo_csv("grafo.csv")
+
+'''grafo_auxiliar2 = grafo_auxiliar.generar_movimientos_iniciales(910)
+grafo_auxiliar2.guardar_grafo_csv("grafo_auxiliar2.csv")'''
+
+#opero los nuevos nodos con los nodos del grafo primero
+grafo_combinado = Grafo()
+grafo_combinado.combinar_en_grafo_aparte(grafo.nodos.values(), grafo_auxiliar.nodos.values(), grafo_combinado)
+grafo_combinado.guardar_grafo_csv("grafo_combinado.csv")
+#grafo_combinado.mostrar_grafo()
+
+grafo_combinado2 = Grafo()
+grafo_combinado.combinar_en_grafo_aparte(grafo.nodos.values(), grafo_combinado.nodos.values(), grafo_combinado2)
+grafo_combinado2.guardar_grafo_csv("grafo_combinado2.csv")
+#grafo_combinado2.mostrar_grafo()
+
 
 # componemos los movimientos y hay que comparar el nuevo movimiento con los que ya tenemos. si no existe, lo agregamos con un nuevo numero
 
