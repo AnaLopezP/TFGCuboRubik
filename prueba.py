@@ -204,6 +204,7 @@ class Grafo():
     def agregar_nodo(self, numero, nombre, movimiento):
         if numero not in self.nodos:
             self.nodos[numero] = Nodo(numero, nombre, movimiento)
+            #print("Nodo añadido.")
         else:
             print("Ya existe un nodo con ese número.")
     
@@ -312,29 +313,43 @@ with open("movimientos.csv",newline= "", mode='r', encoding="utf-8") as file:
         nombre = row[0]
         movimiento = eval(row[1])
         grafo.agregar_nodo(i, nombre, movimiento)
+
+grafo_combinado2 = Grafo()
+with open("grafo_combinado2.csv",newline= "", mode='r', encoding="utf-8") as file:
+    reader = csv.reader(file)
+    for i, row in enumerate(reader):
+        numero = int(row[0])
+        movimiento = eval(row[1])
+        adyacentes = eval(row[2])
+        grafo_combinado2.agregar_nodo(numero, f"nodo{numero}", movimiento)
+        #print(f"El nodo es {numero}, el movimiento es {movimiento} y los adyacentes son {adyacentes}")
+    for adyacente in range(len(adyacentes)):
+        # print(adyacentes[adyacente])
+        # print(numero)
+        grafo_combinado2.agregar_arista(numero, adyacente)
         
-grafo_auxiliar = grafo.generar_movimientos_iniciales(34)
+#grafo_auxiliar = grafo.generar_movimientos_iniciales(34)
 #grafo.mostrar_grafo()
 #grafo_auxiliar.mostrar_grafo()
-grafo_auxiliar.guardar_grafo_csv("grafo_auxiliar.csv")
+#grafo_auxiliar.guardar_grafo_csv("grafo_auxiliar.csv")
 #grafo.guardar_grafo_csv("grafo.csv")
 
 '''grafo_auxiliar2 = grafo_auxiliar.generar_movimientos_iniciales(910)
 grafo_auxiliar2.guardar_grafo_csv("grafo_auxiliar2.csv")'''
 
 #opero los nuevos nodos con los nodos del grafo primero
-grafo_combinado = Grafo()
-grafo_combinado.combinar_en_grafo_aparte(grafo.nodos.values(), grafo_auxiliar.nodos.values(), grafo_combinado)
-grafo_combinado.guardar_grafo_csv("grafo_combinado.csv")
+# grafo_combinado = Grafo()
+# grafo_combinado.combinar_en_grafo_aparte(grafo.nodos.values(), grafo_auxiliar.nodos.values(), grafo_combinado)
+# grafo_combinado.guardar_grafo_csv("grafo_combinado.csv")
 #grafo_combinado.mostrar_grafo()
 
-grafo_combinado2 = Grafo()
-grafo_combinado.combinar_en_grafo_aparte(grafo.nodos.values(), grafo_combinado.nodos.values(), grafo_combinado2)
-grafo_combinado2.guardar_grafo_csv("grafo_combinado2.csv")
+# grafo_combinado2 = Grafo()
+# grafo_combinado2.combinar_en_grafo_aparte(grafo.nodos.values(), grafo_combinado.nodos.values(), grafo_combinado2)
+# grafo_combinado2.guardar_grafo_csv("grafo_combinado2.csv")
 #grafo_combinado2.mostrar_grafo()
 
 grafo_combinado3 = Grafo()
-grafo_combinado.combinar_en_grafo_aparte(grafo.nodos.values(), grafo_combinado2.nodos.values(), grafo_combinado3)
+grafo_combinado3.combinar_en_grafo_aparte(grafo.nodos.values(), grafo_combinado2.nodos.values(), grafo_combinado3)
 grafo_combinado3.guardar_grafo_csv("grafo_combinado3.csv")
 
 # componemos los movimientos y hay que comparar el nuevo movimiento con los que ya tenemos. si no existe, lo agregamos con un nuevo numero
