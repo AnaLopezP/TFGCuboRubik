@@ -317,7 +317,7 @@ grafo_auxiliar = grafo.generar_movimientos_iniciales(34)
 #grafo.mostrar_grafo()
 #grafo_auxiliar.mostrar_grafo()
 grafo_auxiliar.guardar_grafo_csv("grafo_auxiliar.csv")
-grafo.guardar_grafo_csv("grafo.csv")
+#grafo.guardar_grafo_csv("grafo.csv")
 
 '''grafo_auxiliar2 = grafo_auxiliar.generar_movimientos_iniciales(910)
 grafo_auxiliar2.guardar_grafo_csv("grafo_auxiliar2.csv")'''
@@ -333,6 +333,9 @@ grafo_combinado.combinar_en_grafo_aparte(grafo.nodos.values(), grafo_combinado.n
 grafo_combinado2.guardar_grafo_csv("grafo_combinado2.csv")
 #grafo_combinado2.mostrar_grafo()
 
+grafo_combinado3 = Grafo()
+grafo_combinado.combinar_en_grafo_aparte(grafo.nodos.values(), grafo_combinado2.nodos.values(), grafo_combinado3)
+grafo_combinado3.guardar_grafo_csv("grafo_combinado3.csv")
 
 # componemos los movimientos y hay que comparar el nuevo movimiento con los que ya tenemos. si no existe, lo agregamos con un nuevo numero
 
