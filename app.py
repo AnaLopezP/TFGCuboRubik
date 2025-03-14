@@ -27,9 +27,20 @@ class Cubo3D(QGraphicsView):
         self.setWindowTitle("Cubo Rubik")
         self.setGeometry(100, 100, 600, 600)
         
+        # crear la escena
         self.scene = QGraphicsScene()
         self.setScene(self.scene)
         
+        # actualizamos la vista 
+        self.setViewportUpdateMode(QGraphicsView.ViewportUpdateMode.FullViewportUpdate)
+        
+        # cuadrado de prueba
+        cuadrado = QGraphicsRectItem(50, 50, 100, 100)
+        cuadrado.setBrush(QBrush(QColor("red")))   
+        self.scene.addItem(cuadrado)
+        print("Cuadrado de prueba creado correctamente")
+        
+        # Dibujar el cubo        
         self.dibujar_cubo()
     
     def dibujar_cubo(self):
