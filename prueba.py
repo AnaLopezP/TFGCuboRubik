@@ -2,6 +2,9 @@ import csv
 from tqdm import tqdm
 import networkx as nx
 import matplotlib.pyplot as plt
+import sys
+
+csv.field_size_limit(1000000000)
 
 class LeyGrupo():
     def __init__(self, movimiento, nombre):
@@ -314,19 +317,22 @@ with open("movimientos.csv",newline= "", mode='r', encoding="utf-8") as file:
         movimiento = eval(row[1])
         grafo.agregar_nodo(i, nombre, movimiento)
 
-grafo_combinado2 = Grafo()
-with open("grafo_combinado2.csv",newline= "", mode='r', encoding="utf-8") as file:
-    reader = csv.reader(file)
-    for i, row in enumerate(reader):
-        numero = int(row[0])
-        movimiento = eval(row[1])
-        adyacentes = eval(row[2])
-        grafo_combinado2.agregar_nodo(numero, f"nodo{numero}", movimiento)
-        #print(f"El nodo es {numero}, el movimiento es {movimiento} y los adyacentes son {adyacentes}")
-    for adyacente in range(len(adyacentes)):
-        # print(adyacentes[adyacente])
-        # print(numero)
-        grafo_combinado2.agregar_arista(numero, adyacente)
+
+def cargar_grafo_de_csv(archivo_csv):
+    grafo = Grafo()
+    with open(archivo_csv, newline= "", mode='r', encoding="utf-8") as file:
+        reader = csv.reader(file)
+        for i, row in enumerate(reader):
+            numero = int(row[0])
+            movimiento = eval(row[1])
+            adyacentes = eval(row[2])
+            grafo.agregar_nodo(numero, f"nodo{numero}", movimiento)
+            #print(f"El nodo es {numero}, el movimiento es {movimiento} y los adyacentes son {adyacentes}")
+        for adyacente in range(len(adyacentes)):
+            # print(adyacentes[adyacente])
+            # print(numero)
+            grafo.agregar_arista(numero, adyacente)
+    return grafo
         
 #grafo_auxiliar = grafo.generar_movimientos_iniciales(34)
 #grafo.mostrar_grafo()
@@ -343,16 +349,18 @@ grafo_auxiliar2.guardar_grafo_csv("grafo_auxiliar2.csv")'''
 # grafo_combinado.guardar_grafo_csv("grafo_combinado.csv")
 #grafo_combinado.mostrar_grafo()
 
+# grafo_combinado2 = carfar_grafo_de_csv("grafo_combinado2.csv")
+
 # grafo_combinado2 = Grafo()
 # grafo_combinado2.combinar_en_grafo_aparte(grafo.nodos.values(), grafo_combinado.nodos.values(), grafo_combinado2)
 # grafo_combinado2.guardar_grafo_csv("grafo_combinado2.csv")
 #grafo_combinado2.mostrar_grafo()
 
-grafo_combinado3 = Grafo()
-grafo_combinado3.combinar_en_grafo_aparte(grafo.nodos.values(), grafo_combinado2.nodos.values(), grafo_combinado3)
-grafo_combinado3.guardar_grafo_csv("grafo_combinado3.csv")
+# grafo_combinado3 = Grafo()
+# grafo_combinado3.combinar_en_grafo_aparte(grafo.nodos.values(), grafo_combinado2.nodos.values(), grafo_combinado3)
+# grafo_combinado3.guardar_grafo_csv("grafo_combinado3.csv")
 
-# componemos los movimientos y hay que comparar el nuevo movimiento con los que ya tenemos. si no existe, lo agregamos con un nuevo numero
+grafo_combinado3 = cargar_grafo_de_csv("grafo_combinado3.csv")
 
 def visualizar_grafo(grafo):
     # Crear un grafo vacío de NetworkX
@@ -371,7 +379,7 @@ def visualizar_grafo(grafo):
     pos = nx.spring_layout(G)  # Algoritmo de disposición para los nodos
     labels = nx.get_node_attributes(G, 'label')  # Etiquetas para los nodos
 
-    plt.figure(figsize=(10, 10))  # Tamaño de la imagen
+    plt.figure(figsize=(100, 100))  # Tamaño de la imagen
     nx.draw(G, pos, with_labels=True, node_size=1000, node_color='skyblue', font_size=10, font_weight='bold')
     nx.draw_networkx_labels(G, pos, labels=labels, font_size=10, font_weight='bold')
 
@@ -379,4 +387,5 @@ def visualizar_grafo(grafo):
     plt.show()
 
 # Visualizar el grafo generado
-#visualizar_grafo(grafo) de momento lo quito porque es demasiado para mi ordenador
+print("Visualización del grafo generado")
+visualizar_grafo(grafo_combinado3) 

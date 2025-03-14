@@ -1,5 +1,5 @@
 import sys
-from PyQt6.QtWidgets import QApplication, QWidget, QGraphicsView, QGraphicsScene, QGraphicsRectItem
+from PyQt6.QtWidgets import QApplication, QGraphicsView, QGraphicsScene, QGraphicsRectItem
 from PyQt6.QtGui import QBrush, QColor
 from PyQt6.QtCore import Qt
 
@@ -21,17 +21,6 @@ ESTADO_CUBO = {
     "Cara amarilla": [["AM", "AM", "AM"],["AM", "AM", "AM"],["AM", "AM", "AM"]]
 }
 
-class CubeSolverApp(QWidget):
-    def __init__(self):
-        super().__init__()
-        self.setWindowTitle("Resolviendo el Cubo de Rubik")
-        self.setGeometry(100, 100, 600, 600)  # Posición x, y y tamaño ancho x alto
-
-        self.scene = QGraphicsScene()
-        self.setScene(self.scene)
-        self.crear_cubito()
+        
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    window = CubeSolverApp()
-    window.show()
-    sys.exit(app.exec())
+    None
