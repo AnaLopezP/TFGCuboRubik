@@ -1,10 +1,12 @@
 import sys
-from PyQt6.QtWidgets import QApplication, QGraphicsView, QGraphicsScene, QGraphicsRectItem
+from PyQt6.QtWidgets import QApplication, QGraphicsView, QGraphicsScene, QGraphicsRectItem, QPushButton, QVBoxLayout, QWidget
 from PyQt6.QtGui import QBrush, QColor, QPen
 from PyQt6.QtCore import Qt
 
+
 # Colores del cubo
-COLORES = {
+COLORES = ["B", "V", "N", "R", "AZ", "AM"]
+COLORES_MAPA = {
     "B": QColor("white"),   # Blanco (Arriba)
     "V": QColor("green"),   # Verde (Izquierda)
     "N": QColor("orange"),  # Naranja (Atrás)
@@ -34,26 +36,27 @@ class CuboTile(QGraphicsRectItem):
         self.cara = cara
         self.fila = fila
         self.columna = columna
-        self.color_actual = color
+        self.color_actual = cara
 
     def mousePressEvent(self, event):
         # Cambiar color si es la cara blanca (excepto la casilla central)
-        if self.cara == "B" and (self.fila != 1 or self.columna != 1):
+        if self.cara == "B" and not (self.fila == 1 and self.columna == 1):
             self.cambiar_color()
-
-        # Cambiar color si es una de las casillas en la fila superior de las caras contiguas
-        if self.cara in CARAS_CONTIGUAS_BLANCA and self.fila == 0:
+        # Cambiar color si es una cara contigua a la blanca, en la fila 0
+        elif self.fila == 0 and self.cara in CARAS_CONTIGUAS_BLANCA:
             self.cambiar_color()
+        
 
     def cambiar_color(self):
         # Ciclo de colores
-        color_keys = list(COLORES.keys())
-        indice_actual = color_keys.index(self.cara)
+        indice_actual = COLORES.index(self.color_actual)
+        print(f"indice actual: {indice_actual}")
         # Pasar al siguiente color cíclicamente
-        nuevo_color = color_keys[(indice_actual + 1) % len(color_keys)]
-        self.color_actual = COLORES[nuevo_color]
-        self.setBrush(QBrush(self.color_actual))  # Actualiza el color de la casilla
-        self.cara = nuevo_color  # Actualiza la cara para la siguiente iteración
+        nuevo_color = COLORES[(indice_actual + 1) % len(COLORES)]
+        print((indice_actual + 1) % len(COLORES))
+        print(f"nuevo color: {nuevo_color}")
+        self.setBrush(QBrush(COLORES_MAPA[nuevo_color]))  # Actualiza el color de la casilla
+        self.color_actual = nuevo_color  # Actualiza la cara para la siguiente iteración
 
 
 class Cubo3D(QGraphicsView):
@@ -66,16 +69,19 @@ class Cubo3D(QGraphicsView):
         self.setScene(self.scene)
         
         self.casilla_size = 40
-        self.crear_cubo()
+        self.modo_perspaectiva = False
+        
+        self.crear_cubo_plano()
 
-    def crear_cubo(self):
+    def crear_cubo_plano(self):
+        self.scene.clear()
         for cara, (x, y) in POSICIONES_CARAS.items():
             for fila in range(3):
                 for columna in range(3):
-                    color_inicial = COLORES[cara]  
+                    color_inicial = COLORES_MAPA[cara]  
                     # Evitar que la casilla central de la cara blanca sea clicable
                     if cara == "B" and fila == 1 and columna == 1:
-                        color_inicial = COLORES["B"]  # Mantener el color blanco en el centro
+                        color_inicial = COLORES_MAPA["B"]  # Mantener el color blanco en el centro
                     tile = CuboTile(
                         x + columna * self.casilla_size, 
                         y + fila * self.casilla_size,
@@ -83,6 +89,32 @@ class Cubo3D(QGraphicsView):
                         color_inicial, cara, fila, columna
                     )
                     self.scene.addItem(tile)
+        
+    def crear_cubo_perspectiva(self):
+        self.scene.clear()
+        # proximamente
+        pass
+                    
+    def cambiar_vista(self):
+        self.modo_persepectiva = not self.modo_persepectiva
+        if self.modo_persepectiva:
+            self.crear_cubo_perspectiva()
+        else:
+            self.crear_cubo_plano()
+            
+class Interfaz(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Cubo Rubik - Interfaz")
+        
+        self.layout = QVBoxLayout()
+        self.cubo = Cubo3D()
+        self.cambiar_vista_btn = QPushButton("Cambiar Vista")
+        self.cambiar_vista_btn.clicked.connect(self.cubo.cambiar_vista)
+        
+        self.layout.addWidget(self.cubo)
+        self.layout.addWidget(self.cambiar_vista_btn)
+        self.setLayout(self.layout)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
