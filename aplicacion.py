@@ -69,7 +69,7 @@ class Cubo3D(QGraphicsView):
         self.setScene(self.scene)
         
         self.casilla_size = 40
-        self.modo_perspaectiva = False
+        self.modo_perspectiva = False
         
         self.crear_cubo_plano()
 
@@ -96,8 +96,8 @@ class Cubo3D(QGraphicsView):
         pass
                     
     def cambiar_vista(self):
-        self.modo_persepectiva = not self.modo_persepectiva
-        if self.modo_persepectiva:
+        self.modo_perspectiva = not self.modo_perspectiva
+        if self.modo_perspectiva:
             self.crear_cubo_perspectiva()
         else:
             self.crear_cubo_plano()
@@ -118,6 +118,6 @@ class Interfaz(QWidget):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    window = Cubo3D()
-    window.show()
+    ventana = Interfaz()
+    ventana.show()
     sys.exit(app.exec())
