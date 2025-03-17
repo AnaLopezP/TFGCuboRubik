@@ -76,23 +76,6 @@ class LeyGrupo():
         else:
             print("No hay movimiento generado para guardar.")
 
-    '''@staticmethod
-    def cargar_desde_csv(archivo_csv):
-        """Carga los movimientos desde un archivo CSV"""
-        movimientos = []
-        try:
-            with open(archivo_csv, mode='r') as file:
-                reader = csv.reader(file)
-                for row in reader:
-                    nombre = row[0]
-                    perm_aristas = eval(row[1])  
-                    colores_aristas = eval(row[2])  
-                    perm_vertices = eval(row[3])
-                    colores_vertices = eval(row[4])
-                    movimientos.append((nombre, [perm_aristas, colores_aristas, perm_vertices, colores_vertices]))
-        except FileNotFoundError:
-            print("No se encontró el archivo CSV.")
-        return movimientos'''
 
     def __str__(self):
         return f"El movimiento {self.nombre} es: {self.movimiento}"
