@@ -70,11 +70,29 @@ class Cubo3D(QGraphicsView):
         
         self.casilla_size = 40
         self.modo_perspectiva = False
+        self.estado_cubos = {} # Guardar el estado de cada casilla
+        
+        self.cambiar_vista_boton = QPushButton("Cambiar Vista", self)
+        self.cambiar_vista_boton.setGeometry(180, 450, 120, 30)
+        self.cambiar_vista_boton.clicked.connect(self.cambiar_vista)
         
         self.crear_cubo_plano()
+        
+    def guardar_estado(self):
+        self.estado_cubos.clear()
+        for item in self.scene.items():
+            if isinstance(item, CuboTile):
+                self.estado_cubos[(item.cara, item.fila, item.columna)] = item.color_actual
+                
+    def restaurar_estado(self):
+        for item in self.scene.items():
+            if isinstance(item, CuboTile):
+                if (item.cara, item.fila, item.columna) in self.estado_cubos:
+                    item.color_actual = self.estado_cubos[(item.cara, item.fila, item.columna)]
+                    item.setBrush(QBrush(COLORES_MAPA[item.color_actual]))
 
     def crear_cubo_plano(self):
-        self.scene.clear()
+        #self.scene.clear()
         for cara, (x, y) in POSICIONES_CARAS.items():
             for fila in range(3):
                 for columna in range(3):
@@ -96,11 +114,16 @@ class Cubo3D(QGraphicsView):
         pass
                     
     def cambiar_vista(self):
-        self.modo_perspectiva = not self.modo_perspectiva
+        self.guardar_estado()
+        self.scene.clear()
+        
         if self.modo_perspectiva:
             self.crear_cubo_perspectiva()
         else:
             self.crear_cubo_plano()
+            
+        self.restaurar_estado()
+        self.modo_perspectiva = not self.modo_perspectiva
             
 class Interfaz(QWidget):
     def __init__(self):
