@@ -335,6 +335,15 @@ def visualizar_grafo(grafo):
     plt.title("Visualización del Grafo de Movimientos")
     plt.show()
 
+def ver_pesos_aristas(grafo, numero_nodo):
+    if numero_nodo not in grafo.nodos:
+        print(f"El nodo {numero_nodo} no existe en el grafo.")
+        return
+
+    print(f"Aristas del nodo {numero_nodo}:")
+    for destino, peso in grafo.nodos[numero_nodo].aristas.items():
+        print(f"  → {destino} con peso {peso}")
+
         
 #cargo los movimientos del csv
 grafo = Grafo()
@@ -372,7 +381,7 @@ grafo_final = Grafo()
 grafo_final.combinar_en_grafo_aparte(grafo.nodos.values(), grafo_combinado2.nodos.values(), grafo_final)
 grafo_final.guardar_grafo_csv("grafo_final.csv")
 
-grafo_final = cargar_grafo_de_csv("grafo_final.csv")
+
 
 
 # Visualizar el grafo generado
