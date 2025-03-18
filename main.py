@@ -210,9 +210,9 @@ class Grafo():
             
     def inverso_peso(self, peso):
         # busco el movimiento que al operarlo con el peso me de la identidad
-        for nodo in self.nodos.items():
+        for _, nodo in self.nodos.items():
             if self.ley.comparar_movimientos(self.ley.componer_movimientos(nodo.movimiento, peso), [{1: 1, 2: 2, 3: 3, 4: 4}, [0, 0, 0, 0], {1: 1, 2: 2, 3: 3, 4: 4}, [0, 0, 0, 0]]):
-                print(f"El inverso de {peso} es {nodo.movimiento}")
+                #print(f"El inverso de {peso} es {nodo.movimiento}")
                 return nodo.movimiento
     
     def agregar_arista(self, nodo1, nodo2, peso):
@@ -222,8 +222,6 @@ class Grafo():
             self.aristas[(nodo2, nodo1)] = inverso # aqui tendría que ser el inverso del movimiento
             self.nodos[nodo1].agregar_adyacente(self.nodos[nodo2])
             self.nodos[nodo2].agregar_adyacente(self.nodos[nodo1])
-    
-    
     
     def mostrar_grafo(self):
         for num, nodo in self.nodos.items():
