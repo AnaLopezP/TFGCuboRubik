@@ -12,6 +12,10 @@ Para calcular el movimiento inverso, hay que operar el vertice resultado con tod
 Hay que hacer una funcion que haga eso, y en la funcion "agregar_arista" hay que aplicar la fuincion (224)
 '''
 
+'''
+Hacer tambien una funcion que me diga las aristas entre nodos
+'''
+
 csv.field_size_limit(1000000000)
 
 class LeyGrupo():
@@ -369,7 +373,6 @@ grafo_final.combinar_en_grafo_aparte(grafo.nodos.values(), grafo_combinado2.nodo
 grafo_final.guardar_grafo_csv("grafo_final.csv")
 
 grafo_final = cargar_grafo_de_csv("grafo_final.csv")
-
 
 
 # Visualizar el grafo generado
