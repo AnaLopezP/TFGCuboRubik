@@ -186,10 +186,12 @@ class Nodo():
         self.movimiento = movimiento
         self.adyacentes = []
     
-    def agregar_adyacente(self, nodo):
-        # Asegurarse de que no se agregue el propio nodo ni duplicados
+    def agregar_adyacente(self, nodo, posicion):
+        # Asegurarse de que no se agregue el propio nodo ni duplicados. ponemos el nodo adyacente en la posicion del movimiento aplicado para llegar a él
         if nodo != self and nodo not in self.adyacentes:
-            self.adyacentes.append(nodo)
+            self.adyacentes.insert(posicion, nodo)
+            #print("Arista añadida.")
+
     
     def __str__(self):
         return f"El movimiento es: {self.movimiento}"    
@@ -198,7 +200,6 @@ class Nodo():
 class Grafo():
     def __init__(self):
         self.nodos = {} # diccionario {numero del nodo: nodo}
-        self.aristas = {} # diccionario {arista: peso}
         self.ley = LeyGrupo([], "")
     
     def agregar_nodo(self, numero, nombre, movimiento):
@@ -207,32 +208,26 @@ class Grafo():
             #print("Nodo añadido.")
         else:
             print("Ya existe un nodo con ese número.")
-            
-    def inverso_peso(self, peso):
-        # busco el movimiento que al operarlo con el peso me de la identidad
-        for _, nodo in self.nodos.items():
-            if self.ley.comparar_movimientos(self.ley.componer_movimientos(nodo.movimiento, peso), [{1: 1, 2: 2, 3: 3, 4: 4}, [0, 0, 0, 0], {1: 1, 2: 2, 3: 3, 4: 4}, [0, 0, 0, 0]]):
-                #print(f"El inverso de {peso} es {nodo.movimiento}")
-                return nodo.movimiento
     
-    def agregar_arista(self, nodo1, nodo2, peso):
+    def agregar_arista(self, nodo1, nodo2, posicion):
+        # añadir una arista que vaya del nodo 1 al nodo 2 en la posicion del movimiento aplicado para llegar al nodo2
+        # evitamos crear una arista con el mismo nodo
         if nodo1 != nodo2:
-            inverso = self.inverso_peso(peso)
-            self.aristas[(nodo1, nodo2)] = peso
-            self.aristas[(nodo2, nodo1)] = inverso # aqui tendría que ser el inverso del movimiento
-            self.nodos[nodo1].agregar_adyacente(self.nodos[nodo2])
-            self.nodos[nodo2].agregar_adyacente(self.nodos[nodo1])
+            if nodo1 in self.nodos and nodo2 in self.nodos:
+                self.nodos[nodo1].agregar_adyacente(self.nodos[nodo2], posicion)
+                #print(f"Arista añadida desde {nodo1} a {nodo2}.")
+            
     
     def mostrar_grafo(self):
         for num, nodo in self.nodos.items():
             print(f"Nodo {num} ({nodo.movimiento}): {[n.numero for n in nodo.adyacentes]}")
             
-    def generar_movimientos_iniciales(self, cantidad):
+    ''' def generar_movimientos_iniciales(self, cantidad):
         """
         Genera combinaciones de los primeros 'cantidad' movimientos consigo mismos y devuelve un grafo auxiliar.
         """
         lg = LeyGrupo([], "")
-        grafo_auxiliar = Grafo()
+        grafo_combinado1 = Grafo()
         iteraciones = 0
 
         print(f"Generando combinaciones de los primeros {cantidad} movimientos entre sí")
@@ -243,23 +238,22 @@ class Grafo():
                     nuevo_mov = lg.componer_movimientos(nodo1.movimiento, nodo2.movimiento)
                     
                     # Buscar si ya existe un nodo con este movimiento en el grafo auxiliar
-                    nodo_existente = next((n for n in grafo_auxiliar.nodos.values() if lg.comparar_movimientos(nuevo_mov, n.movimiento)), None)
+                    nodo_existente = next((n for n in grafo_combinado1.nodos.values() if lg.comparar_movimientos(nuevo_mov, n.movimiento)), None)
                     if nodo_existente is None:
-                        nuevo_num = len(grafo_auxiliar.nodos)  # Índices nuevos en el grafo auxiliar
-                        grafo_auxiliar.agregar_nodo(nuevo_num, f"{nodo1.nombre}{nodo2.nombre}", nuevo_mov)
+                        nuevo_num = len(grafo_combinado1.nodos)  # Índices nuevos en el grafo auxiliar
+                        grafo_combinado1.agregar_nodo(nuevo_num, f"Nodo {nuevo_num}", nuevo_mov)
                         
-                        grafo_auxiliar.agregar_arista(nodo2.numero, nuevo_num, nodo1.movimiento)
+                        grafo_combinado1.agregar_arista(nodo1.numero, nuevo_num, nodo2.numero)
                         
                     else:
                         # Si ya existe, solo añadir aristas con los movimientos correspondientes
-                        grafo_auxiliar.agregar_arista(nodo2.numero, nodo_existente.numero, nodo1.movimiento)
+                        grafo_combinado1.agregar_arista(nodo1.numero, nodo_existente.numero, nodo2.numero)
 
                     iteraciones += 1
                     pbar.update(1)
 
-        print(f"{len(grafo_auxiliar.nodos)} nuevos movimientos generados")
-        return grafo_auxiliar
-
+        print(f"{len(grafo_combinado1.nodos)} nuevos movimientos generados")
+        return grafo_combinado1'''
         
     def combinar_en_grafo_aparte(self, nodos_fuente, nodos_destino, grafo_destino):
         """
@@ -284,13 +278,13 @@ class Grafo():
                     if nodo_existente is None:
                         # Si no existe, crear un nuevo nodo en el grafo destino
                         nuevo_num = max(grafo_destino.nodos.keys(), default=-1) + 1
-                        grafo_destino.agregar_nodo(nuevo_num, f"{nodo1.nombre}{nodo2.nombre}", nuevo_mov)
-
+                        grafo_destino.agregar_nodo(nuevo_num, f"Nodo {nuevo_num}", nuevo_mov)
+                        
                         # Conectar con el nodo de origen (nodo2) en el grafo destino
-                        grafo_destino.agregar_arista(nodo2.numero, nuevo_num, nodo1.movimiento)
+                        grafo_destino.agregar_arista(nodo1.numero, nuevo_num, nodo2.numero)
                     else:
                         # Si ya existe, solo añadir aristas
-                        grafo_destino.agregar_arista(nodo2.numero, nodo_existente.numero, nodo1.movimiento)
+                        grafo_destino.agregar_arista(nodo1.numero, nodo_existente.numero, nodo2.numero)
 
                     iteraciones += 1
                     pbar.update(1)
@@ -301,11 +295,10 @@ class Grafo():
     def guardar_grafo_csv(self, archivo_csv):
         with open(archivo_csv, mode='w', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(['Nodo', 'Nombre', 'Movimiento', 'Aristas_Pesos', 'Adyacentes'])
+            writer.writerow(['Numero', 'Nombre', 'Movimiento', 'Adyacentes'])
             
             for nodo in self.nodos.values():
-                aristas_pesos = {n.numero: self.aristas[(nodo.numero, n.numero)] for n in nodo.adyacentes}
-                writer.writerow([nodo.numero, nodo.nombre, nodo.movimiento, aristas_pesos, [n.numero for n in nodo.adyacentes]])
+                writer.writerow([nodo.numero, nodo.nombre, nodo.movimiento, [n.numero for n in nodo.adyacentes]])
             print(f"Grafo guardado en {archivo_csv}")
 
 
@@ -316,23 +309,18 @@ def cargar_grafo_de_csv(archivo_csv):
         # Se salta la cabecera
         next(reader)
 
-        nodos_temporales = {}
-
         # Crear los nodos
         for row in reader:
             numero = int(row[0])
             nombre = row[1]
             movimiento = eval(row[2])  # Convertimos la cadena a su estructura original (puede ser lista, diccionario, etc.)
-            aristas_pesos = eval(row[3])  # Esto debería ser un diccionario de pesos
-            adyacentes = eval(row[4])  # Esto es una lista de números de los nodos adyacentes
+            adyacentes = eval(row[3])  # Esto es una lista de números de los nodos adyacentes
             
             grafo.agregar_nodo(numero, nombre, movimiento)
-            nodos_temporales[numero] = (aristas_pesos, adyacentes)
 
-        # Crear las aristas
-        for num, (aristas_pesos, adyacentes) in nodos_temporales.items():
-            for adyacente, peso in aristas_pesos.items():
-                grafo.agregar_arista(num, adyacente, peso)
+            # crear las aristas
+            for i, adyacente in enumerate(adyacentes):
+                grafo.agregar_arista(numero, adyacente, i)                
     
     print(f"Grafo cargado desde {archivo_csv}")
     return grafo
@@ -361,7 +349,7 @@ def visualizar_grafo(grafo):
     plt.title("Visualización del Grafo de Movimientos")
     plt.show()
 
-def ver_pesos_aristas(grafo, numero_nodo):
+'''def ver_pesos_aristas(grafo, numero_nodo):
     if numero_nodo not in grafo.nodos:
         print(f"El nodo {numero_nodo} no existe en el grafo.")
         return
@@ -369,7 +357,7 @@ def ver_pesos_aristas(grafo, numero_nodo):
     print(f"Aristas del nodo {numero_nodo}:")
     for (origen, destino), peso in grafo.aristas.items():
         if origen == numero_nodo:
-            print(f"  → Nodo {destino} con peso {peso}")
+            print(f"  → Nodo {destino} con peso {peso}")'''
         
 #cargo los movimientos del csv
 grafo = Grafo()
@@ -381,34 +369,38 @@ with open("movimientos.csv",newline= "", mode='r', encoding="utf-8") as file:
         grafo.agregar_nodo(i, nombre, movimiento)
         
 
-grafo_auxiliar = grafo.generar_movimientos_iniciales(34)
-grafo.mostrar_grafo()
-grafo_auxiliar.mostrar_grafo()
-grafo_auxiliar.guardar_grafo_csv("grafo_auxiliar.csv")
+grafo_combinado1 = Grafo()
+grafo_combinado1.combinar_en_grafo_aparte(grafo.nodos.values(), grafo.nodos.values(), grafo_combinado1)
+#grafo.mostrar_grafo()
+#grafo_combinado1.mostrar_grafo()
+grafo_combinado1.guardar_grafo_csv("grafo_combinado1.csv")
 grafo.guardar_grafo_csv("grafo.csv")
 
 
 #opero los nuevos nodos con los nodos del grafo primero
-grafo_combinado = Grafo()
-grafo_combinado.combinar_en_grafo_aparte(grafo.nodos.values(), grafo_auxiliar.nodos.values(), grafo_combinado)
-grafo_combinado.guardar_grafo_csv("grafo_combinado.csv")
-grafo_combinado.mostrar_grafo()
-
-#grafo_combinado2 = cargar_grafo_de_csv("grafo_combinado2.csv")
-
 grafo_combinado2 = Grafo()
-grafo_combinado2.combinar_en_grafo_aparte(grafo.nodos.values(), grafo_combinado.nodos.values(), grafo_combinado2)
+grafo_combinado2.combinar_en_grafo_aparte(grafo_combinado1.nodos.values(), grafo.nodos.values(), grafo_combinado2)
 grafo_combinado2.guardar_grafo_csv("grafo_combinado2.csv")
-grafo_combinado2.mostrar_grafo()
+#grafo_combinado2.mostrar_grafo()
+
+#grafo_combinado3 = cargar_grafo_de_csv("grafo_combinado3.csv")
+
+grafo_combinado3 = Grafo()
+grafo_combinado3.combinar_en_grafo_aparte( grafo_combinado2.nodos.values(), grafo.nodos.values(), grafo_combinado3)
+grafo_combinado3.guardar_grafo_csv("grafo_combinado3.csv")
+grafo_combinado3.mostrar_grafo()
+
+grafo_combinado4 = Grafo()
+grafo_combinado4.combinar_en_grafo_aparte(grafo_combinado3.nodos.values(), grafo.nodos.values(), grafo_combinado4)
+grafo_combinado4.guardar_grafo_csv("grafo_combinado4.csv")
 
 grafo_final = Grafo()
-grafo_final.combinar_en_grafo_aparte(grafo.nodos.values(), grafo_combinado2.nodos.values(), grafo_final)
+grafo_final.combinar_en_grafo_aparte(grafo_combinado4.nodos.values(), grafo.nodos.values(), grafo_final)
 grafo_final.guardar_grafo_csv("grafo_final.csv")
+#grafo_combinado4 = cargar_grafo_de_csv("grafo_combinado4.csv")
 
-#grafo_final = cargar_grafo_de_csv("grafo_final.csv")
-
-#ver_pesos_aristas(grafo_final, 0)
+#ver_pesos_aristas(grafo_combinado4, 0)
 
 # Visualizar el grafo generado
 # print("Visualización del grafo generado")
-# visualizar_grafo(grafo_final) 
+# visualizar_grafo(grafo_combinado4) 
