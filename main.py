@@ -201,6 +201,7 @@ class Grafo():
     def __init__(self):
         self.nodos = {} # diccionario {numero del nodo: nodo}
         self.ley = LeyGrupo([], "")
+        
     
     def agregar_nodo(self, numero, nombre, movimiento):
         if numero not in self.nodos:
@@ -221,48 +222,20 @@ class Grafo():
     def mostrar_grafo(self):
         for num, nodo in self.nodos.items():
             print(f"Nodo {num} ({nodo.movimiento}): {[n.numero for n in nodo.adyacentes]}")
-            
-    ''' def generar_movimientos_iniciales(self, cantidad):
-        """
-        Genera combinaciones de los primeros 'cantidad' movimientos consigo mismos y devuelve un grafo auxiliar.
-        """
-        lg = LeyGrupo([], "")
-        grafo_combinado1 = Grafo()
-        iteraciones = 0
-
-        print(f"Generando combinaciones de los primeros {cantidad} movimientos entre sí")
-
-        with tqdm(total=cantidad**2, desc="Generando", unit="iter") as pbar:
-            for nodo1 in list(self.nodos.values())[:cantidad]:
-                for nodo2 in list(self.nodos.values())[:cantidad]:
-                    nuevo_mov = lg.componer_movimientos(nodo1.movimiento, nodo2.movimiento)
-                    
-                    # Buscar si ya existe un nodo con este movimiento en el grafo auxiliar
-                    nodo_existente = next((n for n in grafo_combinado1.nodos.values() if lg.comparar_movimientos(nuevo_mov, n.movimiento)), None)
-                    if nodo_existente is None:
-                        nuevo_num = len(grafo_combinado1.nodos)  # Índices nuevos en el grafo auxiliar
-                        grafo_combinado1.agregar_nodo(nuevo_num, f"Nodo {nuevo_num}", nuevo_mov)
-                        
-                        grafo_combinado1.agregar_arista(nodo1.numero, nuevo_num, nodo2.numero)
-                        
-                    else:
-                        # Si ya existe, solo añadir aristas con los movimientos correspondientes
-                        grafo_combinado1.agregar_arista(nodo1.numero, nodo_existente.numero, nodo2.numero)
-
-                    iteraciones += 1
-                    pbar.update(1)
-
-        print(f"{len(grafo_combinado1.nodos)} nuevos movimientos generados")
-        return grafo_combinado1'''
+    
         
-    def combinar_en_grafo_aparte(self, nodos_fuente, nodos_destino, grafo_destino):
+    def combinar_grafo(self, nodos_fuente, nodos_destino, grafo_destino):
         """
-        Combina los movimientos de dos grupos de nodos y guarda los nuevos en un grafo diferente.
+        Combina los movimientos de dos grupos de nodos y guarda los nuevos en dos grafos, uno con toda la informacion y otro solo con la nueva
         """
         lg = LeyGrupo([], "")
         iteraciones = 0
 
         print(f"Combinando {len(nodos_fuente)} con {len(nodos_destino)} en un grafo aparte")
+        
+        # ponemos los nodos destino en el grafo destino
+        for nodo in nodos_destino:
+            grafo_destino.agregar_nodo(nodo.numero, nodo.nombre, nodo.movimiento)
 
         with tqdm(total=len(nodos_fuente) * len(nodos_destino), desc="Combinando", unit="iter") as pbar:
             for nodo1 in nodos_fuente:
@@ -349,16 +322,6 @@ def visualizar_grafo(grafo):
     plt.title("Visualización del Grafo de Movimientos")
     plt.show()
 
-'''def ver_pesos_aristas(grafo, numero_nodo):
-    if numero_nodo not in grafo.nodos:
-        print(f"El nodo {numero_nodo} no existe en el grafo.")
-        return
-
-    print(f"Aristas del nodo {numero_nodo}:")
-    for (origen, destino), peso in grafo.aristas.items():
-        if origen == numero_nodo:
-            print(f"  → Nodo {destino} con peso {peso}")'''
-        
 #cargo los movimientos del csv
 grafo = Grafo()
 with open("movimientos.csv",newline= "", mode='r', encoding="utf-8") as file:
@@ -370,7 +333,7 @@ with open("movimientos.csv",newline= "", mode='r', encoding="utf-8") as file:
         
 
 grafo_combinado1 = Grafo()
-grafo_combinado1.combinar_en_grafo_aparte(grafo.nodos.values(), grafo.nodos.values(), grafo_combinado1)
+grafo_combinado1.combinar_grafo(grafo.nodos.values(), grafo.nodos.values(), grafo_combinado1)
 #grafo.mostrar_grafo()
 #grafo_combinado1.mostrar_grafo()
 grafo_combinado1.guardar_grafo_csv("grafo_combinado1.csv")
@@ -379,23 +342,23 @@ grafo.guardar_grafo_csv("grafo.csv")
 
 #opero los nuevos nodos con los nodos del grafo primero
 grafo_combinado2 = Grafo()
-grafo_combinado2.combinar_en_grafo_aparte(grafo_combinado1.nodos.values(), grafo.nodos.values(), grafo_combinado2)
+grafo_combinado2.combinar_grafo(grafo_combinado1.nodos.values(), grafo.nodos.values(), grafo_combinado2)
 grafo_combinado2.guardar_grafo_csv("grafo_combinado2.csv")
 #grafo_combinado2.mostrar_grafo()
 
 #grafo_combinado3 = cargar_grafo_de_csv("grafo_combinado3.csv")
 
 grafo_combinado3 = Grafo()
-grafo_combinado3.combinar_en_grafo_aparte( grafo_combinado2.nodos.values(), grafo.nodos.values(), grafo_combinado3)
+grafo_combinado3.combinar_grafo( grafo_combinado2.nodos.values(), grafo.nodos.values(), grafo_combinado3)
 grafo_combinado3.guardar_grafo_csv("grafo_combinado3.csv")
 grafo_combinado3.mostrar_grafo()
 
 grafo_combinado4 = Grafo()
-grafo_combinado4.combinar_en_grafo_aparte(grafo_combinado3.nodos.values(), grafo.nodos.values(), grafo_combinado4)
+grafo_combinado4.combinar_grafo(grafo_combinado3.nodos.values(), grafo.nodos.values(), grafo_combinado4)
 grafo_combinado4.guardar_grafo_csv("grafo_combinado4.csv")
 
 grafo_final = Grafo()
-grafo_final.combinar_en_grafo_aparte(grafo_combinado4.nodos.values(), grafo.nodos.values(), grafo_final)
+grafo_final.combinar_grafo(grafo_combinado4.nodos.values(), grafo.nodos.values(), grafo_final)
 grafo_final.guardar_grafo_csv("grafo_final.csv")
 #grafo_combinado4 = cargar_grafo_de_csv("grafo_combinado4.csv")
 
