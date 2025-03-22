@@ -216,7 +216,7 @@ class Grafo():
         if nodo1 != nodo2:
             if nodo1 in self.nodos and nodo2 in self.nodos:
                 self.nodos[nodo1].agregar_adyacente(self.nodos[nodo2], posicion)
-                #print(f"Arista añadida desde {nodo1} a {nodo2}.")
+                #print(f"Arista añadida desde {nodo1} a {nodo2} en la posicion {posicion}.")
             
     
     def mostrar_grafo(self):
@@ -277,6 +277,8 @@ class Grafo():
 
 def cargar_grafo_de_csv(archivo_csv):
     grafo = Grafo()
+    conexiones = {} # guardamos las conexiones temporalmente para añadirlas después
+    
     with open(archivo_csv, newline='', mode='r', encoding="utf-8") as file:
         reader = csv.reader(file)
         # Se salta la cabecera
@@ -284,15 +286,19 @@ def cargar_grafo_de_csv(archivo_csv):
 
         # Crear los nodos
         for row in reader:
+            #print(row)
             numero = int(row[0])
             nombre = row[1]
-            movimiento = eval(row[2])  # Convertimos la cadena a su estructura original (puede ser lista, diccionario, etc.)
+            movimiento = eval(row[2])  # Convertimos la cadena a su estructura original 
             adyacentes = eval(row[3])  # Esto es una lista de números de los nodos adyacentes
             
             grafo.agregar_nodo(numero, nombre, movimiento)
+            conexiones[numero] = adyacentes # Guardamos las conexiones para después
 
-            # crear las aristas
+        # crear las aristas
+        for numero, adyacentes in conexiones.items():
             for i, adyacente in enumerate(adyacentes):
+                #print(f"Agregando arista desde {numero} a {adyacente} en la posición {i}")
                 grafo.agregar_arista(numero, adyacente, i)                
     
     print(f"Grafo cargado desde {archivo_csv}")
@@ -365,6 +371,7 @@ grafo_final.guardar_grafo_csv("grafo_final.csv")'''
 
 
 grafo_final= cargar_grafo_de_csv("grafo_final.csv")
+#grafo_final.mostrar_grafo()
 
 # Algoritmo de búsqueda en anchura para encontrar el camino más corto a la identidad
 from collections import deque
@@ -430,7 +437,7 @@ def buscar_identidad(grafo, nodo_inicial, movimientos_iniciales):
 movimientos_iniciales = cargar_movimientos_iniciales("movimientos.csv")
 
 # buscamos el camino desde un nodo aleatorio
-camino_movimientos = buscar_identidad(grafo_final, 17543, movimientos_iniciales)
+camino_movimientos = buscar_identidad(grafo_final, 78, movimientos_iniciales)
 
 if camino_movimientos:
     print("Secuencia de movimientos para llegar a la identidad:")
