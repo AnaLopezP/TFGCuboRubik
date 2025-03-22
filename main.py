@@ -437,7 +437,7 @@ def buscar_identidad(grafo, nodo_inicial, movimientos_iniciales):
 movimientos_iniciales = cargar_movimientos_iniciales("movimientos.csv")
 
 # buscamos el camino desde un nodo aleatorio
-camino_movimientos = buscar_identidad(grafo_final, 78, movimientos_iniciales)
+camino_movimientos = buscar_identidad(grafo_final, 18, movimientos_iniciales)
 
 if camino_movimientos:
     print("Secuencia de movimientos para llegar a la identidad:")
