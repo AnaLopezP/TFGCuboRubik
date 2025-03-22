@@ -323,7 +323,9 @@ def visualizar_grafo(grafo):
     plt.show()
 
 #cargo los movimientos del csv
-grafo = Grafo()
+'''grafo = Grafo()
+
+# cargamos los movimientos iniciales del archivo csv en forma de grafo
 with open("movimientos.csv",newline= "", mode='r', encoding="utf-8") as file:
     reader = csv.reader(file)
     for i, row in enumerate(reader):
@@ -359,11 +361,79 @@ grafo_combinado4.guardar_grafo_csv("grafo_combinado4.csv")
 
 grafo_final = Grafo()
 grafo_final.combinar_grafo(grafo_combinado4.nodos.values(), grafo.nodos.values(), grafo_final)
-grafo_final.guardar_grafo_csv("grafo_final.csv")
-#grafo_combinado4 = cargar_grafo_de_csv("grafo_combinado4.csv")
+grafo_final.guardar_grafo_csv("grafo_final.csv")'''
 
-#ver_pesos_aristas(grafo_combinado4, 0)
 
-# Visualizar el grafo generado
-# print("Visualización del grafo generado")
-# visualizar_grafo(grafo_combinado4) 
+grafo_final= cargar_grafo_de_csv("grafo_final.csv")
+
+# Algoritmo de búsqueda en anchura para encontrar el camino más corto a la identidad
+from collections import deque
+
+def cargar_movimientos_iniciales(archivo_csv):
+    '''
+    Cargamos los movimientos iniciales del archivo csv y los devolvemos en un diccionario.
+    '''
+    movimientos = {}
+    with open(archivo_csv, newline='', mode='r', encoding="utf-8") as file:
+        reader = csv.reader(file)
+        for i, row in enumerate(reader):
+            movimientos[i] = row[0]
+    #print(movimientos)
+    return movimientos
+
+def buscar_identidad(grafo, nodo_inicial, movimientos_iniciales):
+    ''' 
+    Para cada nodo del grafo:
+    - Si tiene conexión con la identidad (nodo 51), se añade a la lista de movimientos
+    - Si no tiene conexión, elige el nodo con el numero más pequeño
+    - Devuelve la lista de movimientos hasta llegar a la identidad
+    '''
+    movimiento_identidad = 51
+    cola = deque()
+    visitados = set()
+    
+    secuencia_movimientos = [] # guardamos los movimientos
+    cola.append(nodo_inicial)
+    
+    while cola:
+        nodo_actual = cola.popleft()
+        
+        # Si ya lo visitamos, lo saltamos
+        if nodo_actual in visitados:
+            continue
+        visitados.add(nodo_actual)
+        
+        # Lista para guardar los nodos adyacentes válidos
+        nodos_adyacentes = grafo.nodos[nodo_actual].adyacentes
+        
+        # Buscar si el nodo 51 está en los adyacentes
+        if any(nodo.numero == movimiento_identidad for nodo in nodos_adyacentes):
+            for indice, nodo in enumerate(nodos_adyacentes):
+                if nodo.numero == movimiento_identidad:
+                    secuencia_movimientos.append(movimientos_iniciales.get(indice, f"Movimiento_{indice}"))
+                    return secuencia_movimientos  # Terminamos porque llegamos a 51
+        
+        # Si no encontramos el 51, buscamos el nodo con el número más pequeño
+        nodo_mas_pequeno = min(nodos_adyacentes, key=lambda nodo: nodo.numero, default=None)
+        
+        if nodo_mas_pequeno:
+            # Obtenemos el índice del movimiento que lleva a este nodo
+            for indice, nodo in enumerate(nodos_adyacentes):
+                if nodo.numero == nodo_mas_pequeno.numero:
+                    secuencia_movimientos.append(movimientos_iniciales.get(indice, f"Movimiento_{indice}"))
+                    cola.append(nodo_mas_pequeno.numero)
+                    break  # Solo agregamos el primer camino encontrado
+    
+    return secuencia_movimientos
+
+# cargamos los movimientos iniciales
+movimientos_iniciales = cargar_movimientos_iniciales("movimientos.csv")
+
+# buscamos el camino desde un nodo aleatorio
+camino_movimientos = buscar_identidad(grafo_final, 17543, movimientos_iniciales)
+
+if camino_movimientos:
+    print("Secuencia de movimientos para llegar a la identidad:")
+    print(camino_movimientos)
+else:
+    print("No se encontró un camino a la identidad desde el nodo indicado.")
