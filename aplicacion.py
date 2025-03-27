@@ -1,11 +1,12 @@
-import sys
-from PyQt6.QtWidgets import QApplication, QGraphicsView, QGraphicsScene, QGraphicsRectItem, QPushButton, QVBoxLayout, QWidget
-from PyQt6.QtGui import QBrush, QColor, QPen
-from PyQt6.QtCore import Qt
-from PyQt6.QtOpenGLWidgets import QOpenGLWidget
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QColor, QBrush, QPen
+from PyQt6.QtOpenGLWidgets import QOpenGLWidget
+from PyQt6.QtWidgets import QGraphicsView, QGraphicsScene, QPushButton, QGraphicsRectItem, QWidget, QVBoxLayout, QApplication
+import sys
+from PyQt6.QtWidgets import QOpenGLWidget
 
 
 # Colores del cubo
@@ -28,6 +29,15 @@ POSICIONES_CARAS = {
     "AZ": (340, 100),  # Azul (Derecha)
     "AM": (100, 220)   # Amarillo (Abajo, no editable)
 }
+
+POSICIONES_CARAS_3D = {
+    "B": (100, -20, 0),   # Blanco (Arriba)
+    "V": (-20, 100, -1),  # Verde (Izquierda)
+    "N": (100, 100, -2),  # Naranja (Atrás)
+    "R": (220, 100, -1),  # Rojo (Frente)
+    "AZ": (340, 100, -1), # Azul (Derecha)
+    "AM": (100, 220, 0)   # Amarillo (Abajo, no editable)
+    }
 
 CUBO_CARAS = {
     "B": [(1, 1, 0), (-1, 1, 0), (-1, -1, 0), (1, -1, 0)],  # Blanco
@@ -157,8 +167,22 @@ class Cubo3D(QGraphicsView):
         
     def crear_cubo_perspectiva(self):
         self.scene.clear()
-        # proximamente
-        pass
+        # Crear el cubo en 3D con OpenGL
+        for cara, (x, y, z) in POSICIONES_CARAS_3D.items():
+            for fila in range(3):
+                for columna in range(3):
+                    color_inicial = COLORES_MAPA[cara]
+                    tile = CuboTile(
+                        x + columna * self.casilla_size,
+                        y + fila * self.casilla_size,
+                        self.casilla_size,
+                        color_inicial, cara, fila, columna
+                    )
+                    self.scene.addItem(tile)
+
+        # Configurar OpenGL para dibujar el cubo en perspectiva
+        self.setViewport(QOpenGLWidget()) 
+
                     
     def cambiar_vista(self):
         self.guardar_estado()
