@@ -31,13 +31,38 @@ class CuboRubik:
         self.ultimo_mouse_x = 0
         self.ultimo_mouse_y = 0
         self.modo_vista = "3D"
+        self.letra = pygame.font.SysFont("Arial", 24)
         
     def dibujar_boton(self):
-        pygame.draw.rect(pygame.display.get_surface(), (225, 0, 0), (650, 550, 130, 30))
-        fuente = pygame.font.Font(None, 24)
-        texto = fuente.render("Cambiar vista", True, (0, 0, 0))
-        pygame.display.get_surface().blit(texto, (660, 555))
+        glMatrixMode(GL_PROJECTION)
+        glPushMatrix()
+        glLoadIdentity()
+        glOrtho(0, 800, 600, 0, -1, 1)  # Definir coordenadas 2D en pantalla
+        glMatrixMode(GL_MODELVIEW)
+        glPushMatrix()
+        glLoadIdentity()
 
+        # Dibujar el botón con Pygame después de cambiar a 2D
+        glColor3f(0.8, 0, 0)  # Rojo oscuro
+        glBegin(GL_QUADS)
+
+        # Coordenadas del botón
+        glVertex2f(650, 550)
+        glVertex2f(780, 550)
+        glVertex2f(780, 580)
+        glVertex2f(650, 580)
+        glEnd()
+        
+        # Dibujar el texto "Cambiar Vista" en el botón
+        texto = self.letra.render("Cambiar Vista", True, (255, 255, 255))  # Texto en blanco
+        pygame.display.get_surface().blit(texto, (660, 560))  # Posición del texto dentro del botón
+
+        # Restaurar el modo 3D
+        glMatrixMode(GL_PROJECTION)
+        glPopMatrix()
+        glMatrixMode(GL_MODELVIEW)
+        glPopMatrix()
+        
     def dibujar_cubo(self):
         glPushMatrix()
         glRotatef(self.angulo_x, 1, 0, 0)
@@ -80,8 +105,8 @@ class CuboRubik:
 
     def actualizar(self):
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-        #glLoadIdentity() esto hace que pete el cubo
-        #gluLookAt(3, 3, 5, 0, 0, 0, 0, 1, 0) se va volando?
+        #glLoadIdentity() #esto hace que pete el cubo
+        #gluLookAt(3, 3, 5, 0, 0, 0, 0, 1, 0) #se va volando?
         if self.modo_vista == "T":
             self.dibujar_plano()
         else:
