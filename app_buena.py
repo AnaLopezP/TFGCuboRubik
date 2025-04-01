@@ -7,6 +7,7 @@ from PyQt6.QtWidgets import QLabel
 from PyQt6.QtCore import QTimer
 from OpenGL.GL import *
 from OpenGL.GLU import *
+from intermedio import *
 
 # ---------------------------
 # Estado global del cubo
@@ -23,6 +24,15 @@ COLORES_MAPA = {
     "AZ": QColor("blue"),   # Right (Azul)
     "AM": QColor("yellow")   # Down (Amarillo)
 }
+
+# Definimos nombres para las casillas según su posición
+NOMBRES_ARISTAS = {(0, 1): "a", (1, 0): "b", (2, 1): "c", (1, 2): "d"}
+NOMBRES_VERTICES = {(0, 0): "e", (2, 0): "f", (2, 2): "g", (0, 2): "h"}
+
+# Definimos los colores secundarios (no el blanco) que compone cada casilla de la cara blanca según su posición
+ARISTAS_LATERAL = {(0, 1): "R", (1, 0): "AZ", (2, 1): "N", (1, 2): "V"}
+ESQUINAS_LATERAL = {(0, 0): ("R", "AZ"), (2, 0): ("AZ", "N"), (2, 2): ("N", "V"), (0, 2): ("V", "R")}
+
 # Inicializamos el estado del cubo: para cada cara, una matriz 3x3 con la letra de la cara
 cube_state = {cara: [[cara for _ in range(3)] for _ in range(3)] for cara in COLORES}
 
@@ -34,14 +44,7 @@ def colorFromLetter(letter):
 # ---------------------------
 # VISTA NET (plana) con QGraphicsView
 # ---------------------------
-# Posiciones en la rejilla para formar la T (vista net)
-# La convención aquí es: 
-#   - "B" (Up) en la fila 0, columna 3;
-#   - "V" (Left) en la fila 3, columna 0;
-#   - "N" (Back) en la fila 3, columna 3;
-#   - "R" (Front) en la fila 3, columna 6;
-#   - "AZ" (Right) en la fila 3, columna 9;
-#   - "AM" (Down) en la fila 6, columna 3.
+
 POSICIONES_CARAS = {
     "R":  (3, 0),
     "AZ":  (0, 3),
@@ -63,6 +66,26 @@ class CuboTile(QGraphicsRectItem):
         self.color_actual = cube_state[cara][fila][columna]
         self.setBrush(QBrush(COLORES_MAPA[self.color_actual]))
         self.setPen(QPen(Qt.GlobalColor.black, 2))
+        
+        # Vamos a guardar como objetos las casillas de la cara blanca para más tarde
+        if self.cara == "B" and (self.fila !=1, self.columna != 1): # el centro no nos interesa
+            # determinamos si es arista o vértice para ver la cantidad de pegatinas
+            if (self.fila, self.columna) in NOMBRES_ARISTAS:
+                nombre = NOMBRES_ARISTAS[(self.fila, self.columna)]
+                color2 = ARISTAS_LATERAL[(self.fila, self.columna)]
+                # creamos el objetto pegatina para la otra clase
+                self.pegatina = Pegatina(nombre, "B", color2, self.fila, self.columna)
+            elif (self.fila, self.columna) in NOMBRES_VERTICES:
+                nombre = NOMBRES_VERTICES[(self.fila, self.columna)]
+                color2, color3 = ESQUINAS_LATERAL[(self.fila, self.columna)]
+                # creamos el objeto pegatina para la otra clase
+                self.pegatina = Pegatina(nombre, "B", color2, color3, self.fila, self.columna)
+            else: #(por si acaso)
+                self.pegatina = None
+        else:
+            self.pegatina = None
+
+        
         
         
     def mousePressEvent(self, event):
