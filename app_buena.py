@@ -119,6 +119,7 @@ class CuboTile(QGraphicsRectItem):
         nuevo_color = COLORES_CAMBIABLES[(indice_actual + 1) % len(COLORES_CAMBIABLES)]
         self.setBrush(QBrush(COLORES_MAPA[nuevo_color]))
         self.color_actual = nuevo_color
+        asignar_color(cubo, self.cara, self.fila, self.columna, nuevo_color)
 
 class RubiksCubeNet(QGraphicsView):
     def __init__(self, parent=None, cube3d=None):

@@ -18,14 +18,14 @@ class Molecula:
         self.color = color
 
 class Arista(Molecula):
-    def __init__(self, cara, fila, columna, color, molecula_adyacente):
+    def __init__(self, cara, fila, columna, color, adyacente):
         super().__init__(cara, fila, columna, color)
-        self.molecula_adyacente = molecula_adyacente
+        self.adyacente = adyacente
 
 class Vertice(Arista):
-    def __init__(self, cara, fila, columna, color, molecula_adyacente, molecula_precedente):
-        super().__init__(cara, fila, columna, color, molecula_adyacente)
-        self.molecula_precedente = molecula_precedente
+    def __init__(self, cara, fila, columna, color, adyacente, precedente):
+        super().__init__(cara, fila, columna, color, adyacente)
+        self.precedente = precedente
 
 class Cubito:
     def __init__(self, nombre, color1, color2, color3 = None, fila = None, columna = None):
@@ -53,7 +53,7 @@ class Matriz:
         ]
         
     
-def search(cubo, cara, fila, columna):
+def asignar_color(cubo, cara, fila, columna, nuevo_color):
     for i in range(3):
         for j in range(3):
             mol = cubo[i][j]
@@ -61,17 +61,19 @@ def search(cubo, cara, fila, columna):
                 print(mol.fila)
                 if mol.fila == fila and mol.columna == columna and mol.cara == cara:
                     print(f"Encontrado: {mol.cara} en fila {fila}, columna {columna}, en {i}, {j}")
+                    mol.set_color(nuevo_color)
                 
-                elif mol.molecula_adyacente.fila == fila and mol.molecula_adyacente.columna == columna and mol.molecula_adyacente.cara == cara:
-                    print(f"Encontrado: {mol.molecula_adyacente.cara} en fila {fila}, columna {columna}, en {i}, {j}")
+                elif mol.adyacente.fila == fila and mol.adyacente.columna == columna and mol.adyacente.cara == cara:
+                    print(f"Encontrado: {mol.adyacente.cara} en fila {fila}, columna {columna}, en {i}, {j}")
+                    mol.adyacente.set_color(nuevo_color)
                     
-                elif isinstance(mol, Vertice) and mol.molecula_precedente.fila == fila and mol.molecula_precedente.columna == columna and mol.molecula_precedente.cara == cara:
-                    print(f"Encontrado: {mol.molecula_precedente.cara} en fila {fila}, columna {columna}, en {i}, {j}")
+                elif isinstance(mol, Vertice) and mol.precedente.fila == fila and mol.precedente.columna == columna and mol.precedente.cara == cara:
+                    print(f"Encontrado: {mol.precedente.cara} en fila {fila}, columna {columna}, en {i}, {j}")
+                    mol.precedente.set_color(nuevo_color)
                 
                 else:
                     print("No encontrado")
-                
-    
+    print("Color asignado correctamente")   
     
 def iniciar():
     cubo = [
@@ -89,7 +91,7 @@ def iniciar():
     cubo[2][1] = Arista("B", 2, 1, "B", Molecula("N", 0, 1, "N"))
     cubo[2][2] = Vertice("B", 2, 2, "B", Molecula("N", 0, 2, "N"), Molecula("V", 2, 0, "V"))
     
-    search(cubo, "N", 0, 0)
+    asignar_color(cubo, "N", 0, 0, "R")
     
     return cubo
 
