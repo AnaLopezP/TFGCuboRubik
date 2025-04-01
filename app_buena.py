@@ -66,16 +66,16 @@ class CuboTile(QGraphicsRectItem):
         self.color_actual = cube_state[cara][fila][columna]
         self.setBrush(QBrush(COLORES_MAPA[self.color_actual]))
         self.setPen(QPen(Qt.GlobalColor.black, 2))
-        self.matriz = [] # matriz de cubitos para la cara blanca
+        #self.matriz = [] # matriz de cubitos para la cara blanca
         
-        # Vamos a guardar como objetos las casillas de la cara blanca para más tarde
+        '''# Vamos a guardar como objetos las casillas de la cara blanca para más tarde
         if self.cara == "B" and (self.fila !=1, self.columna != 1): # el centro no nos interesa
             # determinamos si es arista o vértice para ver la cantidad de cubitos
             if (self.fila, self.columna) in NOMBRES_ARISTAS:
                 nombre = NOMBRES_ARISTAS[(self.fila, self.columna)]
                 color2 = ARISTAS_LATERAL[(self.fila, self.columna)]
                 # creamos el objetto cubito para la otra clase
-                self.matriz.append(Cubito(nombre, "B", color2, None, self.fila, self.columna)) # añadimos el cubito a la matriz
+                self.matriz.add(Cubito(nombre, "B", color2, None, self.fila, self.columna)) # añadimos el cubito a la matriz
                 print(self.matriz)
                 print("he pasado por aqui")
                 
@@ -83,13 +83,13 @@ class CuboTile(QGraphicsRectItem):
                 nombre = NOMBRES_VERTICES[(self.fila, self.columna)]
                 color2, color3 = ESQUINAS_LATERAL[(self.fila, self.columna)]
                 # creamos el objeto cubito para la otra clase
-                self.matriz.append(Cubito(nombre, "B", color2, color3, self.fila, self.columna))
+                self.matriz.add(Cubito(nombre, "B", color2, color3, self.fila, self.columna))
                 print(self.matriz)
-                print("he pasado por aqui")
+                print("he pasado por aqui")'''
                 
                 
-    def get_matriz(self):
-        return self.matriz
+    '''def get_matriz(self):
+        return self.matriz'''
         
         
     def mousePressEvent(self, event):
@@ -110,7 +110,7 @@ class CuboTile(QGraphicsRectItem):
         cube_state[self.cara][self.fila][self.columna] = self.color_actual
         print(f"Estado global actualizado: {self.cara} [{self.fila}, {self.columna}] = {self.color_actual}")
         
-        
+                
         # actualizamos la vista 3D
         self.cube3d.update()
 
@@ -125,6 +125,7 @@ class RubiksCubeNet(QGraphicsView):
         super().__init__(parent)
         self.setFixedSize(1000, 800)
         self.scene = QGraphicsScene()
+        #self.cubo_total = 
         self.setScene(self.scene)
         self.cube3d = cube3d
         # color de fondo gris oscuro
@@ -143,6 +144,7 @@ class RubiksCubeNet(QGraphicsView):
                     y = (grid_y + fila) * TILE_SIZE
                     self.tile = CuboTile(x, y, TILE_SIZE, cara, fila, col, self.cube3d)
                     self.scene.addItem(self.tile)
+
     
     def get_cubotile(self):
         return self.tile
@@ -188,6 +190,7 @@ class RubiksCube3D(QOpenGLWidget):
         glRotatef(self.xRot, 1, 0, 0)
         glRotatef(self.yRot, 0, 1, 0)
         self.drawCube()
+        
 
     def drawCube(self):
         totalSize = 3 * self.cubeSize + 2 * self.gap
@@ -202,6 +205,7 @@ class RubiksCube3D(QOpenGLWidget):
                     glTranslatef(x, y, z)
                     self.drawSmallCube(self.cubeSize, i, j, k)
                     glPopMatrix()
+                    
 
     def drawSmallCube(self, size, i, j, k):
         hs = size / 2
@@ -427,6 +431,7 @@ class MainWindow(QMainWindow):
         
 
 if __name__ == '__main__':
+    cubo = iniciar()
     app = QApplication(sys.argv)
     window = MainWindow()
     '''cubotile = window.get_mainwidget().get_cubenet().get_cubotile()
