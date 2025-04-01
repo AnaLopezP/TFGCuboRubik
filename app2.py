@@ -25,13 +25,14 @@ CUBO_CARAS = {
 
 class CuboRubik:
     def __init__(self):
+        pygame.font.init()  # Inicializar Pygame para usar fuentes
         self.angulo_x = 0
         self.angulo_y = 0
         self.rotando = False
         self.ultimo_mouse_x = 0
         self.ultimo_mouse_y = 0
         self.modo_vista = "3D"
-        self.letra = pygame.font.SysFont("Arial", 24)
+        self.fuente = pygame.font.SysFont("Arial", 24)  # Fuente para el texto
         
     def dibujar_boton(self):
         glMatrixMode(GL_PROJECTION)
@@ -53,16 +54,18 @@ class CuboRubik:
         glVertex2f(650, 580)
         glEnd()
         
-        # Dibujar el texto "Cambiar Vista" en el botón
-        texto = self.letra.render("Cambiar Vista", True, (255, 255, 255))  # Texto en blanco
-        pygame.display.get_surface().blit(texto, (660, 560))  # Posición del texto dentro del botón
+        # Dibujar el texto "Cambiar Vista" en el botón usando Pygame en 2D
+        text_surface = self.fuente.render("Cambiar Vista", True, (255, 255, 255))
+        pygame.display.get_surface().blit(text_surface, (660, 560))
 
         # Restaurar el modo 3D
         glMatrixMode(GL_PROJECTION)
         glPopMatrix()
         glMatrixMode(GL_MODELVIEW)
         glPopMatrix()
+
         
+
     def dibujar_cubo(self):
         glPushMatrix()
         glRotatef(self.angulo_x, 1, 0, 0)
@@ -105,8 +108,6 @@ class CuboRubik:
 
     def actualizar(self):
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-        #glLoadIdentity() #esto hace que pete el cubo
-        #gluLookAt(3, 3, 5, 0, 0, 0, 0, 1, 0) #se va volando?
         if self.modo_vista == "T":
             self.dibujar_plano()
         else:

@@ -1,13 +1,8 @@
-from OpenGL.GL import *
-from OpenGL.GLUT import *
-from OpenGL.GLU import *
-from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QColor, QBrush, QPen
-from PyQt6.QtOpenGLWidgets import QOpenGLWidget
-from PyQt6.QtWidgets import QGraphicsView, QGraphicsScene, QPushButton, QGraphicsRectItem, QWidget, QVBoxLayout, QApplication
 import sys
-from PyQt6.QtWidgets import QOpenGLWidget
-
+import math
+from PyQt6.QtWidgets import QApplication, QGraphicsView, QGraphicsScene, QGraphicsRectItem, QPushButton, QVBoxLayout, QWidget
+from PyQt6.QtGui import QBrush, QColor, QPen
+from PyQt6.QtCore import Qt, QPointF
 
 # Colores del cubo
 COLORES = ["B", "V", "N", "R", "AZ", "AM"]
@@ -28,24 +23,6 @@ POSICIONES_CARAS = {
     "R": (220, 100),   # Rojo (Frente)
     "AZ": (340, 100),  # Azul (Derecha)
     "AM": (100, 220)   # Amarillo (Abajo, no editable)
-}
-
-POSICIONES_CARAS_3D = {
-    "B": (100, -20, 0),   # Blanco (Arriba)
-    "V": (-20, 100, -1),  # Verde (Izquierda)
-    "N": (100, 100, -2),  # Naranja (Atrás)
-    "R": (220, 100, -1),  # Rojo (Frente)
-    "AZ": (340, 100, -1), # Azul (Derecha)
-    "AM": (100, 220, 0)   # Amarillo (Abajo, no editable)
-    }
-
-CUBO_CARAS = {
-    "B": [(1, 1, 0), (-1, 1, 0), (-1, -1, 0), (1, -1, 0)],  # Blanco
-    "V": [(-1, 1, 0), (-1, 1, -2), (-1, -1, -2), (-1, -1, 0)],  # Verde
-    "N": [(-1, -1, 0), (1, -1, 0), (1, -1, -2), (-1, -1, -2)],  # Naranja
-    "R": [(1, 1, 0), (1, 1, -2), (1, -1, -2), (1, -1, 0)],  # Rojo
-    "AZ": [(1, 1, 0), (1, 1, 2), (-1, 1, 2), (-1, 1, 0)],  # Azul
-    "AM": [(1, -1, 0), (1, -1, 2), (-1, -1, 2), (-1, -1, 0)]  # Amarillo
 }
 
 # Caras contiguas a la cara blanca (excepto la cara amarilla)
@@ -81,40 +58,6 @@ class CuboTile(QGraphicsRectItem):
         self.setBrush(QBrush(COLORES_MAPA[nuevo_color]))  # Actualiza el color de la casilla
         self.color_actual = nuevo_color  # Actualiza la cara para la siguiente iteración
 
-class CuboTile3D(QOpenGLWidget):
-    def __init__(self, x, y, size, color, cara, fila, columna):
-        super().__init__()
-        self.x = x
-        self.y = y
-        self.size = size
-        self.color = color
-        self.cara = cara
-        self.fila = fila
-        self.columna = columna
-        self.color_actual = cara  # Inicialmente, el color es la cara (B, R, V, etc.)
-
-    def mousePressEvent(self, event):
-        if self.cara == "B" and not (self.fila == 1 and self.columna == 1):
-            self.cambiar_color()
-        elif self.fila == 0 and self.cara in ["V", "N", "R", "AZ"]:
-            self.cambiar_color()
-
-    def cambiar_color(self):
-        indice_actual = COLORES.index(self.color_actual)
-        nuevo_color = COLORES[(indice_actual + 1) % len(COLORES)]
-        self.color_actual = nuevo_color
-        self.update()
-
-    def dibujar_cuadro(self):
-        # Dibuja un cuadrado en la cara correspondiente usando OpenGL
-        glBegin(GL_QUADS)
-        color = COLORES_MAPA[self.color_actual]
-        glColor3f(color.redF(), color.greenF(), color.blueF())
-
-        for punto in CUBO_CARAS[self.cara]:
-            glVertex3f(punto[0] * self.size + self.x, punto[1] * self.size + self.y, punto[2] * self.size)
-
-        glEnd()
 
 class Cubo3D(QGraphicsView):
     def __init__(self):
@@ -134,6 +77,15 @@ class Cubo3D(QGraphicsView):
         self.cambiar_vista_boton.clicked.connect(self.cambiar_vista)
         
         self.crear_cubo_plano()
+        
+        '''      # Flechas para rotar el cubo
+        self.flecha_izquierda_btn = QPushButton("<-", self)
+        self.flecha_izquierda_btn.setGeometry(480, 460, 50, 30)
+        self.flecha_izquierda_btn.clicked.connect(self.rotar_izquierda)
+
+        self.flecha_derecha_btn = QPushButton("->", self)
+        self.flecha_derecha_btn.setGeometry(540, 460, 50, 30)
+        self.flecha_derecha_btn.clicked.connect(self.rotar_derecha)'''
         
     def guardar_estado(self):
         self.estado_cubos.clear()
@@ -167,21 +119,32 @@ class Cubo3D(QGraphicsView):
         
     def crear_cubo_perspectiva(self):
         self.scene.clear()
-        # Crear el cubo en 3D con OpenGL
-        for cara, (x, y, z) in POSICIONES_CARAS_3D.items():
+        desplazamiento_x = 40
+        desplazamiento_y = 30
+        
+        # Cambiar posiciones para una visión en perspectiva
+        for cara, (x, y) in POSICIONES_CARAS.items():
             for fila in range(3):
                 for columna in range(3):
+                    # Aplicar un pequeño desplazamiento para dar perspectiva
+                    if cara == "B":
+                        x_offset = x + columna * self.casilla_size
+                        y_offset = y + fila * self.casilla_size
+                    else:
+                        x_offset = x + columna * self.casilla_size - desplazamiento_x * fila
+                        y_offset = y + fila * self.casilla_size - desplazamiento_y * columna
+                    
                     color_inicial = COLORES_MAPA[cara]
+                    if cara == "B" and fila == 1 and columna == 1:
+                        color_inicial = COLORES_MAPA["B"]  # Mantener el color blanco en el centro
                     tile = CuboTile(
-                        x + columna * self.casilla_size,
-                        y + fila * self.casilla_size,
-                        self.casilla_size,
+                        x_offset, 
+                        y_offset,
+                        self.casilla_size, 
                         color_inicial, cara, fila, columna
                     )
                     self.scene.addItem(tile)
-
-        # Configurar OpenGL para dibujar el cubo en perspectiva
-        self.setViewport(QOpenGLWidget()) 
+                    
 
                     
     def cambiar_vista(self):
