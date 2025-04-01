@@ -66,26 +66,30 @@ class CuboTile(QGraphicsRectItem):
         self.color_actual = cube_state[cara][fila][columna]
         self.setBrush(QBrush(COLORES_MAPA[self.color_actual]))
         self.setPen(QPen(Qt.GlobalColor.black, 2))
+        self.matriz = [] # matriz de cubitos para la cara blanca
         
         # Vamos a guardar como objetos las casillas de la cara blanca para más tarde
         if self.cara == "B" and (self.fila !=1, self.columna != 1): # el centro no nos interesa
-            # determinamos si es arista o vértice para ver la cantidad de pegatinas
+            # determinamos si es arista o vértice para ver la cantidad de cubitos
             if (self.fila, self.columna) in NOMBRES_ARISTAS:
                 nombre = NOMBRES_ARISTAS[(self.fila, self.columna)]
                 color2 = ARISTAS_LATERAL[(self.fila, self.columna)]
-                # creamos el objetto pegatina para la otra clase
-                self.pegatina = Pegatina(nombre, "B", color2, self.fila, self.columna)
+                # creamos el objetto cubito para la otra clase
+                self.matriz.append(Cubito(nombre, "B", color2, None, self.fila, self.columna)) # añadimos el cubito a la matriz
+                print(self.matriz)
+                print("he pasado por aqui")
+                
             elif (self.fila, self.columna) in NOMBRES_VERTICES:
                 nombre = NOMBRES_VERTICES[(self.fila, self.columna)]
                 color2, color3 = ESQUINAS_LATERAL[(self.fila, self.columna)]
-                # creamos el objeto pegatina para la otra clase
-                self.pegatina = Pegatina(nombre, "B", color2, color3, self.fila, self.columna)
-            else: #(por si acaso)
-                self.pegatina = None
-        else:
-            self.pegatina = None
-
-        
+                # creamos el objeto cubito para la otra clase
+                self.matriz.append(Cubito(nombre, "B", color2, color3, self.fila, self.columna))
+                print(self.matriz)
+                print("he pasado por aqui")
+                
+                
+    def get_matriz(self):
+        return self.matriz
         
         
     def mousePressEvent(self, event):
@@ -139,6 +143,9 @@ class RubiksCubeNet(QGraphicsView):
                     y = (grid_y + fila) * TILE_SIZE
                     self.tile = CuboTile(x, y, TILE_SIZE, cara, fila, col, self.cube3d)
                     self.scene.addItem(self.tile)
+    
+    def get_cubotile(self):
+        return self.tile
 
 # ---------------------------
 # VISTA 3D con QOpenGLWidget
@@ -334,7 +341,8 @@ class MainWidget(QWidget):
         btnLayout.addWidget(self.toggleBtn)
         layout.addLayout(btnLayout)
 
-  
+    def get_cubenet(self):
+        return self.cubeNet
 
     def toggleView(self):
         current = self.stacked.currentIndex()
@@ -413,10 +421,22 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.mainWidget = MainWidget()
         self.setCentralWidget(self.mainWidget)
+    
+    def get_mainwidget(self):
+        return self.mainWidget
+        
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     window = MainWindow()
+    '''cubotile = window.get_mainwidget().get_cubenet().get_cubotile()
+    for i in range(3):
+        for j in range(3):
+            print(cubotile.matriz)'''
+    matriz = Matriz()
+    for i in range(3):
+        for j in range(3):
+            print(matriz.matriz[i][j])
     window.resize(800, 650)
     window.show()
     sys.exit(app.exec())
