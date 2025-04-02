@@ -155,9 +155,7 @@ class LeyGrupo():
             return True
         else:
             return False
-        
 
-        
 
 # creamos un csv con los movimientos base de datos (son 34) solo si no existe
 def crear_csv():
@@ -221,8 +219,8 @@ class Grafo():
     
     def mostrar_grafo(self):
         for num, nodo in self.nodos.items():
-            print(f"Nodo {num} ({nodo.movimiento}): {[n.numero for n in nodo.adyacentes]}")
-    
+            print(f"Nodo {num} ({nodo.movimiento}): {[n.numero for n in nodo.adyacentes]}")           
+
         
     def combinar_grafo(self, nodos_fuente, nodos_destino, grafo_destino):
         """
@@ -303,8 +301,17 @@ def cargar_grafo_de_csv(archivo_csv):
     
     print(f"Grafo cargado desde {archivo_csv}")
     return grafo
+
+def buscar_nodo(grafo, movimiento):
+    """
+    Busca un nodo en el grafo que tenga el mismo movimiento que el proporcionado.
+    """
+    for nodo in grafo.nodos.values():
+        if nodo.movimiento == movimiento:
+            return nodo.num
+    return None
         
-def visualizar_grafo(grafo):
+'''def visualizar_grafo(grafo):
     # Crear un grafo vacío de NetworkX
     G = nx.Graph()
 
@@ -327,7 +334,7 @@ def visualizar_grafo(grafo):
 
     plt.title("Visualización del Grafo de Movimientos")
     plt.show()
-
+'''
 #cargo los movimientos del csv
 '''grafo = Grafo()
 
@@ -370,7 +377,7 @@ grafo_final.combinar_grafo(grafo_combinado4.nodos.values(), grafo.nodos.values()
 grafo_final.guardar_grafo_csv("grafo_final.csv")'''
 
 
-grafo_final= cargar_grafo_de_csv("grafo_final.csv")
+#grafo_final= cargar_grafo_de_csv("grafo_final.csv")
 #grafo_final.mostrar_grafo()
 
 # Algoritmo de búsqueda en anchura para encontrar el camino más corto a la identidad
@@ -388,7 +395,11 @@ def cargar_movimientos_iniciales(archivo_csv):
     #print(movimientos)
     return movimientos
 
-def buscar_identidad(grafo, nodo_inicial, movimientos_iniciales):
+def buscar_identidad(nodo_inicial):
+    # cargamos los movimientos iniciales
+    movimientos_iniciales = cargar_movimientos_iniciales("movimientos.csv")
+    # cargamos el grafo
+    grafo= cargar_grafo_de_csv("grafo_final.csv")
     ''' 
     Para cada nodo del grafo:
     - Si tiene conexión con la identidad (nodo 51), se añade a la lista de movimientos
@@ -433,14 +444,13 @@ def buscar_identidad(grafo, nodo_inicial, movimientos_iniciales):
     
     return secuencia_movimientos
 
-# cargamos los movimientos iniciales
-movimientos_iniciales = cargar_movimientos_iniciales("movimientos.csv")
 
-# buscamos el camino desde un nodo aleatorio
+
+'''# buscamos el camino desde un nodo aleatorio
 camino_movimientos = buscar_identidad(grafo_final, 18, movimientos_iniciales)
 
 if camino_movimientos:
     print("Secuencia de movimientos para llegar a la identidad:")
     print(camino_movimientos)
 else:
-    print("No se encontró un camino a la identidad desde el nodo indicado.")
+    print("No se encontró un camino a la identidad desde el nodo indicado.")'''

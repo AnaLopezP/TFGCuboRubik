@@ -8,6 +8,7 @@ from PyQt6.QtCore import QTimer
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from intermedio import *
+from main import *
 
 # ---------------------------
 # Estado global del cubo
@@ -153,14 +154,6 @@ class RubiksCubeNet(QGraphicsView):
 # ---------------------------
 # VISTA 3D con QOpenGLWidget
 # ---------------------------
-# Usaremos la siguiente convención para mapear las caras del estado global a las
-# caras exteriores del cubo 3x3x3:
-#   - Front (Frente): si k == 2, usar cube_state['R'] con fila = 2 - j, col = i.
-#   - Back (Atrás): si k == 0, usar cube_state['N'] con fila = 2 - j, col = 2 - i.
-#   - Left: si i == 0, usar cube_state['V'] con fila = 2 - j, col = k.
-#   - Right: si i == 2, usar cube_state['AZ'] con fila = 2 - j, col = 2 - k.
-#   - Up: si j == 2, usar cube_state['B'] con fila = 2 - k, col = i.
-#   - Down: si j == 0, usar cube_state['AM'] con fila = k, col = i.
 class RubiksCube3D(QOpenGLWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -387,10 +380,14 @@ class MainWidget(QWidget):
                     
                     elif isinstance(mol, Arista):
                         print(mol.adyacente.cara, mol.adyacente.fila, mol.adyacente.columna, mol.adyacente.color, i, j)
+        
+        movimiento = traducir_a_mov(cubo)
+        numero_mov = buscar_nodo(movimiento)
+        buscar_identidad(numero_mov)
 
         print("Solucionar button pressed")
-        #self.prueba(self.cubeNet.tile) 
-        # Aquí podrías implementar la lógica para animar o resolver el cubo
+
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -406,14 +403,7 @@ if __name__ == '__main__':
     cubo = iniciar()
     app = QApplication(sys.argv)
     window = MainWindow()
-    '''cubotile = window.get_mainwidget().get_cubenet().get_cubotile()
-    for i in range(3):
-        for j in range(3):
-            print(cubotile.matriz)'''
     matriz = Matriz()
-    for i in range(3):
-        for j in range(3):
-            print(matriz.matriz[i][j])
     window.resize(800, 650)
     window.show()
     sys.exit(app.exec())
