@@ -375,51 +375,22 @@ class MainWidget(QWidget):
             if count != 9:
                 self.mostrarMensaje("Solo pueden haber 9 casillas de cada color")
                 return
+            
+        for i in range(3):
+            for j in range(3):
+                mol = cubo[i][j]
+                if mol != None:
+                    print(mol.cara, mol.fila, mol.columna, mol.color, i, j)
+                    if isinstance(mol, Vertice):
+                        print(mol.adyacente.cara, mol.adyacente.fila, mol.adyacente.columna, mol.adyacente.color, i, j)
+                        print(mol.precedente.cara, mol.precedente.fila, mol.precedente.columna, mol.precedente.color, i, j)
+                    
+                    elif isinstance(mol, Arista):
+                        print(mol.adyacente.cara, mol.adyacente.fila, mol.adyacente.columna, mol.adyacente.color, i, j)
 
         print("Solucionar button pressed")
         #self.prueba(self.cubeNet.tile) 
         # Aquí podrías implementar la lógica para animar o resolver el cubo
-        
-    '''def buscar_a(self):
-        for i in range(3):
-                self.fila = i
-                for j in range(3):
-                    self.columna = j
-                    if self.cara == "R" and self.fila == 2 and self.columna == 1 and self.color_actual == "R":
-                        print("a en cara roja")
-                    
-                    if self.cara == "AZ" and self.fila == 1 and self.columna == 2 and self.color_actual == "R":
-                        print("a en cara azul")
-                    
-                    if self.cara == "V" and self.fila == 1 and self.columna == 0 and self.color_actual == "R":
-                        print("a en cara verde")
-                        
-                    if self.cara == "N" and self.fila == 0 and self.columna == 1 and self.color_actual == "R":
-                        print("a en cara naranja")    '''
-                        
-                
-    
-    '''def prueba(self, tile):
-        print(tile.cara, tile.fila, tile.columna, tile.color_actual)
-        
-        #self.buscar_a()
-        for cara in COLORES:
-            tile.cara = cara
-            for i in range(3):
-                    tile.fila = i
-                    for j in range(3):
-                        tile.columna = j
-                        if tile.cara == "R" and tile.fila == 2 and tile.columna == 1 and tile.color_actual == "AZ":
-                            print("b en cara roja")
-                        
-                        if tile.cara == "AZ" and tile.fila == 1 and tile.columna == 2 and tile.color_actual == "AZ":
-                            print("b en cara azul")
-                        
-                        if tile.cara == "V" and tile.fila == 1 and tile.columna == 0 and tile.color_actual == "AZ":
-                            print("b en cara verde")
-                            
-                        if tile.cara == "N" and tile.fila == 0 and tile.columna == 1 and tile.color_actual == "AZ":
-                            print("b en cara naranja")    '''
 
 class MainWindow(QMainWindow):
     def __init__(self):

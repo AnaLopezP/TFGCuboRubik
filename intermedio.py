@@ -91,9 +91,156 @@ def iniciar():
     cubo[2][1] = Arista("B", 2, 1, "B", Molecula("N", 0, 1, "N"))
     cubo[2][2] = Vertice("B", 2, 2, "B", Molecula("N", 0, 2, "N"), Molecula("V", 2, 0, "V"))
     
-    asignar_color(cubo, "N", 0, 0, "R")
-    
     return cubo
 
 
-iniciar()
+def traducir_a_mov(cubo):
+    movimiento = [{1:0, 2:0, 3:0, 4:0}, [0, 0, 0, 0], {1:0, 2:0, 3:0, 4:0}, [0, 0, 0, 0]]
+    # ---- ARISTAS ----
+    # 1. Posición en la permutación
+    color_secundario1 = cubo[0][1].adyacente.color
+    if color_secundario1 == "R":
+        movimiento[0][1] = 1
+    elif color_secundario1 == "AZ":
+        movimiento[0][1] = 2
+    elif color_secundario1 == "N":
+        movimiento[0][1] = 3
+    elif color_secundario1 == "V":
+        movimiento[0][1] = 4
+    color_secundario2 = cubo[1][0].adyacente.color
+    if color_secundario2 == "R":
+        movimiento[0][2] = 1
+    elif color_secundario2 == "AZ":
+        movimiento[0][2] = 2
+    elif color_secundario2 == "N":
+        movimiento[0][2] = 3
+    elif color_secundario2 == "V":
+        movimiento[0][2] = 4
+    color_secundario3 = cubo[2][1].adyacente.color
+    if color_secundario3 == "R":
+        movimiento[0][3] = 1
+    elif color_secundario3 == "AZ":
+        movimiento[0][3] = 2
+    elif color_secundario3 == "N":
+        movimiento[0][3] = 3
+    elif color_secundario3 == "V":
+        movimiento[0][3] = 4
+    color_secundario4 = cubo[1][2].adyacente.color
+    if color_secundario4 == "R":
+        movimiento[0][4] = 1
+    elif color_secundario4 == "AZ":
+        movimiento[0][4] = 2
+    elif color_secundario4 == "N":
+        movimiento[0][4] = 3
+    elif color_secundario4 == "V":
+        movimiento[0][4] = 4
+    # 2. Color en la cara blanca
+
+    cara_blancoA = cubo[0][1].cara
+    cara_blancoB = cubo[1][0].cara
+    cara_blancoC = cubo[2][1].cara
+    cara_blancoD = cubo[1][2].cara
+    if cara_blancoA == "B":
+        movimiento[1][0] = 0
+    elif cara_blancoA == "R":
+        movimiento[1][0] = 1
+    
+    if cara_blancoB == "B":
+        movimiento[1][1] = 0
+    elif cara_blancoB == "AZ":
+        movimiento[1][1] = 1
+    
+    if cara_blancoC == "B":
+        movimiento[1][2] = 0
+    elif cara_blancoC == "N":
+        movimiento[1][2] = 1
+    
+    if cara_blancoD == "B":
+        movimiento[1][3] = 0
+    elif cara_blancoD == "V":
+        movimiento[1][3] = 1
+
+    
+    # ---- VERTICES ----
+    # 1. Posición en la permutación
+    color_adyacente1 = cubo[0][0].adyacente.color
+    color_precedente1 = cubo[0][0].precedente.color
+    if color_adyacente1 == "R" and color_precedente1 == "AZ":
+        movimiento[2][1] = 1
+    elif color_adyacente1 == "AZ" and color_precedente1 == "N":
+        movimiento[2][1] = 2
+    elif color_adyacente1 == "N" and color_precedente1 == "V":
+        movimiento[2][1] = 3
+    elif color_adyacente1 == "V" and color_precedente1 == "R":
+        movimiento[2][1] = 4
+    color_adyacente2 = cubo[2][0].adyacente.color
+    color_precedente2 = cubo[2][0].precedente.color
+    if color_adyacente2 == "R" and color_precedente2 == "AZ":
+        movimiento[2][2] = 1
+    elif color_adyacente2 == "AZ" and color_precedente2 == "N":
+        movimiento[2][2] = 2
+    elif color_adyacente2 == "N" and color_precedente2 == "V":
+        movimiento[2][2] = 3
+    elif color_adyacente2 == "V" and color_precedente2 == "R":
+        movimiento[2][2] = 4
+    color_adyacente3 = cubo[0][2].adyacente.color
+    color_precedente3 = cubo[0][2].precedente.color
+    if color_adyacente3 == "R" and color_precedente3 == "AZ":
+        movimiento[2][3] = 1
+    elif color_adyacente3 == "AZ" and color_precedente3 == "N":
+        movimiento[2][3] = 2
+    elif color_adyacente3 == "N" and color_precedente3 == "V":
+        movimiento[2][3] = 3
+    elif color_adyacente3 == "V" and color_precedente3 == "R":
+        movimiento[2][3] = 4
+    color_adyacente4 = cubo[2][2].adyacente.color
+    color_precedente4 = cubo[2][2].precedente.color
+    if color_adyacente4 == "R" and color_precedente4 == "AZ":
+        movimiento[2][4] = 1
+    elif color_adyacente4 == "AZ" and color_precedente4 == "N":
+        movimiento[2][4] = 2
+    elif color_adyacente4 == "N" and color_precedente4 == "V":
+        movimiento[2][4] = 3
+    elif color_adyacente4 == "V" and color_precedente4 == "R":
+        movimiento[2][4] = 4
+    
+    # 2. Color en la cara blanca
+    cara_blanco1 = cubo[0][0].cara
+    cara_blanco2 = cubo[2][0].cara
+    cara_blanco3 = cubo[2][2].cara
+    cara_blanco4 = cubo[0][2].cara
+    if cara_blanco1 == "B":
+        movimiento[3][0] = 0
+    elif cara_blanco1 == "R":
+        movimiento[3][0] = 1
+    elif cara_blanco1 == "AZ":
+        movimiento[3][0] = 2
+    
+    if cara_blanco2 == "B":
+        movimiento[3][1] = 0
+    elif cara_blanco2 == "AZ":
+        movimiento[3][1] = 1
+    elif cara_blanco2 == "N":
+        movimiento[3][1] = 2
+    
+    if cara_blanco3 == "B":
+        movimiento[3][2] = 0
+    elif cara_blanco3 == "N":
+        movimiento[3][2] = 1
+    elif cara_blanco3 == "V":
+        movimiento[3][2] = 2
+    
+    if cara_blanco4 == "B":
+        movimiento[3][3] = 0
+    elif cara_blanco4 == "V":
+        movimiento[3][3] = 1
+    elif cara_blanco4 == "R":
+        movimiento[3][3] = 2
+    
+    return movimiento
+
+# Ejemplo de uso
+cubo = iniciar()
+mov = traducir_a_mov(cubo)
+print(mov)
+        
