@@ -94,168 +94,6 @@ def iniciar():
     return cubo
 
 
-'''def traducir_a_mov(cubo):
-    movimiento = [{1:0, 2:0, 3:0, 4:0}, [0, 0, 0, 0], {1:0, 2:0, 3:0, 4:0}, [0, 0, 0, 0]]
-    # ---- ARISTAS ----
-    # 1. Posición en la permutación
-    color_primario1 = cubo[0][1].color
-    color_secundario1 = cubo[0][1].adyacente.color
-    if (color_secundario1 == "R" and color_primario1 == "B") or (color_secundario1 == "B" and color_primario1 == "R"):
-        movimiento[0][1] = 1
-    elif (color_secundario1 == "AZ" and color_primario1 == "B") or (color_secundario1 == "B" and color_primario1 == "AZ"):
-        movimiento[0][2] = 1
-    elif (color_secundario1 == "N" and color_primario1 == "B") or (color_secundario1 == "B" and color_primario1 == "N"):
-        movimiento[0][3] = 1
-    elif (color_secundario1 == "V" and color_primario1 == "B") or (color_secundario1 == "B" and color_primario1 == "V"):
-        movimiento[0][4] = 1
-        
-    color_primario2 = cubo[1][0].color
-    color_secundario2 = cubo[1][0].adyacente.color
-    if (color_secundario2 == "R" and color_primario2 == "B") or (color_secundario2 == "B" and color_primario2 == "R"):
-        movimiento[0][1] = 2
-    elif (color_secundario2 == "AZ" and color_primario2 == "B") or (color_secundario2 == "B" and color_primario2 == "AZ"):
-        movimiento[0][2] = 2
-    elif (color_secundario2 == "N" and color_primario2 == "B") or (color_secundario2 == "B" and color_primario2 == "N"):
-        movimiento[0][3] = 2
-    elif (color_secundario2 == "V" and color_primario2 == "B") or (color_secundario2 == "B" and color_primario2 == "V"):
-        movimiento[0][4] = 2
-        
-    color_primario3 = cubo[2][1].color
-    color_secundario3 = cubo[2][1].adyacente.color
-    if (color_secundario3 == "R" and color_primario3 == "B") or (color_secundario3 == "B" and color_primario3 == "R"):
-        movimiento[0][1] = 3
-    elif (color_secundario3 == "AZ" and color_primario3 == "B") or (color_secundario3 == "B" and color_primario3 == "AZ"):
-        movimiento[0][2] = 3
-    elif (color_secundario3 == "N" and color_primario3 == "B") or (color_secundario3 == "B" and color_primario3 == "N"):
-        movimiento[0][3] = 3
-    elif (color_secundario3 == "V" and color_primario3 == "B") or (color_secundario3 == "B" and color_primario3 == "V"):
-        movimiento[0][4] = 3
-        
-    color_primario4 = cubo[1][2].color
-    color_secundario4 = cubo[1][2].adyacente.color
-    if (color_secundario4 == "R" and color_primario4 == "B") or (color_secundario4 == "B" and color_primario4 == "R"):
-        movimiento[0][1] = 4
-    elif (color_secundario4 == "AZ" and color_primario4 == "B") or (color_secundario4 == "B" and color_primario4 == "AZ"):
-        movimiento[0][2] = 4
-    elif (color_secundario4 == "N" and color_primario4 == "B") or (color_secundario4 == "B" and color_primario4 == "N"):
-        movimiento[0][3] = 4
-    elif (color_secundario4 == "V" and color_primario4 == "B") or (color_secundario4 == "B" and color_primario4 == "V"):
-        movimiento[0][4] = 4
-    # 2. Color en la cara blanca
-
-    cara_blancoA = cubo[0][1].cara
-    cara_blancoB = cubo[1][0].cara
-    cara_blancoC = cubo[2][1].cara
-    cara_blancoD = cubo[1][2].cara
-    if cara_blancoA == "B":
-        movimiento[1][0] = 0
-    elif cara_blancoA == "R":
-        movimiento[1][0] = 1
-    
-    if cara_blancoB == "B":
-        movimiento[1][1] = 0
-    elif cara_blancoB == "AZ":
-        movimiento[1][1] = 1
-    
-    if cara_blancoC == "B":
-        movimiento[1][2] = 0
-    elif cara_blancoC == "N":
-        movimiento[1][2] = 1
-    
-    if cara_blancoD == "B":
-        movimiento[1][3] = 0
-    elif cara_blancoD == "V":
-        movimiento[1][3] = 1
-
-    
-    # ---- VERTICES ----
-    # 1. Posición en la permutación
-    color = cubo[0][0].color
-    color_adyacente1 = cubo[0][0].adyacente.color
-    color_precedente1 = cubo[0][0].precedente.color
-    print(color, color_adyacente1, color_precedente1)
-    if (color_adyacente1 == "R" and color_precedente1 == "AZ" and color == "B") or (color_adyacente1 == "B" and color_precedente1 == "R" and color == "AZ") or (color_adyacente1 == "AZ" and color_precedente1 == "B" and color == "R"):
-        movimiento[2][1] = 1
-    elif (color_adyacente1 == "AZ" and color_precedente1 == "N" and color == "B") or (color_adyacente1 == "B" and color_precedente1 == "AZ"and color == "N") or (color_adyacente1 == "N" and color_precedente1 == "B" and color == "AZ"):
-        movimiento[2][2] = 1
-    elif (color_adyacente1 == "N" and color_precedente1 == "V" and color == "B") or (color_adyacente1 == "B" and color_precedente1 == "N" and color == "V") or (color_adyacente1 == "V" and color_precedente1 == "B"and color == "N"):
-        movimiento[2][3] = 1
-    elif (color_adyacente1 == "V" and color_precedente1 == "R" and color == "B") or (color_adyacente1 == "B" and color_precedente1 == "V" and color == "R") or (color_adyacente1 == "R" and color_precedente1 == "B"and color == "V"):
-        movimiento[2][4] = 1
-        
-    color2 = cubo[0][2].color
-    color_adyacente2 = cubo[2][0].adyacente.color
-    color_precedente2 = cubo[2][0].precedente.color
-    if (color_adyacente2 == "R" and color_precedente2 == "AZ" and color2 == "B") or (color_adyacente2 == "B" and color_precedente2 == "R" and  color2 == "AZ") or (color_adyacente2 == "AZ" and color_precedente2 == "B" and color2 == "R"):
-        movimiento[2][1] = 2
-    elif (color_adyacente2 == "AZ" and color_precedente2 == "N" and color2 == "B") or (color_adyacente2 == "B" and color_precedente2 == "AZ" and color2 == "N") or (color_adyacente2 == "N" and color_precedente2 == "B" and color2 == "AZ"):
-        movimiento[2][2] = 2
-    elif (color_adyacente2 == "N" and color_precedente2 == "V" and color2 == "B") or (color_adyacente2 == "B" and color_precedente2 == "N" and color2 == "V") or (color_adyacente2 == "V" and color_precedente2 == "B" and color2 == "N"):
-        movimiento[2][3] = 2
-    elif (color_adyacente2 == "V" and color_precedente2 == "R" and color2 == "B") or (color_adyacente2 == "B" and color_precedente2 == "V" and color2 == "R") or (color_adyacente2 == "R" and color_precedente2 == "B" and color2 == "V"):
-        movimiento[2][4] = 2
-        
-    color3 = cubo[2][0].color
-    color_adyacente3 = cubo[2][2].adyacente.color
-    color_precedente3 = cubo[2][2].precedente.color
-    if (color_adyacente3 == "R" and color_precedente3 == "AZ" and color3 == "B") or (color_adyacente3 == "B" and color_precedente3 == "R" and color3 == "AZ") or (color_adyacente3 == "AZ" and color_precedente3 == "B" and color3 == "R"):
-        movimiento[2][1] = 3
-    elif (color_adyacente3 == "AZ" and color_precedente3 == "N" and color3 == "B") or (color_adyacente3 == "B" and color_precedente3 == "AZ" and color3 == "N") or (color_adyacente3 == "N" and color_precedente3 == "B" and color3 == "AZ"):
-        movimiento[2][2] = 3
-    elif (color_adyacente3 == "N" and color_precedente3 == "V" and color3 == "B") or (color_adyacente3 == "B" and color_precedente3 == "N" and color3 == "V") or (color_adyacente3 == "V" and color_precedente3 == "B" and color3 == "N"):
-        movimiento[2][3] = 3
-    elif (color_adyacente3 == "V" and color_precedente3 == "R" and color3 == "B") or (color_adyacente3 == "B" and color_precedente3 == "V" and color3 == "R") or (color_adyacente3 == "R" and color_precedente3 == "B" and color3 == "V"):
-        movimiento[2][4] = 3
-        
-    color4 = cubo[2][2].color
-    color_adyacente4 = cubo[0][2].adyacente.color
-    color_precedente4 = cubo[0][2].precedente.color
-    if (color_adyacente4 == "R" and color_precedente4 == "AZ" and color4 == "B") or (color_adyacente4 == "B" and color_precedente4 == "R" and color4 == "AZ") or (color_adyacente4 == "AZ" and color_precedente4 == "B" and color4 == "R"):
-        movimiento[2][1] = 4
-    elif (color_adyacente4 == "AZ" and color_precedente4 == "N" and color4 == "B") or (color_adyacente4 == "B" and color_precedente4 == "AZ" and color4 == "N") or (color_adyacente4 == "N" and color_precedente4 == "B" and color4 == "AZ"):
-        movimiento[2][2] = 4
-    elif (color_adyacente4 == "N" and color_precedente4 == "V" and color4 == "B") or (color_adyacente4 == "B" and color_precedente4 == "N" and color4 == "V") or (color_adyacente4 == "V" and color_precedente4 == "B" and color4 == "N"):
-        movimiento[2][3] = 4
-    elif (color_adyacente4 == "V" and color_precedente4 == "R" and color4 == "B") or (color_adyacente4 == "B" and color_precedente4 == "V" and color4 == "R") or (color_adyacente4 == "R" and color_precedente4 == "B" and color4 == "V"):
-        movimiento[2][4] = 4
-    
-    # 2. Color en la cara blanca
-    cara_blanco1 = cubo[0][0].cara
-    cara_blanco2 = cubo[2][0].cara
-    cara_blanco3 = cubo[2][2].cara
-    cara_blanco4 = cubo[0][2].cara
-    if cara_blanco1 == "B":
-        movimiento[3][0] = 0
-    elif cara_blanco1 == "R":
-        movimiento[3][0] = 1
-    elif cara_blanco1 == "AZ":
-        movimiento[3][0] = 2
-    
-    if cara_blanco2 == "B":
-        movimiento[3][1] = 0
-    elif cara_blanco2 == "AZ":
-        movimiento[3][1] = 1
-    elif cara_blanco2 == "N":
-        movimiento[3][1] = 2
-    
-    if cara_blanco3 == "B":
-        movimiento[3][2] = 0
-    elif cara_blanco3 == "N":
-        movimiento[3][2] = 1
-    elif cara_blanco3 == "V":
-        movimiento[3][2] = 2
-    
-    if cara_blanco4 == "B":
-        movimiento[3][3] = 0
-    elif cara_blanco4 == "V":
-        movimiento[3][3] = 1
-    elif cara_blanco4 == "R":
-        movimiento[3][3] = 2
-    
-    print(movimiento)
-    return movimiento
-'''
-
 def indice_arista_resuelta(pieza):
     # Se detecta cuál de las dos pegatinas es la blanca y se toma la otra
     if pieza.color == "B":
@@ -378,3 +216,361 @@ cubo = iniciar()  # función que inicializa el cubo
 movimiento = traducir_a_mov(cubo)
 print("Movimiento traducido:")
 print(movimiento)
+
+instrucciones = {
+    "b1": "Gira la cara blanca 1 vez en sentido antihorario.",
+    
+    "g1b2g3b2g3a1g1a3": (
+        "1. Gira la cara roja 1 vez.\n"
+        "2. Gira la cara blanca 2 veces.\n"
+        "3. Gira la cara roja 3 veces.\n"
+        "4. Gira la cara blanca 2 veces.\n"
+        "5. Gira la cara roja 3 veces.\n"
+        "6. Gira la cara azul 1 vez.\n"
+        "7. Gira la cara roja 1 vez.\n"
+        "8. Gira la cara azul 3 veces."
+    ),
+    
+    "g3b2g1b2g1v3g3v1": (
+        "1. Gira la cara roja 3 veces.\n"
+        "2. Gira la cara blanca 2 veces.\n"
+        "3. Gira la cara roja 1 vez.\n"
+        "4. Gira la cara blanca 2 veces.\n"
+        "5. Gira la cara roja 1 vez.\n"
+        "6. Gira la cara verde 3 veces.\n"
+        "7. Gira la cara roja 3 veces.\n"
+        "8. Gira la cara verde 1 vez."
+    ),
+    
+    "g1b1g3b3g3a1g1a3": (
+        "1. Gira la cara roja 1 vez.\n"
+        "2. Gira la cara blanca 1 vez.\n"
+        "3. Gira la cara roja 3 veces.\n"
+        "4. Gira la cara blanca 3 veces.\n"
+        "5. Gira la cara roja 3 veces.\n"
+        "6. Gira la cara azul 1 vez.\n"
+        "7. Gira la cara roja 1 vez.\n"
+        "8. Gira la cara azul 3 veces."
+    ),
+    
+    "g3b3g1b1g1v3g3v1": (
+        "1. Gira la cara roja 3 veces.\n"
+        "2. Gira la cara blanca 3 veces.\n"
+        "3. Gira la cara roja 1 vez.\n"
+        "4. Gira la cara blanca 1 vez.\n"
+        "5. Gira la cara roja 1 vez.\n"
+        "6. Gira la cara verde 3 veces.\n"
+        "7. Gira la cara roja 3 veces.\n"
+        "8. Gira la cara verde 1 vez."
+    ),
+    
+    "a1b2a3b2a3n1a1n3": (
+        "1. Gira la cara azul 1 vez.\n"
+        "2. Gira la cara blanca 2 veces.\n"
+        "3. Gira la cara azul 3 veces.\n"
+        "4. Gira la cara blanca 2 veces.\n"
+        "5. Gira la cara azul 3 veces.\n"
+        "6. Gira la cara naranja 1 vez.\n"
+        "7. Gira la cara azul 1 vez.\n"
+        "8. Gira la cara naranja 3 veces."
+    ),
+    
+    "a3b2a1b2a1g3a3g1": (
+        "1. Gira la cara azul 3 veces.\n"
+        "2. Gira la cara blanca 2 veces.\n"
+        "3. Gira la cara azul 1 vez.\n"
+        "4. Gira la cara blanca 2 veces.\n"
+        "5. Gira la cara azul 1 vez.\n"
+        "6. Gira la cara roja 3 veces.\n"
+        "7. Gira la cara azul 3 veces.\n"
+        "8. Gira la cara roja 1 vez."
+    ),
+    
+    "a1b1a3b3a3n1a1n3": (
+        "1. Gira la cara azul 1 vez.\n"
+        "2. Gira la cara blanca 1 vez.\n"
+        "3. Gira la cara azul 3 veces.\n"
+        "4. Gira la cara blanca 3 veces.\n"
+        "5. Gira la cara azul 3 veces.\n"
+        "6. Gira la cara naranja 1 vez.\n"
+        "7. Gira la cara azul 1 vez.\n"
+        "8. Gira la cara naranja 3 veces."
+    ),
+    
+    "a3b3a1b1a1g3a3g1": (
+        "1. Gira la cara azul 3 veces.\n"
+        "2. Gira la cara blanca 3 veces.\n"
+        "3. Gira la cara azul 1 vez.\n"
+        "4. Gira la cara blanca 1 vez.\n"
+        "5. Gira la cara azul 1 vez.\n"
+        "6. Gira la cara roja 3 veces.\n"
+        "7. Gira la cara azul 3 veces.\n"
+        "8. Gira la cara roja 1 vez."
+    ),
+    
+    "n1b2n3b2n3v1n1v3": (
+        "1. Gira la cara naranja 1 vez.\n"
+        "2. Gira la cara blanca 2 veces.\n"
+        "3. Gira la cara naranja 3 veces.\n"
+        "4. Gira la cara blanca 2 veces.\n"
+        "5. Gira la cara naranja 3 veces.\n"
+        "6. Gira la cara verde 1 vez.\n"
+        "7. Gira la cara naranja 1 vez.\n"
+        "8. Gira la cara verde 3 veces."
+    ),
+    
+    "n3b2n1b2n1a3n3a1": (
+        "1. Gira la cara naranja 3 veces.\n"
+        "2. Gira la cara blanca 2 veces.\n"
+        "3. Gira la cara naranja 1 vez.\n"
+        "4. Gira la cara blanca 2 veces.\n"
+        "5. Gira la cara naranja 1 vez.\n"
+        "6. Gira la cara azul 3 veces.\n"
+        "7. Gira la cara naranja 3 veces.\n"
+        "8. Gira la cara azul 1 vez."
+    ),
+    
+    "n1b1n3b3n3v1n1v3": (
+        "1. Gira la cara naranja 1 vez.\n"
+        "2. Gira la cara blanca 1 vez.\n"
+        "3. Gira la cara naranja 3 veces.\n"
+        "4. Gira la cara blanca 3 veces.\n"
+        "5. Gira la cara naranja 3 veces.\n"
+        "6. Gira la cara verde 1 vez.\n"
+        "7. Gira la cara naranja 1 vez.\n"
+        "8. Gira la cara verde 3 veces."
+    ),
+    
+    "n3b3n1b1n1a3n3a1": (
+        "1. Gira la cara naranja 3 veces.\n"
+        "2. Gira la cara blanca 3 veces.\n"
+        "3. Gira la cara naranja 1 vez.\n"
+        "4. Gira la cara blanca 1 vez.\n"
+        "5. Gira la cara naranja 1 vez.\n"
+        "6. Gira la cara azul 3 veces.\n"
+        "7. Gira la cara naranja 3 veces.\n"
+        "8. Gira la cara azul 1 vez."
+    ),
+    
+    "v1b2v3b2v3g1v1g3": (
+        "1. Gira la cara verde 1 vez.\n"
+        "2. Gira la cara blanca 2 veces.\n"
+        "3. Gira la cara verde 3 veces.\n"
+        "4. Gira la cara blanca 2 veces.\n"
+        "5. Gira la cara verde 3 veces.\n"
+        "6. Gira la cara roja 1 vez.\n"
+        "7. Gira la cara verde 1 vez.\n"
+        "8. Gira la cara roja 3 veces."
+    ),
+    
+    "v3b2v1b2v1n3v3n1": (
+        "1. Gira la cara verde 3 veces.\n"
+        "2. Gira la cara blanca 2 veces.\n"
+        "3. Gira la cara verde 1 vez.\n"
+        "4. Gira la cara blanca 2 veces.\n"
+        "5. Gira la cara verde 1 vez.\n"
+        "6. Gira la cara naranja 3 veces.\n"
+        "7. Gira la cara verde 3 veces.\n"
+        "8. Gira la cara naranja 1 vez."
+    ),
+    
+    "v1b1v3b3v3g1v1g3": (
+        "1. Gira la cara verde 1 vez.\n"
+        "2. Gira la cara blanca 1 vez.\n"
+        "3. Gira la cara verde 3 veces.\n"
+        "4. Gira la cara blanca 3 veces.\n"
+        "5. Gira la cara verde 3 veces.\n"
+        "6. Gira la cara roja 1 vez.\n"
+        "7. Gira la cara verde 1 vez.\n"
+        "8. Gira la cara roja 3 veces."
+    ),
+    
+    "v3b3v1b1v1n3v3n1": (
+        "1. Gira la cara verde 3 veces.\n"
+        "2. Gira la cara blanca 3 veces.\n"
+        "3. Gira la cara verde 1 vez.\n"
+        "4. Gira la cara blanca 1 vez.\n"
+        "5. Gira la cara verde 1 vez.\n"
+        "6. Gira la cara naranja 3 veces.\n"
+        "7. Gira la cara verde 3 veces.\n"
+        "8. Gira la cara naranja 1 vez."
+    ),
+    
+    "b3": "Gira la cara blanca 3 veces.",
+    
+    "a1g3a3g1b2g1b2g3": (
+        "1. Gira la cara azul 1 vez.\n"
+        "2. Gira la cara roja 3 veces.\n"
+        "3. Gira la cara azul 3 veces.\n"
+        "4. Gira la cara roja 1 vez.\n"
+        "5. Gira la cara blanca 2 veces.\n"
+        "6. Gira la cara roja 1 vez.\n"
+        "7. Gira la cara blanca 2 veces.\n"
+        "8. Gira la cara azul 3 veces."
+    ),
+    
+    "v3g1v1g3b2g3b2g1": (
+        "1. Gira la cara verde 3 veces.\n"
+        "2. Gira la cara roja 1 vez.\n"
+        "3. Gira la cara verde 1 vez.\n"
+        "4. Gira la cara roja 3 veces.\n"
+        "5. Gira la cara blanca 2 veces.\n"
+        "6. Gira la cara roja 3 veces.\n"
+        "7. Gira la cara blanca 2 veces.\n"
+        "8. Gira la cara verde 1 vez."
+    ),
+    
+    "a1g3a3g1b1g1b3g3": (
+        "1. Gira la cara azul 1 vez.\n"
+        "2. Gira la cara roja 3 veces.\n"
+        "3. Gira la cara azul 3 veces.\n"
+        "4. Gira la cara roja 1 vez.\n"
+        "5. Gira la cara blanca 1 vez.\n"
+        "6. Gira la cara roja 1 vez.\n"
+        "7. Gira la cara blanca 3 veces.\n"
+        "8. Gira la cara azul 3 veces."
+    ),
+    
+    "v3g1v1g3b3g3b1g1": (
+        "1. Gira la cara verde 3 veces.\n"
+        "2. Gira la cara roja 1 vez.\n"
+        "3. Gira la cara verde 1 vez.\n"
+        "4. Gira la cara roja 3 veces.\n"
+        "5. Gira la cara blanca 3 veces.\n"
+        "6. Gira la cara roja 3 veces.\n"
+        "7. Gira la cara blanca 1 vez.\n"
+        "8. Gira la cara verde 1 vez."
+    ),
+    
+    "n1a3n3a1b2a1b2a3": (
+        "1. Gira la cara naranja 1 vez.\n"
+        "2. Gira la cara azul 3 veces.\n"
+        "3. Gira la cara naranja 3 veces.\n"
+        "4. Gira la cara azul 1 vez.\n"
+        "5. Gira la cara blanca 2 veces.\n"
+        "6. Gira la cara azul 1 vez.\n"
+        "7. Gira la cara blanca 2 veces.\n"
+        "8. Gira la cara naranja 3 veces."
+    ),
+    
+    "g3a1g1a3b2a3b2a1": (
+        "1. Gira la cara roja 3 veces.\n"
+        "2. Gira la cara azul 1 vez.\n"
+        "3. Gira la cara roja 1 vez.\n"
+        "4. Gira la cara azul 3 veces.\n"
+        "5. Gira la cara blanca 2 veces.\n"
+        "6. Gira la cara azul 3 veces.\n"
+        "7. Gira la cara blanca 2 veces.\n"
+        "8. Gira la cara roja 1 vez."
+    ),
+    
+    "n1a3n3a1b1a1b3a3": (
+        "1. Gira la cara naranja 1 vez.\n"
+        "2. Gira la cara azul 3 veces.\n"
+        "3. Gira la cara naranja 3 veces.\n"
+        "4. Gira la cara azul 1 vez.\n"
+        "5. Gira la cara blanca 1 vez.\n"
+        "6. Gira la cara azul 1 vez.\n"
+        "7. Gira la cara blanca 3 veces.\n"
+        "8. Gira la cara naranja 3 veces."
+    ),
+    
+    "g3a1g1a3b3a3b1a1": (
+        "1. Gira la cara roja 3 veces.\n"
+        "2. Gira la cara azul 1 vez.\n"
+        "3. Gira la cara roja 1 vez.\n"
+        "4. Gira la cara azul 3 veces.\n"
+        "5. Gira la cara blanca 3 veces.\n"
+        "6. Gira la cara azul 3 veces.\n"
+        "7. Gira la cara blanca 1 vez.\n"
+        "8. Gira la cara roja 1 vez."
+    ),
+    
+    "v1n3v3n1b2n1b2n3": (
+        "1. Gira la cara verde 1 vez.\n"
+        "2. Gira la cara naranja 3 veces.\n"
+        "3. Gira la cara verde 3 veces.\n"
+        "4. Gira la cara naranja 1 vez.\n"
+        "5. Gira la cara blanca 2 veces.\n"
+        "6. Gira la cara naranja 1 vez.\n"
+        "7. Gira la cara blanca 2 veces.\n"
+        "8. Gira la cara verde 3 veces."
+    ),
+    
+    "a3n1a1n3b2n3b2n1": (
+        "1. Gira la cara azul 3 veces.\n"
+        "2. Gira la cara naranja 1 vez.\n"
+        "3. Gira la cara azul 1 vez.\n"
+        "4. Gira la cara naranja 3 veces.\n"
+        "5. Gira la cara blanca 2 veces.\n"
+        "6. Gira la cara naranja 3 veces.\n"
+        "7. Gira la cara blanca 2 veces.\n"
+        "8. Gira la cara azul 1 vez."
+    ),
+    
+    "v1n3v3n1b1n1b3n3": (
+        "1. Gira la cara verde 1 vez.\n"
+        "2. Gira la cara naranja 3 veces.\n"
+        "3. Gira la cara verde 3 veces.\n"
+        "4. Gira la cara naranja 1 vez.\n"
+        "5. Gira la cara blanca 1 vez.\n"
+        "6. Gira la cara naranja 1 vez.\n"
+        "7. Gira la cara blanca 3 veces.\n"
+        "8. Gira la cara verde 3 veces."
+    ),
+    
+    "a3n1a1n3b3n3b1n1": (
+        "1. Gira la cara azul 3 veces.\n"
+        "2. Gira la cara naranja 1 vez.\n"
+        "3. Gira la cara azul 1 vez.\n"
+        "4. Gira la cara naranja 3 veces.\n"
+        "5. Gira la cara blanca 3 veces.\n"
+        "6. Gira la cara naranja 3 veces.\n"
+        "7. Gira la cara blanca 1 vez.\n"
+        "8. Gira la cara azul 1 vez."
+    ),
+    
+    "g1v3g3v1b2v1b2v3": (
+        "1. Gira la cara roja 1 vez.\n"
+        "2. Gira la cara verde 3 veces.\n"
+        "3. Gira la cara roja 3 veces.\n"
+        "4. Gira la cara verde 1 vez.\n"
+        "5. Gira la cara blanca 2 veces.\n"
+        "6. Gira la cara verde 1 vez.\n"
+        "7. Gira la cara blanca 2 veces.\n"
+        "8. Gira la cara roja 3 veces."
+    ),
+    
+    "n3v1n1v3b2v3b2v1": (
+        "1. Gira la cara naranja 3 veces.\n"
+        "2. Gira la cara verde 1 vez.\n"
+        "3. Gira la cara naranja 1 vez.\n"
+        "4. Gira la cara verde 3 veces.\n"
+        "5. Gira la cara blanca 2 veces.\n"
+        "6. Gira la cara verde 3 veces.\n"
+        "7. Gira la cara blanca 2 veces.\n"
+        "8. Gira la cara naranja 1 vez."
+    ),
+    
+    "g1v3g3v1b1v1b3v3": (
+        "1. Gira la cara roja 1 vez.\n"
+        "2. Gira la cara verde 3 veces.\n"
+        "3. Gira la cara roja 3 veces.\n"
+        "4. Gira la cara verde 1 vez.\n"
+        "5. Gira la cara blanca 1 vez.\n"
+        "6. Gira la cara verde 1 vez.\n"
+        "7. Gira la cara blanca 3 veces.\n"
+        "8. Gira la cara roja 3 veces."
+    ),
+    
+    "n3v1n1v3b3v3b1v1": (
+        "1. Gira la cara naranja 3 veces.\n"
+        "2. Gira la cara verde 1 vez.\n"
+        "3. Gira la cara naranja 1 vez.\n"
+        "4. Gira la cara verde 3 veces.\n"
+        "5. Gira la cara blanca 3 veces.\n"
+        "6. Gira la cara verde 3 veces.\n"
+        "7. Gira la cara blanca 1 vez.\n"
+        "8. Gira la cara naranja 1 vez."
+    )
+}

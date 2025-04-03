@@ -1,6 +1,7 @@
 import sys, math
 from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,  QPushButton, QStackedWidget, QGraphicsView, QGraphicsScene, QGraphicsRectItem
 from PyQt6.QtOpenGLWidgets import QOpenGLWidget
+from PyQt6.QtWidgets import QTextEdit, QHBoxLayout, QWidget
 from PyQt6.QtCore import Qt, QPoint
 from PyQt6.QtGui import QBrush, QColor, QPen
 from PyQt6.QtWidgets import QLabel
@@ -304,6 +305,75 @@ class RubiksCube3D(QOpenGLWidget):
         self.yRot += dx
         self.lastPos = event.position().toPoint()
         self.update()
+        
+
+from PyQt6.QtWidgets import QTextEdit, QHBoxLayout, QVBoxLayout, QWidget, QPushButton
+
+class SolutionWidget(QWidget):
+    def __init__(self, secuencia_movimientos, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Solución paso a paso")
+        self.secuencia_movimientos = secuencia_movimientos
+        self.current_step = 0  # Índice del paso actual
+        
+        # Layout principal horizontal
+        mainLayout = QHBoxLayout(self)
+        
+        # Panel izquierdo: instrucciones + botón de siguiente paso
+        leftPanel = QWidget()
+        leftLayout = QVBoxLayout(leftPanel)
+        
+        self.instructionsText = QTextEdit()
+        self.instructionsText.setReadOnly(True)
+        self.comentario = QTextEdit()
+        self.comentario.setReadOnly(True)
+        self.comentario.setText("¡Bienvenido a la solución del cubo Rubik!\n\n Todos los giros se hacen hacia la izquierda, en sentido antihorario, y cada giro es de 90º.\n\n :)")
+        leftLayout.addWidget(self.comentario, 1)
+        leftLayout.addWidget(self.instructionsText, 1)
+
+        
+        self.nextStepBtn = QPushButton("Siguiente paso")
+        self.nextStepBtn.clicked.connect(self.nextStep)
+        leftLayout.addWidget(self.nextStepBtn)
+        
+        # Panel derecho: vista 3D del cubo
+        self.cube3DView = RubiksCube3D()
+        
+        # Agregar ambos paneles al layout principal con estiramientos
+        mainLayout.addWidget(leftPanel, 2)  # Izquierda más ancha
+        mainLayout.addWidget(self.cube3DView, 1)  # Derecha con vista 3D
+        
+        # Mostrar el primer paso (puede ser una descripción inicial)
+        self.updateStep()
+    
+    def updateStep(self):
+        """Actualiza la instrucción y aplica el siguiente movimiento (si existe)."""
+        if self.current_step < len(self.secuencia_movimientos):
+            mov = self.secuencia_movimientos[self.current_step]
+            # Traducir el movimiento a un texto amigable
+            texto = self.traducirMovimiento(mov)
+            # Actualizar el área de texto con la instrucción del paso actual
+            self.instructionsText.setText(f"Paso {self.current_step + 1}: {texto}")
+            # Aplicar el movimiento al cubo
+            #aplicar_movimiento(mov)  # Función que debes implementar para actualizar el estado del cubo
+            self.cube3DView.update()  # Refrescar la vista 3D
+        else:
+            self.instructionsText.setText("¡Solución completada!")
+            self.nextStepBtn.setEnabled(False)
+    
+    def nextStep(self):
+        """Avanza al siguiente paso de la solución."""
+        self.current_step += 1
+        self.updateStep()
+    
+    def traducirMovimiento(self, mov):
+        """
+        Traduce el movimiento (por ejemplo, 'g1b2g3b2') a un formato amigable.
+        Ajusta este método según la lógica de tus movimientos.
+        """
+        # Ejemplo básico:
+        return f"Instrucción: {mov}"
+
 
 # ---------------------------
 # Integración en la interfaz
@@ -369,46 +439,52 @@ class MainWidget(QWidget):
 
     def solucionar(self):
         try:
-                # Contar casillas por color
-                counts = {}
-                for face in cube_state:
-                    for row in cube_state[face]:
-                        for color in row:
-                            counts[color] = counts.get(color, 0) + 1
+            # Contar casillas por color
+            counts = {}
+            for face in cube_state:
+                for row in cube_state[face]:
+                    for color in row:
+                        counts[color] = counts.get(color, 0) + 1
 
-                # Verificar que cada color aparezca exactamente 9 veces
-                for color, count in counts.items():
-                    if count != 9:
-                        raise ValueError("Solo pueden haber 9 casillas de cada color")
+            # Verificar que cada color aparezca exactamente 9 veces
+            for color, count in counts.items():
+                if count != 9:
+                    raise ValueError("Solo pueden haber 9 casillas de cada color")
 
-                # Debug: Mostrar información de las piezas
-                for i in range(3):
-                    for j in range(3):
-                        mol = cubo[i][j]
-                        if mol is not None:
-                            print(mol.cara, mol.fila, mol.columna, mol.color, i, j)
-                            if isinstance(mol, Vertice):
-                                print(mol.adyacente.cara, mol.adyacente.fila, mol.adyacente.columna, mol.adyacente.color, i, j)
-                                print(mol.precedente.cara, mol.precedente.fila, mol.precedente.columna, mol.precedente.color, i, j)
-                            elif isinstance(mol, Arista):
-                                print(mol.adyacente.cara, mol.adyacente.fila, mol.adyacente.columna, mol.adyacente.color, i, j)
+            # Debug: Mostrar información de las piezas
+            for i in range(3):
+                for j in range(3):
+                    mol = cubo[i][j]
+                    if mol is not None:
+                        print(mol.cara, mol.fila, mol.columna, mol.color, i, j)
+                        if isinstance(mol, Vertice):
+                            print(mol.adyacente.cara, mol.adyacente.fila, mol.adyacente.columna, mol.adyacente.color, i, j)
+                            print(mol.precedente.cara, mol.precedente.fila, mol.precedente.columna, mol.precedente.color, i, j)
+                        elif isinstance(mol, Arista):
+                            print(mol.adyacente.cara, mol.adyacente.fila, mol.adyacente.columna, mol.adyacente.color, i, j)
 
-                # Convertimos el cubo a su representación de movimiento
-                movimiento = traducir_a_mov(cubo)  # Aquí puede haber un raise
-                print("Movimiento traducido:", movimiento)
+            # Convertimos el cubo a su representación de movimiento
+            movimiento = traducir_a_mov(cubo)  # Aquí puede haber un raise
+            print("Movimiento traducido:", movimiento)
 
-                # Buscamos el nodo en el grafo
-                numero_mov = buscar_nodo(movimiento)  # Aquí puede haber otro raise
-                if numero_mov is None:
-                    raise ValueError("No se encontró un nodo en el grafo")
+            # Buscamos el nodo en el grafo
+            numero_mov = buscar_nodo(movimiento)  # Aquí puede haber otro raise
+            if numero_mov is None:
+                raise ValueError("No se encontró un nodo en el grafo")
 
-                print("Número de nodo encontrado:", numero_mov)
+            print("Número de nodo encontrado:", numero_mov)
 
-                # Buscamos la secuencia de movimientos
-                secuencia_movimientos = buscar_identidad(numero_mov)
-                print("Secuencia de movimientos:", secuencia_movimientos)
-
-                return secuencia_movimientos
+            # Buscamos la secuencia de movimientos
+            secuencia_movimientos = buscar_identidad(numero_mov)
+            print("Secuencia de movimientos:", secuencia_movimientos)
+        
+        # Si se obtuvo una solución, crear y mostrar el widget de solución
+            if secuencia_movimientos is not None:
+                self.solutionWidget = SolutionWidget(secuencia_movimientos)
+                self.stacked.addWidget(self.solutionWidget)
+                self.stacked.setCurrentWidget(self.solutionWidget)
+            
+            return secuencia_movimientos
 
         except Exception as e:
             self.mostrarMensaje(f"Error: {str(e)}")
@@ -419,6 +495,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.mainWidget = MainWidget()
+        self.setMinimumSize(800, 600)
         self.setCentralWidget(self.mainWidget)
     
     def get_mainwidget(self):
@@ -430,6 +507,6 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     window = MainWindow()
     matriz = Matriz()
-    window.resize(800, 650)
+    window.resize(400, 400)
     window.show()
     sys.exit(app.exec())
