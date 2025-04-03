@@ -406,7 +406,7 @@ instrucciones = {
         "5. Gira la cara blanca 2 veces.\n"
         "6. Gira la cara roja 1 vez.\n"
         "7. Gira la cara blanca 2 veces.\n"
-        "8. Gira la cara azul 3 veces."
+        "8. Gira la cara roja 3 veces."
     ),
     
     "v3g1v1g3b2g3b2g1": (
@@ -417,7 +417,7 @@ instrucciones = {
         "5. Gira la cara blanca 2 veces.\n"
         "6. Gira la cara roja 3 veces.\n"
         "7. Gira la cara blanca 2 veces.\n"
-        "8. Gira la cara verde 1 vez."
+        "8. Gira la cara roja 1 vez."
     ),
     
     "a1g3a3g1b1g1b3g3": (
@@ -428,7 +428,7 @@ instrucciones = {
         "5. Gira la cara blanca 1 vez.\n"
         "6. Gira la cara roja 1 vez.\n"
         "7. Gira la cara blanca 3 veces.\n"
-        "8. Gira la cara azul 3 veces."
+        "8. Gira la cara roja 3 veces."
     ),
     
     "v3g1v1g3b3g3b1g1": (
@@ -439,7 +439,7 @@ instrucciones = {
         "5. Gira la cara blanca 3 veces.\n"
         "6. Gira la cara roja 3 veces.\n"
         "7. Gira la cara blanca 1 vez.\n"
-        "8. Gira la cara verde 1 vez."
+        "8. Gira la cara roja 1 vez."
     ),
     
     "n1a3n3a1b2a1b2a3": (
@@ -450,7 +450,7 @@ instrucciones = {
         "5. Gira la cara blanca 2 veces.\n"
         "6. Gira la cara azul 1 vez.\n"
         "7. Gira la cara blanca 2 veces.\n"
-        "8. Gira la cara naranja 3 veces."
+        "8. Gira la cara azul 3 veces."
     ),
     
     "g3a1g1a3b2a3b2a1": (
@@ -461,7 +461,7 @@ instrucciones = {
         "5. Gira la cara blanca 2 veces.\n"
         "6. Gira la cara azul 3 veces.\n"
         "7. Gira la cara blanca 2 veces.\n"
-        "8. Gira la cara roja 1 vez."
+        "8. Gira la cara azul 1 vez."
     ),
     
     "n1a3n3a1b1a1b3a3": (
@@ -472,7 +472,7 @@ instrucciones = {
         "5. Gira la cara blanca 1 vez.\n"
         "6. Gira la cara azul 1 vez.\n"
         "7. Gira la cara blanca 3 veces.\n"
-        "8. Gira la cara naranja 3 veces."
+        "8. Gira la cara azul 3 veces."
     ),
     
     "g3a1g1a3b3a3b1a1": (
@@ -483,7 +483,7 @@ instrucciones = {
         "5. Gira la cara blanca 3 veces.\n"
         "6. Gira la cara azul 3 veces.\n"
         "7. Gira la cara blanca 1 vez.\n"
-        "8. Gira la cara roja 1 vez."
+        "8. Gira la cara azul 1 vez."
     ),
     
     "v1n3v3n1b2n1b2n3": (
@@ -494,7 +494,7 @@ instrucciones = {
         "5. Gira la cara blanca 2 veces.\n"
         "6. Gira la cara naranja 1 vez.\n"
         "7. Gira la cara blanca 2 veces.\n"
-        "8. Gira la cara verde 3 veces."
+        "8. Gira la cara naranja 3 veces."
     ),
     
     "a3n1a1n3b2n3b2n1": (
@@ -505,7 +505,7 @@ instrucciones = {
         "5. Gira la cara blanca 2 veces.\n"
         "6. Gira la cara naranja 3 veces.\n"
         "7. Gira la cara blanca 2 veces.\n"
-        "8. Gira la cara azul 1 vez."
+        "8. Gira la cara naranja 1 vez."
     ),
     
     "v1n3v3n1b1n1b3n3": (
@@ -516,7 +516,7 @@ instrucciones = {
         "5. Gira la cara blanca 1 vez.\n"
         "6. Gira la cara naranja 1 vez.\n"
         "7. Gira la cara blanca 3 veces.\n"
-        "8. Gira la cara verde 3 veces."
+        "8. Gira la cara naranja 3 veces."
     ),
     
     "a3n1a1n3b3n3b1n1": (
@@ -527,7 +527,7 @@ instrucciones = {
         "5. Gira la cara blanca 3 veces.\n"
         "6. Gira la cara naranja 3 veces.\n"
         "7. Gira la cara blanca 1 vez.\n"
-        "8. Gira la cara azul 1 vez."
+        "8. Gira la cara naranja 1 vez."
     ),
     
     "g1v3g3v1b2v1b2v3": (
@@ -538,7 +538,7 @@ instrucciones = {
         "5. Gira la cara blanca 2 veces.\n"
         "6. Gira la cara verde 1 vez.\n"
         "7. Gira la cara blanca 2 veces.\n"
-        "8. Gira la cara roja 3 veces."
+        "8. Gira la cara verde 3 veces."
     ),
     
     "n3v1n1v3b2v3b2v1": (
@@ -549,7 +549,7 @@ instrucciones = {
         "5. Gira la cara blanca 2 veces.\n"
         "6. Gira la cara verde 3 veces.\n"
         "7. Gira la cara blanca 2 veces.\n"
-        "8. Gira la cara naranja 1 vez."
+        "8. Gira la cara verde 1 vez."
     ),
     
     "g1v3g3v1b1v1b3v3": (
@@ -560,7 +560,7 @@ instrucciones = {
         "5. Gira la cara blanca 1 vez.\n"
         "6. Gira la cara verde 1 vez.\n"
         "7. Gira la cara blanca 3 veces.\n"
-        "8. Gira la cara roja 3 veces."
+        "8. Gira la cara verde 3 veces."
     ),
     
     "n3v1n1v3b3v3b1v1": (
@@ -571,6 +571,6 @@ instrucciones = {
         "5. Gira la cara blanca 3 veces.\n"
         "6. Gira la cara verde 3 veces.\n"
         "7. Gira la cara blanca 1 vez.\n"
-        "8. Gira la cara naranja 1 vez."
+        "8. Gira la cara verde 1 vez."
     )
 }
