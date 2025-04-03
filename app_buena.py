@@ -335,12 +335,24 @@ class MainWidget(QWidget):
         self.solucionarBtn.clicked.connect(self.solucionar)
         self.toggleBtn = QPushButton("Cambiar Vista")
         self.toggleBtn.clicked.connect(self.toggleView)
+        self.reiniciarBtn = QPushButton("Reiniciar Cubo")
+        self.reiniciarBtn.clicked.connect(self.reiniciarCubo)
         btnLayout.addWidget(self.solucionarBtn)
         btnLayout.addWidget(self.toggleBtn)
+        btnLayout.addWidget(self.reiniciarBtn)
+        
         layout.addLayout(btnLayout)
 
     def get_cubenet(self):
         return self.cubeNet
+    
+    def reiniciarCubo(self):
+        # Reiniciar el cubo a su estado inicial
+        global cube_state
+        cube_state = {cara: [[cara for _ in range(3)] for _ in range(3)] for cara in COLORES}
+        self.cubeNet.drawNet()
+        self.cube3D.update()
+        self.mostrarMensaje("Cubo reiniciado")
 
     def toggleView(self):
         current = self.stacked.currentIndex()
@@ -356,38 +368,52 @@ class MainWidget(QWidget):
         QTimer.singleShot(3000, self.messageLabel.hide)
 
     def solucionar(self):
-        # Contar las casillas por color según el estado global
-        counts = {}
-        for face in cube_state:
-            for row in cube_state[face]:
-                for color in row:
-                    counts[color] = counts.get(color, 0) + 1
+        try:
+                # Contar casillas por color
+                counts = {}
+                for face in cube_state:
+                    for row in cube_state[face]:
+                        for color in row:
+                            counts[color] = counts.get(color, 0) + 1
 
-        # Comprobamos que cada color aparezca 9 veces
-        for color, count in counts.items():
-            if count != 9:
-                self.mostrarMensaje("Solo pueden haber 9 casillas de cada color")
-                return
-            
-        for i in range(3):
-            for j in range(3):
-                mol = cubo[i][j]
-                if mol != None:
-                    print(mol.cara, mol.fila, mol.columna, mol.color, i, j)
-                    if isinstance(mol, Vertice):
-                        print(mol.adyacente.cara, mol.adyacente.fila, mol.adyacente.columna, mol.adyacente.color, i, j)
-                        print(mol.precedente.cara, mol.precedente.fila, mol.precedente.columna, mol.precedente.color, i, j)
-                    
-                    elif isinstance(mol, Arista):
-                        print(mol.adyacente.cara, mol.adyacente.fila, mol.adyacente.columna, mol.adyacente.color, i, j)
-        
-        movimiento = traducir_a_mov(cubo)
-        print(movimiento)
-        numero_mov = buscar_nodo(movimiento)
-        print(numero_mov)
-        secuencia_movimientos = buscar_identidad(numero_mov)
-        print("Secuencia de movimientos:", secuencia_movimientos)
-        return secuencia_movimientos
+                # Verificar que cada color aparezca exactamente 9 veces
+                for color, count in counts.items():
+                    if count != 9:
+                        raise ValueError("Solo pueden haber 9 casillas de cada color")
+
+                # Debug: Mostrar información de las piezas
+                for i in range(3):
+                    for j in range(3):
+                        mol = cubo[i][j]
+                        if mol is not None:
+                            print(mol.cara, mol.fila, mol.columna, mol.color, i, j)
+                            if isinstance(mol, Vertice):
+                                print(mol.adyacente.cara, mol.adyacente.fila, mol.adyacente.columna, mol.adyacente.color, i, j)
+                                print(mol.precedente.cara, mol.precedente.fila, mol.precedente.columna, mol.precedente.color, i, j)
+                            elif isinstance(mol, Arista):
+                                print(mol.adyacente.cara, mol.adyacente.fila, mol.adyacente.columna, mol.adyacente.color, i, j)
+
+                # Convertimos el cubo a su representación de movimiento
+                movimiento = traducir_a_mov(cubo)  # Aquí puede haber un raise
+                print("Movimiento traducido:", movimiento)
+
+                # Buscamos el nodo en el grafo
+                numero_mov = buscar_nodo(movimiento)  # Aquí puede haber otro raise
+                if numero_mov is None:
+                    raise ValueError("No se encontró un nodo en el grafo")
+
+                print("Número de nodo encontrado:", numero_mov)
+
+                # Buscamos la secuencia de movimientos
+                secuencia_movimientos = buscar_identidad(numero_mov)
+                print("Secuencia de movimientos:", secuencia_movimientos)
+
+                return secuencia_movimientos
+
+        except Exception as e:
+            self.mostrarMensaje(f"Error: {str(e)}")
+            print("Error detectado:", e)
+            return None
 
 class MainWindow(QMainWindow):
     def __init__(self):
