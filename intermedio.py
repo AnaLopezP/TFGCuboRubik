@@ -218,7 +218,7 @@ print("Movimiento traducido:")
 print(movimiento)
 
 instrucciones = {
-    "b1": "Gira la cara blanca 1 vez en sentido antihorario.",
+    "b1": "Gira la cara blanca 1 vez.",
     
     "g1b2g3b2g3a1g1a3": (
         "1. Gira la cara roja 1 vez.\n"

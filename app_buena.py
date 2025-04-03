@@ -350,21 +350,29 @@ class SolutionWidget(QWidget):
         """Actualiza la instrucción y aplica el siguiente movimiento (si existe)."""
         if self.current_step < len(self.secuencia_movimientos):
             mov = self.secuencia_movimientos[self.current_step]
-            # Traducir el movimiento a un texto amigable
-            texto = self.traducirMovimiento(mov)
+            
+            # Obtener la instrucción del diccionario, si existe, o usar el movimiento en bruto
+            texto = instrucciones.get(mov, f"Movimiento desconocido: {mov}")
+            
             # Actualizar el área de texto con la instrucción del paso actual
-            self.instructionsText.setText(f"Paso {self.current_step + 1}: {texto}")
-            # Aplicar el movimiento al cubo
-            #aplicar_movimiento(mov)  # Función que debes implementar para actualizar el estado del cubo
-            self.cube3DView.update()  # Refrescar la vista 3D
+            self.instructionsText.setText(f"Paso {self.current_step + 1}:\n  {texto}")
+            
+            # Aplicar el movimiento al cubo (debes implementar esta función)
+            # aplicar_movimiento(mov)
+            
+            # Refrescar la vista 3D
+            self.cube3DView.update()
+            
         else:
             self.instructionsText.setText("¡Solución completada!")
             self.nextStepBtn.setEnabled(False)
-    
+
     def nextStep(self):
         """Avanza al siguiente paso de la solución."""
-        self.current_step += 1
-        self.updateStep()
+        if self.current_step < len(self.secuencia_movimientos):  
+            self.current_step += 1  # Ahora incrementamos el paso aquí
+            self.updateStep()
+
     
     def traducirMovimiento(self, mov):
         """
@@ -422,6 +430,11 @@ class MainWidget(QWidget):
         cube_state = {cara: [[cara for _ in range(3)] for _ in range(3)] for cara in COLORES}
         self.cubeNet.drawNet()
         self.cube3D.update()
+        
+        # Si la vista actual es la de solución, volver a la vista original
+        if isinstance(self.stacked.currentWidget(), SolutionWidget):
+            self.stacked.setCurrentIndex(0)  # Volver a la vista original
+
         self.mostrarMensaje("Cubo reiniciado")
 
     def toggleView(self):
