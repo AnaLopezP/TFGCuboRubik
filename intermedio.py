@@ -210,6 +210,82 @@ def traducir_a_mov(cubo):
     
     return [permutación_aristas, orientacion_aristas, permutación_esquinas, orientacion_esquinas]
 
+def traducir_a_cubo(movimiento):
+    """Recibe un estado del cubo en formato de movimiento y lo traduce a la representación de cube_state."""
+
+    # Extraemos los datos del movimiento
+    permutacion_aristas, orientacion_aristas, permutacion_esquinas, orientacion_esquinas = movimiento
+    print("Hola")
+    print(permutacion_aristas, orientacion_aristas, permutacion_esquinas, orientacion_esquinas)
+    # Mapeo de las posiciones de las piezas en la matriz del cubo
+    aristas_pos_resuelta = {
+        1: (0, 1),  # arriba
+        2: (1, 0),  # izquierda
+        3: (2, 1),  # derecha
+        4: (1, 2)   # abajo
+    }
+
+    esquinas_pos_resuelta = {
+        1: (0, 0),  # arriba izquierda
+        2: (2, 0),  # abajo izquierda
+        3: (2, 2),  # abajo derecha
+        4: (0, 2)   # arriba derecha
+    }
+
+    # Estado inicial del cubo (colores resueltos)
+    cube_state = {
+        "B": [["B", "B", "B"], ["B", "B", "B"], ["B", "B", "B"] ],  # Blanca
+        "AM": [["AM", "AM", "AM"], ["AM", "AM", "AM"], ["AM", "AM", "AM"]],  # Amarilla
+        "AZ": [["AZ", "AZ", "AZ"], ["AZ", "AZ", "AZ"], ["AZ", "AZ", "AZ"]],  # Azul
+        "V": [["V", "V", "V"], ["V", "V", "V"], ["V", "V", "V"]],  # Verde
+        "R": [["R", "R", "R"], ["R", "R", "R"], ["R", "R", "R"]],  # Roja
+        "N": [["N", "N", "N"], ["N", "N", "N"], ["N", "N", "N"]]   # Naranja
+    }
+
+    # Aplicar la permutación de las aristas
+    aristas_temp = {}
+    for pos_resuelta, pos_actual in permutacion_aristas.items():
+        i_actual, j_actual = aristas_pos_resuelta[pos_actual]
+        i_resuelta, j_resuelta = aristas_pos_resuelta[pos_resuelta]
+
+        # Guardar la pieza movida temporalmente
+        aristas_temp[(i_resuelta, j_resuelta)] = cube_state["B"][i_actual][j_actual]
+
+        # Aplicar la orientación de la arista
+        if orientacion_aristas[pos_actual - 1] == 1:
+            aristas_temp[(i_resuelta, j_resuelta)] = "X"  # Simboliza un giro de color (ajustar con lógica real)
+
+    # Aplicar los cambios en `cube_state`
+    for (i, j), color in aristas_temp.items():
+        cube_state["B"][i][j] = color
+
+    # Aplicar la permutación de las esquinas
+    esquinas_temp = {}
+    for pos_resuelta, pos_actual in permutacion_esquinas.items():
+        i_actual, j_actual = esquinas_pos_resuelta[pos_actual]
+        i_resuelta, j_resuelta = esquinas_pos_resuelta[pos_resuelta]
+
+        # Guardar la pieza movida temporalmente
+        esquinas_temp[(i_resuelta, j_resuelta)] = cube_state["B"][i_actual][j_actual]
+
+        # Aplicar la orientación de la esquina
+        orientacion = orientacion_esquinas[pos_actual - 1]
+        if orientacion == 1:
+            esquinas_temp[(i_resuelta, j_resuelta)] = "Y"  # Simboliza el giro (ajustar con lógica real)
+        elif orientacion == 2:
+            esquinas_temp[(i_resuelta, j_resuelta)] = "Z"  # Otro giro posible
+
+    # Aplicar los cambios en `cube_state`
+    for (i, j), color in esquinas_temp.items():
+        cube_state["B"][i][j] = color
+    
+    print("Estado del cubo después de aplicar la permutación y orientación:")
+    for cara, colores in cube_state.items():
+        print(f"{cara}:")
+        for fila in colores:
+            print(fila)
+
+    return cube_state
     
 
 cubo = iniciar()  # función que inicializa el cubo

@@ -10,6 +10,7 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 from intermedio import *
 from main import *
+import random
 
 # ---------------------------
 # Estado global del cubo
@@ -163,6 +164,14 @@ class RubiksCube3D(QOpenGLWidget):
         self.lastPos = QPoint()
         self.cubeSize = 2.0
         self.gap = 0.1
+        '''self.cube_state = {
+            "B": [["B"] * 3 for _ in range(3)],
+            "AM": [["AM"] * 3 for _ in range(3)],
+            "AZ": [["AZ"] * 3 for _ in range(3)],
+            "V": [["V"] * 3 for _ in range(3)],
+            "R": [["R"] * 3 for _ in range(3)],
+            "N": [["N"] * 3 for _ in range(3)]
+        }'''
 
     def initializeGL(self):
         glClearColor(0.1, 0.1, 0.1, 1)
@@ -306,6 +315,10 @@ class RubiksCube3D(QOpenGLWidget):
         self.lastPos = event.position().toPoint()
         self.update()
         
+    '''def actualizar_cubo(self, nuevo_estado):
+        """Actualiza el estado del cubo 3D con el nuevo estado."""
+        self.cube_state = nuevo_estado
+        self.update()'''
 
 from PyQt6.QtWidgets import QTextEdit, QHBoxLayout, QVBoxLayout, QWidget, QPushButton
 
@@ -358,10 +371,13 @@ class SolutionWidget(QWidget):
             self.instructionsText.setText(f"Paso {self.current_step + 1}:\n  {texto}")
             
             # Aplicar el movimiento al cubo (debes implementar esta función)
-            # aplicar_movimiento(mov)
+            '''nuevo_estado = traducir_a_cubo(mov)
+            print("Nuevo estado del cubo:", nuevo_estado)
             
             # Refrescar la vista 3D
+            self.cube3DView.actualizar_cubo(nuevo_estado)
             self.cube3DView.update()
+            self.cube3DView.repaint()'''
             
         else:
             self.instructionsText.setText("¡Solución completada!")
@@ -415,14 +431,48 @@ class MainWidget(QWidget):
         self.toggleBtn.clicked.connect(self.toggleView)
         self.reiniciarBtn = QPushButton("Reiniciar Cubo")
         self.reiniciarBtn.clicked.connect(self.reiniciarCubo)
+        self.shuffleBtn = QPushButton("Mezclar")
+        self.shuffleBtn.clicked.connect(self.mezclarCubo)
+        
         btnLayout.addWidget(self.solucionarBtn)
         btnLayout.addWidget(self.toggleBtn)
         btnLayout.addWidget(self.reiniciarBtn)
+        btnLayout.addWidget(self.shuffleBtn)
         
         layout.addLayout(btnLayout)
 
     def get_cubenet(self):
         return self.cubeNet
+    
+    def mezclarCubo(self):
+        """Selecciona un nodo aleatorio del grafo y aplica los movimientos al cubo."""
+        try:
+            # Obtener un nodo aleatorio del grafo
+            numnodo_aleatorio = random.choice(list(grafo.nodos.values()))
+            print(numnodo_aleatorio)
+            mov_aleatorio = numnodo_aleatorio.movimiento
+            print(mov_aleatorio)
+            
+            # Obtener la secuencia de movimientos desde el nodo identidad hasta el nodo aleatorio
+            '''secuencia_movimientos = buscar_identidad(nodo_aleatorio)  # Obtener movimientos
+
+            if secuencia_movimientos is None:
+                raise ValueError("No se encontró una secuencia de movimientos para la mezcla.")'''
+
+            # Aplicar los movimientos al cubo (cuando tengas la función de traducción)
+            '''nuevo_cubo = traducir_a_cubo(mov_aleatorio)
+
+            # Refrescar la vista 3D
+            self.cube3DView.actualizar_cubo(nuevo_cubo)
+            self.cube3DView.update()
+            self.cube3DView.repaint()'''
+            
+            
+            self.mostrarMensaje("Cubo mezclado - en proceso de construcción")
+        
+        except Exception as e:
+            self.mostrarMensaje(f"Error al mezclar: {str(e)}")
+            print("Error al mezclar el cubo:", e)
     
     def reiniciarCubo(self):
         # Reiniciar el cubo a su estado inicial
