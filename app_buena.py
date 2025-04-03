@@ -382,12 +382,12 @@ class MainWidget(QWidget):
                         print(mol.adyacente.cara, mol.adyacente.fila, mol.adyacente.columna, mol.adyacente.color, i, j)
         
         movimiento = traducir_a_mov(cubo)
+        print(movimiento)
         numero_mov = buscar_nodo(movimiento)
-        buscar_identidad(numero_mov)
-
-        print("Solucionar button pressed")
-
-
+        print(numero_mov)
+        secuencia_movimientos = buscar_identidad(numero_mov)
+        print("Secuencia de movimientos:", secuencia_movimientos)
+        return secuencia_movimientos
 
 class MainWindow(QMainWindow):
     def __init__(self):

@@ -302,13 +302,32 @@ def cargar_grafo_de_csv(archivo_csv):
     print(f"Grafo cargado desde {archivo_csv}")
     return grafo
 
-def buscar_nodo(grafo, movimiento):
+
+def cargar_movimientos_iniciales(archivo_csv):
+    '''
+    Cargamos los movimientos iniciales del archivo csv y los devolvemos en un diccionario.
+    '''
+    movimientos = {}
+    with open(archivo_csv, newline='', mode='r', encoding="utf-8") as file:
+        reader = csv.reader(file)
+        for i, row in enumerate(reader):
+            movimientos[i] = row[0]
+    #print(movimientos)
+    return movimientos
+
+
+# cargamos los movimientos iniciales
+movimientos_iniciales = cargar_movimientos_iniciales("movimientos.csv")
+# cargamos el grafo
+grafo= cargar_grafo_de_csv("grafo_final.csv")
+
+def buscar_nodo(movimiento):
     """
     Busca un nodo en el grafo que tenga el mismo movimiento que el proporcionado.
     """
     for nodo in grafo.nodos.values():
         if nodo.movimiento == movimiento:
-            return nodo.num
+            return nodo.numero
     return None
         
 '''def visualizar_grafo(grafo):
@@ -383,23 +402,7 @@ grafo_final.guardar_grafo_csv("grafo_final.csv")'''
 # Algoritmo de búsqueda en anchura para encontrar el camino más corto a la identidad
 from collections import deque
 
-def cargar_movimientos_iniciales(archivo_csv):
-    '''
-    Cargamos los movimientos iniciales del archivo csv y los devolvemos en un diccionario.
-    '''
-    movimientos = {}
-    with open(archivo_csv, newline='', mode='r', encoding="utf-8") as file:
-        reader = csv.reader(file)
-        for i, row in enumerate(reader):
-            movimientos[i] = row[0]
-    #print(movimientos)
-    return movimientos
-
 def buscar_identidad(nodo_inicial):
-    # cargamos los movimientos iniciales
-    movimientos_iniciales = cargar_movimientos_iniciales("movimientos.csv")
-    # cargamos el grafo
-    grafo= cargar_grafo_de_csv("grafo_final.csv")
     ''' 
     Para cada nodo del grafo:
     - Si tiene conexión con la identidad (nodo 51), se añade a la lista de movimientos
