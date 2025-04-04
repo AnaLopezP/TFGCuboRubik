@@ -409,7 +409,7 @@ class MainWidget(QWidget):
             # Actualizar la vista net
             self.cubeNet.drawNet()
             # Actualizar la vista 3D
-            self.cube3D.update()
+            #self.cube3D.update()
             self.mostrarMensaje("Cubo mezclado")
             
         except Exception as e:
