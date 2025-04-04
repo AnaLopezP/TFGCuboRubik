@@ -2,6 +2,7 @@ import sys, math
 from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,  QPushButton, QStackedWidget, QGraphicsView, QGraphicsScene, QGraphicsRectItem
 from PyQt6.QtOpenGLWidgets import QOpenGLWidget
 from PyQt6.QtWidgets import QTextEdit, QHBoxLayout, QWidget
+from PyQt6.QtWidgets import QTextEdit, QHBoxLayout, QVBoxLayout, QWidget, QPushButton
 from PyQt6.QtCore import Qt, QPoint
 from PyQt6.QtGui import QBrush, QColor, QPen
 from PyQt6.QtWidgets import QLabel
@@ -11,6 +12,7 @@ from OpenGL.GLU import *
 from intermedio import *
 from main import *
 import random
+from estado_cubo import cube_state
 
 # ---------------------------
 # Estado global del cubo
@@ -37,7 +39,6 @@ ARISTAS_LATERAL = {(0, 1): "R", (1, 0): "AZ", (2, 1): "N", (1, 2): "V"}
 ESQUINAS_LATERAL = {(0, 0): ("R", "AZ"), (2, 0): ("AZ", "N"), (2, 2): ("N", "V"), (0, 2): ("V", "R")}
 
 # Inicializamos el estado del cubo: para cada cara, una matriz 3x3 con la letra de la cara
-cube_state = {cara: [[cara for _ in range(3)] for _ in range(3)] for cara in COLORES}
 
 def colorFromLetter(letter):
     """Devuelve una tupla RGB normalizada a partir de la letra de la cara."""
@@ -69,31 +70,7 @@ class CuboTile(QGraphicsRectItem):
         self.color_actual = cube_state[cara][fila][columna]
         self.setBrush(QBrush(COLORES_MAPA[self.color_actual]))
         self.setPen(QPen(Qt.GlobalColor.black, 2))
-        #self.matriz = [] # matriz de cubitos para la cara blanca
-        
-        '''# Vamos a guardar como objetos las casillas de la cara blanca para más tarde
-        if self.cara == "B" and (self.fila !=1, self.columna != 1): # el centro no nos interesa
-            # determinamos si es arista o vértice para ver la cantidad de cubitos
-            if (self.fila, self.columna) in NOMBRES_ARISTAS:
-                nombre = NOMBRES_ARISTAS[(self.fila, self.columna)]
-                color2 = ARISTAS_LATERAL[(self.fila, self.columna)]
-                # creamos el objetto cubito para la otra clase
-                self.matriz.add(Cubito(nombre, "B", color2, None, self.fila, self.columna)) # añadimos el cubito a la matriz
-                print(self.matriz)
-                print("he pasado por aqui")
-                
-            elif (self.fila, self.columna) in NOMBRES_VERTICES:
-                nombre = NOMBRES_VERTICES[(self.fila, self.columna)]
-                color2, color3 = ESQUINAS_LATERAL[(self.fila, self.columna)]
-                # creamos el objeto cubito para la otra clase
-                self.matriz.add(Cubito(nombre, "B", color2, color3, self.fila, self.columna))
-                print(self.matriz)
-                print("he pasado por aqui")'''
-                
-                
-    '''def get_matriz(self):
-        return self.matriz'''
-        
+       
         
     def mousePressEvent(self, event):
         # Lógica de cambio de color:
@@ -164,14 +141,7 @@ class RubiksCube3D(QOpenGLWidget):
         self.lastPos = QPoint()
         self.cubeSize = 2.0
         self.gap = 0.1
-        '''self.cube_state = {
-            "B": [["B"] * 3 for _ in range(3)],
-            "AM": [["AM"] * 3 for _ in range(3)],
-            "AZ": [["AZ"] * 3 for _ in range(3)],
-            "V": [["V"] * 3 for _ in range(3)],
-            "R": [["R"] * 3 for _ in range(3)],
-            "N": [["N"] * 3 for _ in range(3)]
-        }'''
+
 
     def initializeGL(self):
         glClearColor(0.1, 0.1, 0.1, 1)
@@ -314,13 +284,7 @@ class RubiksCube3D(QOpenGLWidget):
         self.yRot += dx
         self.lastPos = event.position().toPoint()
         self.update()
-        
-    '''def actualizar_cubo(self, nuevo_estado):
-        """Actualiza el estado del cubo 3D con el nuevo estado."""
-        self.cube_state = nuevo_estado
-        self.update()'''
 
-from PyQt6.QtWidgets import QTextEdit, QHBoxLayout, QVBoxLayout, QWidget, QPushButton
 
 class SolutionWidget(QWidget):
     def __init__(self, secuencia_movimientos, parent=None):
@@ -363,21 +327,8 @@ class SolutionWidget(QWidget):
         """Actualiza la instrucción y aplica el siguiente movimiento (si existe)."""
         if self.current_step < len(self.secuencia_movimientos):
             mov = self.secuencia_movimientos[self.current_step]
-            
-            # Obtener la instrucción del diccionario, si existe, o usar el movimiento en bruto
             texto = instrucciones.get(mov, f"Movimiento desconocido: {mov}")
-            
-            # Actualizar el área de texto con la instrucción del paso actual
             self.instructionsText.setText(f"Paso {self.current_step + 1}:\n  {texto}")
-            
-            # Aplicar el movimiento al cubo (debes implementar esta función)
-            '''nuevo_estado = traducir_a_cubo(mov)
-            print("Nuevo estado del cubo:", nuevo_estado)
-            
-            # Refrescar la vista 3D
-            self.cube3DView.actualizar_cubo(nuevo_estado)
-            self.cube3DView.update()
-            self.cube3DView.repaint()'''
             
         else:
             self.instructionsText.setText("¡Solución completada!")
@@ -385,18 +336,18 @@ class SolutionWidget(QWidget):
 
     def nextStep(self):
         """Avanza al siguiente paso de la solución."""
-        if self.current_step < len(self.secuencia_movimientos):  
+        if self.current_step < len(self.secuencia_movimientos): 
+            movimiento_actual = self.secuencia_movimientos[self.current_step] 
+            print(movimiento_actual)
+            traducir_a_cubo(movimiento_actual, cube_state)
+            main_widget = self.parent().parent()  # Acceder al widget principal
+            if hasattr(main_widget, 'get_cubenet'):
+                cubenet = main_widget.get_cubenet()
+                cubenet.drawNet()
+            # Actualizar la vista 3D
+            self.cube3DView.update()
             self.current_step += 1  # Ahora incrementamos el paso aquí
             self.updateStep()
-
-    
-    def traducirMovimiento(self, mov):
-        """
-        Traduce el movimiento (por ejemplo, 'g1b2g3b2') a un formato amigable.
-        Ajusta este método según la lógica de tus movimientos.
-        """
-        # Ejemplo básico:
-        return f"Instrucción: {mov}"
 
 
 # ---------------------------
@@ -451,22 +402,7 @@ class MainWidget(QWidget):
             numnodo_aleatorio = random.choice(list(grafo.nodos.values()))
             print(numnodo_aleatorio)
             mov_aleatorio = numnodo_aleatorio.movimiento
-            print(mov_aleatorio)
-            
-            # Obtener la secuencia de movimientos desde el nodo identidad hasta el nodo aleatorio
-            '''secuencia_movimientos = buscar_identidad(nodo_aleatorio)  # Obtener movimientos
-
-            if secuencia_movimientos is None:
-                raise ValueError("No se encontró una secuencia de movimientos para la mezcla.")'''
-
-            # Aplicar los movimientos al cubo (cuando tengas la función de traducción)
-            '''nuevo_cubo = traducir_a_cubo(mov_aleatorio)
-
-            # Refrescar la vista 3D
-            self.cube3DView.actualizar_cubo(nuevo_cubo)
-            self.cube3DView.update()
-            self.cube3DView.repaint()'''
-            
+            print(mov_aleatorio)            
             
             self.mostrarMensaje("Cubo mezclado - en proceso de construcción")
         
@@ -569,7 +505,6 @@ if __name__ == '__main__':
     cubo = iniciar()
     app = QApplication(sys.argv)
     window = MainWindow()
-    matriz = Matriz()
     window.resize(400, 400)
     window.show()
     sys.exit(app.exec())
