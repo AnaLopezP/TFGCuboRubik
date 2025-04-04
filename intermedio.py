@@ -32,28 +32,28 @@ class Vertice(Arista):
     
 def asignar_color(cubo, cara, fila, columna, nuevo_color):
     cube_state[cara][fila][columna] = nuevo_color
-    print(f"Color asignado a {cara} en fila {fila}, columna {columna}: {nuevo_color}")
+    #print(f"Color asignado a {cara} en fila {fila}, columna {columna}: {nuevo_color}")
     
     for i in range(3):
         for j in range(3):
             mol = cubo[i][j]
             if isinstance(mol, Molecula):
-                print(mol.fila)
+                #print(mol.fila)
                 if mol.fila == fila and mol.columna == columna and mol.cara == cara:
-                    print(f"Encontrado: {mol.cara} en fila {fila}, columna {columna}, en {i}, {j}")
+                    #print(f"Encontrado: {mol.cara} en fila {fila}, columna {columna}, en {i}, {j}")
                     mol.set_color(nuevo_color)
                 
                 elif mol.adyacente.fila == fila and mol.adyacente.columna == columna and mol.adyacente.cara == cara:
-                    print(f"Encontrado: {mol.adyacente.cara} en fila {fila}, columna {columna}, en {i}, {j}")
+                    #print(f"Encontrado: {mol.adyacente.cara} en fila {fila}, columna {columna}, en {i}, {j}")
                     mol.adyacente.set_color(nuevo_color)
                     
                 elif isinstance(mol, Vertice) and mol.precedente.fila == fila and mol.precedente.columna == columna and mol.precedente.cara == cara:
-                    print(f"Encontrado: {mol.precedente.cara} en fila {fila}, columna {columna}, en {i}, {j}")
+                    #print(f"Encontrado: {mol.precedente.cara} en fila {fila}, columna {columna}, en {i}, {j}")
                     mol.precedente.set_color(nuevo_color)
                 
                 else:
                     print("No encontrado")
-    print("Color asignado correctamente")   
+    #print("Color asignado correctamente")   
     
 def iniciar():
     cubo = [
@@ -91,6 +91,7 @@ def indice_arista_resuelta(pieza):
     }
     
     pos_resuelta = mapping_aristas.get(otro)
+    
     if pos_resuelta is None:
         raise ValueError(f"Combinación ('B', '{otro}') no definida para aristas.")
     return pos_resuelta
@@ -227,7 +228,6 @@ def traducir_a_cubo(movimiento, cube_state):
     for num in [1, 2, 3, 4]:
         # Obtenemos la nueva posición (entre 1 y 4) para esta pieza según el movimiento
         nueva_pos = movimiento[0][num]  
-        print(num, "nueva_pos", nueva_pos)
         # La orientación se determina mirando el elemento de la lista de orientaciones
         orientacion = movimiento[1][nueva_pos-1]
         
@@ -235,32 +235,26 @@ def traducir_a_cubo(movimiento, cube_state):
         if orientacion == 0:
             # Pegatina blanca en la cara blanca
             cara_blanca, pos_blanca = "B", aristas_blanca[num]
-            print("cara_blanca", cara_blanca)
-            print("pos_blanca", pos_blanca)
             cara_lateral, pos_lateral = aristas_lateral[num]
-            print("cara_lateral", cara_lateral)
-            print("pos_lateral", pos_lateral)
         elif orientacion == 1:
             # Pegatina blanca se traslada a la cara lateral
             cara_blanca, pos_blanca = "B", aristas_blanca[num]
-            print("cara_blanca", cara_blanca)
-            print("pos_blanca", pos_blanca)
             cara_lateral, pos_lateral = aristas_lateral[num]
             # En este caso, invertimos: la pegatina blanca se pone en la lateral y el otro color
             # se asigna a la blanca. (Asumimos que “B” es la letra del blanco y la otra ya viene en el mapping)
             # Para efectos de este ejemplo, simplemente intercambiamos el rol de la pegatina.
             cara_blanca, cara_lateral = cara_lateral, cara_blanca
-            print("cara_lateral", cara_lateral)
-            print("pos_lateral", pos_lateral)
         else:
             raise ValueError(f"Orientación desconocida en arista {num}: {orientacion}")
 
         # Actualizamos el estado en la cara blanca: se coloca la pegatina blanca ("B")
         fila, col = pos_blanca
+        print(f"Actualizando cara blanca: {fila}, {col} con {cara_blanca}")
         cube_state[cara_blanca][fila][col] = "B"
         # Actualizamos la cara lateral: se coloca el color de la pieza (la que no es blanca)
         fila, col = pos_lateral
         # Se usa la letra de la cara lateral (p.ej. "R", "AZ", "N" o "V")
+        print(f"Actualizando cara lateral: {fila}, {col} con {cara_lateral}")
         cube_state[cara_lateral][fila][col] = cara_lateral
 
     # --- ESQUINAS ---
@@ -273,16 +267,16 @@ def traducir_a_cubo(movimiento, cube_state):
     }
     # Definimos la posición de la primera pegatina lateral para cada esquina.
     esquinas_lateral1 = {
-        1: ("R", (0, 2)),  # para la esquina 1, la pegatina roja en R
-        2: ("AZ", (2, 0)), # para la esquina 2, la pegatina azul en AZ
-        3: ("N", (2, 0)),  # para la esquina 3, la pegatina naranja en N
-        4: ("V", (0, 2))   # para la esquina 4, la pegatina verde en V
+        1: ("R", (2, 0)),  # para la esquina 1, la pegatina roja en R
+        2: ("AZ", (2, 2)), # para la esquina 2, la pegatina azul en AZ
+        3: ("N", (0, 2)),  # para la esquina 3, la pegatina naranja en N
+        4: ("V", (0, 0))   # para la esquina 4, la pegatina verde en V
     }
     # Definimos la posición de la segunda pegatina lateral para cada esquina.
     esquinas_lateral2 = {
-        1: ("AZ", (0, 0)),  # para la esquina 1, la pegatina azul en AZ
+        1: ("AZ", (0, 2)),  # para la esquina 1, la pegatina azul en AZ
         2: ("N", (0, 0)),   # para la esquina 2, la pegatina naranja en N
-        3: ("V", (2, 2)),   # para la esquina 3, la pegatina verde en V
+        3: ("V", (2, 0)),   # para la esquina 3, la pegatina verde en V
         4: ("R", (2, 2))    # para la esquina 4, la pegatina roja en R
     }
 
@@ -313,12 +307,15 @@ def traducir_a_cubo(movimiento, cube_state):
 
         # Actualizamos la cara que recibe el blanco
         fila, col = pos_blanca
+        print(f"Actualizando cara blanca: {fila}, {col} con {cara_blanca}")
         cube_state[cara_blanca][fila][col] = "B"
         # Actualizamos las otras dos caras con los colores correspondientes
         fila, col = pos_lateral1
         cube_state[cara_lateral1][fila][col] = cara_lateral1
+        print(f"Actualizando cara lateral1: {fila}, {col} con {cara_lateral1}")
         fila, col = pos_lateral2
         cube_state[cara_lateral2][fila][col] = cara_lateral2
+        print(f"Actualizando cara lateral2: {fila}, {col} con {cara_lateral2}")
 
     print("cube_state actualizado:")
     for cara, matriz in cube_state.items():

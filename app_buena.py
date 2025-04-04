@@ -399,13 +399,19 @@ class MainWidget(QWidget):
         """Selecciona un nodo aleatorio del grafo y aplica los movimientos al cubo."""
         try:
             # Obtener un nodo aleatorio del grafo
+            print("hola")
             numnodo_aleatorio = random.choice(list(grafo.nodos.values()))
+            print("hola2")
             print(numnodo_aleatorio)
-            mov_aleatorio = numnodo_aleatorio.movimiento
-            print(mov_aleatorio)            
+            mov_nombre = numnodo_aleatorio.nombre
+            traducir_a_cubo(mov_nombre, cube_state)
+
+            # Actualizar la vista net
+            self.cubeNet.drawNet()
+            # Actualizar la vista 3D
+            self.cube3D.update()
+            self.mostrarMensaje("Cubo mezclado")
             
-            self.mostrarMensaje("Cubo mezclado - en proceso de construcción")
-        
         except Exception as e:
             self.mostrarMensaje(f"Error al mezclar: {str(e)}")
             print("Error al mezclar el cubo:", e)
@@ -450,7 +456,7 @@ class MainWidget(QWidget):
                 if count != 9:
                     raise ValueError("Solo pueden haber 9 casillas de cada color")
 
-            # Debug: Mostrar información de las piezas
+            '''# Debug: Mostrar información de las piezas
             for i in range(3):
                 for j in range(3):
                     mol = cubo[i][j]
@@ -461,17 +467,17 @@ class MainWidget(QWidget):
                             print(mol.precedente.cara, mol.precedente.fila, mol.precedente.columna, mol.precedente.color, i, j)
                         elif isinstance(mol, Arista):
                             print(mol.adyacente.cara, mol.adyacente.fila, mol.adyacente.columna, mol.adyacente.color, i, j)
-
+'''
             # Convertimos el cubo a su representación de movimiento
             movimiento = traducir_a_mov(cubo)  # Aquí puede haber un raise
-            print("Movimiento traducido:", movimiento)
+            #print("Movimiento traducido:", movimiento)
 
             # Buscamos el nodo en el grafo
             numero_mov = buscar_nodo(movimiento)  # Aquí puede haber otro raise
             if numero_mov is None:
                 raise ValueError("No se encontró un nodo en el grafo")
 
-            print("Número de nodo encontrado:", numero_mov)
+            #print("Número de nodo encontrado:", numero_mov)
 
             # Buscamos la secuencia de movimientos
             secuencia_movimientos = buscar_identidad(numero_mov)
