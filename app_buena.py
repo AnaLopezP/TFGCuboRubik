@@ -403,8 +403,8 @@ class MainWidget(QWidget):
             numnodo_aleatorio = random.choice(list(grafo.nodos.values()))
             print("hola2")
             print(numnodo_aleatorio)
-            mov_nombre = numnodo_aleatorio.nombre
-            traducir_a_cubo(mov_nombre, cube_state)
+            mov = numnodo_aleatorio.movimiento
+            traducir_a_cubo(mov, cube_state)
 
             # Actualizar la vista net
             self.cubeNet.drawNet()

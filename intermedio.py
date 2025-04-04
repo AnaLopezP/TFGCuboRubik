@@ -192,158 +192,146 @@ def traducir_a_mov(cubo):
     return [permutación_aristas, orientacion_aristas, permutación_esquinas, orientacion_esquinas]
 
 def traducir_a_cubo(movimiento, cube_state):
-    # Si el movimiento es un str, buscamos en el grafo el nodo que tenga ese nombre
-    if isinstance(movimiento, str):
-        encontrado = False
-        for nodo in grafo.nodos.values():
-            if nodo.nombre == movimiento:
-                movimiento = nodo.movimiento
-                encontrado = True
-                print(f"Movimiento encontrado en el grafo: {nodo.nombre} -> {movimiento}")
-                break
-        if not encontrado:
-            raise ValueError(f"No se encontró movimiento en el grafo para el nombre: {movimiento}")
-
-    # --- ARISTAS ---
-    # Definición de posiciones en la cara blanca
-    aristas_blanca = {
-        1: (0, 1),  # arriba
-        2: (1, 0),  # izquierda
-        3: (2, 1),  # abajo
-        4: (1, 2)   # derecha
+    """
+    Aplica un movimiento al cubo actualizando el cube_state.
+    
+    El movimiento es una lista de 4 elementos:
+      [
+         {1: letra, 2: letra, 3: letra, 4: letra},   # Permutación de aristas (valores: "a", "b", "c", "d")
+         [n, n, n, n],                              # Orientaciones de aristas (0 o 1) para posiciones 1..4
+         {1: letra, 2: letra, 3: letra, 4: letra},   # Permutación de esquinas (valores: "e", "f", "g", "h")
+         [m, m, m, m]                               # Orientaciones de esquinas (0, 1 o 2) para posiciones 1..4
+      ]
+    
+    Se asume que:
+      - La cara blanca se denota "B".
+      - Las caras laterales se denotan "R", "AZ", "N" y "V".
+      - El cube_state es un diccionario de la forma:
+            {"B": matriz, "R": matriz, "AZ": matriz, "N": matriz, "V": matriz, ...}
+        donde cada matriz es una lista de listas (filas, columnas).
+    """
+    # --- Preparación y mapeos ---
+    # Extraemos los elementos del movimiento:
+    edge_perm = movimiento[0]       # Diccionario para aristas; ej: {1:"a", 2:"b", 3:"c", 4:"d"}
+    orient_edges = movimiento[1]    # Lista de orientaciones para aristas, en orden para posiciones destino 1..4
+    corner_perm = movimiento[2]     # Diccionario para esquinas; ej: {1:"e", 2:"f", 3:"g", 4:"h"}
+    orient_corners = movimiento[3]  # Lista de orientaciones para esquinas, para posiciones destino 1..4
+    
+    # Mapeo de letra a posición destino para aristas y esquinas:
+    edge_perm_mapping = {"a": 1, "b": 2, "c": 3, "d": 4}
+    corner_perm_mapping = {"e": 1, "f": 2, "g": 3, "h": 4}
+    
+    # Mapeos de la net para aristas:
+    net_aristas_blanca = {1: (0, 1), 2: (1, 0), 3: (2, 1), 4: (1, 2)}
+    net_aristas_lateral = {
+        1: ("R", (2, 1)),
+        2: ("AZ", (1, 2)),
+        3: ("N", (0, 1)),
+        4: ("V", (1, 0))
     }
-    # Definición de posiciones en la cara lateral según el color
-    aristas_lateral = {
-        1: ("R", (2, 1)),   # para blanco-rojo, en la cara roja
-        2: ("AZ", (1, 2)),  # para blanco-azul, en la cara azul
-        3: ("N", (0, 1)),   # para blanco-naranja, en la cara naranja
-        4: ("V", (1, 0))    # para blanco-verde, en la cara verde
+    # Colores laterales intrínsecos de las aristas (según la pieza original):
+    edge_colors = {1: "R", 2: "AZ", 3: "N", 4: "V"}
+    
+    # Mapeos de la net para esquinas:
+    net_esquinas_blanca = {1: (0, 0), 2: (2, 0), 3: (2, 2), 4: (0, 2)}
+    net_esquinas_lateral1 = {
+        1: ("R", (2, 0)),
+        2: ("AZ", (2, 2)),
+        3: ("N", (0, 2)),
+        4: ("V", (0, 0))
+    }
+    net_esquinas_lateral2 = {
+        1: ("AZ", (0, 2)),
+        2: ("N", (0, 0)),
+        3: ("V", (2, 0)),
+        4: ("R", (2, 2))
+    }
+    # Colores laterales intrínsecos de las esquinas (según la pieza original):
+    # (orden: (pegatina lateral1, pegatina lateral2))
+    corner_colors = {
+        1: ("R", "AZ"),
+        2: ("AZ", "N"),
+        3: ("N", "V"),
+        4: ("V", "R")
     }
     
-    print("Procesando aristas con movimiento:", movimiento)
-    # Procesamos cada arista (1 a 4)
-    for num in [1, 2, 3, 4]:
-        # Se obtiene la nueva posición (entre 1 y 4) para la pieza según el movimiento
-        nueva_pos = movimiento[0][num]  
-        # Se determina la orientación a partir de la lista de orientaciones
-        orientacion = movimiento[1][nueva_pos - 1]
+    # --- Procesar aristas ---
+    for orig in [1, 2, 3, 4]:
+        # Obtenemos la posición destino para la arista que viene de la posición original "orig"
+        new_pos = edge_perm_mapping[ edge_perm[orig] ]
+        # La orientación se determina para la posición destino (índice new_pos-1)
+        orient = orient_edges[new_pos - 1]
         
-        if orientacion == 0:
-            # Orientación 0: la pegatina blanca se queda en la cara blanca.
-            cara_blanca = "B"
-            pos_blanca = aristas_blanca[num]
-            cara_lateral, pos_lateral = aristas_lateral[num]
-            
-            # Actualizamos la cara blanca con la pegatina blanca
-            fila, col = pos_blanca
-            cube_state[cara_blanca][fila][col] = "B"
-            # Actualizamos la cara lateral con su color
-            fila, col = pos_lateral
-            cube_state[cara_lateral][fila][col] = cara_lateral
-            
-        elif orientacion == 1:
-            # Orientación 1: la pegatina blanca se traslada a la cara lateral,
-            # y el color lateral se coloca en la cara blanca.
-            # Usamos los mappings originales sin swap global.
-            pos_blanca = aristas_blanca[num]  # Posición en la cara blanca
-            cara_lateral_original, pos_lateral = aristas_lateral[num]  # Cara y posición lateral
-            
-            # En la cara blanca se coloca el color de la cara lateral
-            fila, col = pos_blanca
-            cube_state["B"][fila][col] = cara_lateral_original
-            
-            # En la cara lateral se coloca la pegatina blanca
-            fila, col = pos_lateral
-            cube_state[cara_lateral_original][fila][col] = "B"
+        # Consultamos las posiciones en la net destino:
+        pos_white = net_aristas_blanca[new_pos]     # Ubicación en la cara blanca
+        lateral_face_net, pos_lateral = net_aristas_lateral[new_pos]  # Ubicación en la lateral (según la net)
+        
+        # El color lateral que lleva la pieza (según su posición original):
+        inherent_color = edge_colors[orig]
+        
+        if orient == 0:
+            # La pegatina blanca se queda en la cara blanca.
+            r, c = pos_white
+            cube_state["B"][r][c] = "B"
+            r, c = pos_lateral
+            cube_state[lateral_face_net][r][c] = inherent_color
+        elif orient == 1:
+            # Se invierten: la cara blanca recibe el color lateral de la pieza,
+            # y en la lateral se coloca la pegatina blanca.
+            r, c = pos_white
+            cube_state["B"][r][c] = inherent_color
+            r, c = pos_lateral
+            cube_state[lateral_face_net][r][c] = "B"
         else:
-            raise ValueError(f"Orientación desconocida en arista {num}: {orientacion}")
-
-    # --- ESQUINAS ---
-    # Posiciones de la pegatina blanca en la cara blanca para cada esquina
-    esquinas_blanca = {
-        1: (0, 0),  # esquina superior izquierda en B
-        2: (2, 0),  # esquina inferior izquierda en B
-        3: (2, 2),  # esquina inferior derecha en B
-        4: (0, 2)   # esquina superior derecha en B
-    }
-    # Primera pegatina lateral para cada esquina
-    esquinas_lateral1 = {
-        1: ("R", (2, 0)),  # para la esquina 1, la pegatina roja en R
-        2: ("AZ", (2, 2)), # para la esquina 2, la pegatina azul en AZ
-        3: ("N", (0, 2)),  # para la esquina 3, la pegatina naranja en N
-        4: ("V", (0, 0))   # para la esquina 4, la pegatina verde en V
-    }
-    # Segunda pegatina lateral para cada esquina
-    esquinas_lateral2 = {
-        1: ("AZ", (0, 2)),  # para la esquina 1, la pegatina azul en AZ
-        2: ("N", (0, 0)),   # para la esquina 2, la pegatina naranja en N
-        3: ("V", (2, 0)),   # para la esquina 3, la pegatina verde en V
-        4: ("R", (2, 2))    # para la esquina 4, la pegatina roja en R
-    }
+            raise ValueError("Orientación de arista desconocida: " + str(orient))
     
-    print("Procesando esquinas con movimiento:", movimiento)
-    # Procesamos cada esquina (1 a 4)
-    for num in [1, 2, 3, 4]:
-        nueva_pos = movimiento[2][num]  # nueva posición (entre 1 y 4)
-        orientacion = movimiento[3][nueva_pos - 1]  # orientación: 0, 1 o 2
+    # --- Procesar esquinas ---
+    for orig in [1, 2, 3, 4]:
+        new_pos = corner_perm_mapping[ corner_perm[orig] ]
+        orient = orient_corners[new_pos - 1]
         
-        if orientacion == 0:
-            # Orientación 0: la pegatina blanca se queda en la cara blanca.
-            cara_blanca = "B"
-            pos_blanca = esquinas_blanca[num]
-            cara_lateral1, pos_lateral1 = esquinas_lateral1[num]
-            cara_lateral2, pos_lateral2 = esquinas_lateral2[num]
-            
-            fila, col = pos_blanca
-            cube_state[cara_blanca][fila][col] = "B"
-            fila, col = pos_lateral1
-            cube_state[cara_lateral1][fila][col] = cara_lateral1
-            fila, col = pos_lateral2
-            cube_state[cara_lateral2][fila][col] = cara_lateral2
-            
-        elif orientacion == 1:
-            # Orientación 1:
-            # La pegatina blanca se traslada a la primera lateral.
-            # La cara blanca (B) recibirá el color de lateral1 y, en lateral1 se pondrá "B".
-            pos_blanca = esquinas_blanca[num]
-            cara_lateral1_original, pos_lateral1 = esquinas_lateral1[num]
-            cara_lateral2, pos_lateral2 = esquinas_lateral2[num]
-            
-            # En la cara blanca se coloca el color de lateral1
-            fila, col = pos_blanca
-            cube_state["B"][fila][col] = cara_lateral1_original
-            # En la cara lateral1 se coloca la pegatina blanca
-            fila, col = pos_lateral1
-            cube_state[cara_lateral1_original][fila][col] = "B"
-            # La segunda lateral se mantiene
-            fila, col = pos_lateral2
-            cube_state[cara_lateral2][fila][col] = cara_lateral2
-            
-        elif orientacion == 2:
-            # Orientación 2:
-            # La pegatina blanca se traslada a la segunda lateral.
-            # La cara blanca (B) recibirá el color de lateral2 y, en lateral2 se pondrá "B".
-            pos_blanca = esquinas_blanca[num]
-            cara_lateral2_original, pos_lateral2 = esquinas_lateral2[num]
-            cara_lateral1, pos_lateral1 = esquinas_lateral1[num]
-            
-            # En la cara blanca se coloca el color de lateral2
-            fila, col = pos_blanca
-            cube_state["B"][fila][col] = cara_lateral2_original
-            # En la cara lateral2 se coloca la pegatina blanca
-            fila, col = pos_lateral2
-            cube_state[cara_lateral2_original][fila][col] = "B"
-            # La primera lateral se mantiene
-            fila, col = pos_lateral1
-            cube_state[cara_lateral1][fila][col] = cara_lateral1
+        pos_white = net_esquinas_blanca[new_pos]
+        net_face1, pos1 = net_esquinas_lateral1[new_pos]
+        net_face2, pos2 = net_esquinas_lateral2[new_pos]
+        
+        # Los colores laterales originales de la pieza (dependen de la posición original de la esquina)
+        inherent_face1, inherent_face2 = corner_colors[orig]
+        
+        if orient == 0:
+            # La pegatina blanca queda en la cara blanca; las laterales conservan sus colores.
+            r, c = pos_white
+            cube_state["B"][r][c] = "B"
+            r, c = pos1
+            cube_state[net_face1][r][c] = inherent_face1
+            r, c = pos2
+            cube_state[net_face2][r][c] = inherent_face2
+        elif orient == 1:
+            # La pegatina blanca rota hacia la izquierda:
+            # En la cara blanca se coloca el color que originalmente estaba en lateral1,
+            # y en lateral1 se coloca "B".
+            r, c = pos_white
+            cube_state["B"][r][c] = inherent_face1
+            r, c = pos1
+            cube_state[net_face1][r][c] = "B"
+            r, c = pos2
+            cube_state[net_face2][r][c] = inherent_face2
+        elif orient == 2:
+            # La pegatina blanca rota hacia la derecha:
+            # En la cara blanca se coloca el color que originalmente estaba en lateral2,
+            # y en lateral2 se coloca "B".
+            r, c = pos_white
+            cube_state["B"][r][c] = inherent_face2
+            r, c = pos2
+            cube_state[net_face2][r][c] = "B"
+            r, c = pos1
+            cube_state[net_face1][r][c] = inherent_face1
         else:
-            raise ValueError(f"Orientación desconocida en esquina {num}: {orientacion}")
-
-    print("cube_state actualizado:")
-    for cara, matriz in cube_state.items():
-        print(cara, matriz)
+            raise ValueError("Orientación de esquina desconocida: " + str(orient))
     
     return cube_state
+
+
+
     
 
 cubo = iniciar()  # función que inicializa el cubo
