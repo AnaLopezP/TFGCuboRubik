@@ -287,10 +287,11 @@ class RubiksCube3D(QOpenGLWidget):
 
 
 class SolutionWidget(QWidget):
-    def __init__(self, secuencia_movimientos, parent=None):
+    def __init__(self, secuencia_movimientos, historial, parent=None):
         super().__init__(parent)
         self.setWindowTitle("Solución paso a paso")
         self.secuencia_movimientos = secuencia_movimientos
+        self.historial = historial
         self.current_step = 0  # Índice del paso actual
         
         # Layout principal horizontal
@@ -337,8 +338,10 @@ class SolutionWidget(QWidget):
     def nextStep(self):
         """Avanza al siguiente paso de la solución."""
         if self.current_step < len(self.secuencia_movimientos): 
-            movimiento_actual = self.secuencia_movimientos[self.current_step] 
-            print(movimiento_actual)
+            num_movimiento_actual = self.historial[self.current_step] 
+            print("Movimiento actual numero:", num_movimiento_actual)
+            # buscamos el movimiento en el grafo
+            movimiento_actual = grafo.nodos[num_movimiento_actual].movimiento
             traducir_a_cubo(movimiento_actual, cube_state)
             main_widget = self.parent().parent()  # Acceder al widget principal
             if hasattr(main_widget, 'get_cubenet'):
@@ -359,6 +362,7 @@ class MainWidget(QWidget):
         self.setWindowTitle("Cubo Rubik Integrado")
         layout = QVBoxLayout(self)
         self.stacked = QStackedWidget()
+        self.cubo = iniciar()
         
         # Crear ambas vistas
         self.cube3D = RubiksCube3D()
@@ -399,12 +403,11 @@ class MainWidget(QWidget):
         """Selecciona un nodo aleatorio del grafo y aplica los movimientos al cubo."""
         try:
             # Obtener un nodo aleatorio del grafo
-            print("hola")
             numnodo_aleatorio = random.choice(list(grafo.nodos.values()))
-            print("hola2")
             print(numnodo_aleatorio)
             mov = numnodo_aleatorio.movimiento
             traducir_a_cubo(mov, cube_state)
+            asignar_color_deuna(self.cubo)
 
             # Actualizar la vista net
             self.cubeNet.drawNet()
@@ -418,8 +421,16 @@ class MainWidget(QWidget):
     
     def reiniciarCubo(self):
         # Reiniciar el cubo a su estado inicial
-        global cube_state
-        cube_state = {cara: [[cara for _ in range(3)] for _ in range(3)] for cara in COLORES}
+        # Modificar el estado del cubo en el mismo objeto, en lugar de reassignar cube_state
+        for cara in cube_state:
+            for i in range(3):
+                for j in range(3):
+                    cube_state[cara][i][j] = cara
+        
+        
+        self.cubo = iniciar()
+
+
         self.cubeNet.drawNet()
         self.cube3D.update()
         
@@ -428,6 +439,7 @@ class MainWidget(QWidget):
             self.stacked.setCurrentIndex(0)  # Volver a la vista original
 
         self.mostrarMensaje("Cubo reiniciado")
+        return cube_state, self.cubo
 
     def toggleView(self):
         current = self.stacked.currentIndex()
@@ -469,8 +481,9 @@ class MainWidget(QWidget):
                             print(mol.adyacente.cara, mol.adyacente.fila, mol.adyacente.columna, mol.adyacente.color, i, j)
 '''
             # Convertimos el cubo a su representación de movimiento
-            movimiento = traducir_a_mov(cubo)  # Aquí puede haber un raise
-            #print("Movimiento traducido:", movimiento)
+            print(cubo)
+            movimiento = traducir_a_mov(self.cubo)  # Aquí puede haber un raise
+            print("Movimiento traducido:", movimiento)
 
             # Buscamos el nodo en el grafo
             numero_mov = buscar_nodo(movimiento)  # Aquí puede haber otro raise
@@ -480,16 +493,17 @@ class MainWidget(QWidget):
             #print("Número de nodo encontrado:", numero_mov)
 
             # Buscamos la secuencia de movimientos
-            secuencia_movimientos = buscar_identidad(numero_mov)
+            secuencia_movimientos, historial = buscar_identidad(numero_mov)
             print("Secuencia de movimientos:", secuencia_movimientos)
+            print("historial de movimientos:", historial)
         
         # Si se obtuvo una solución, crear y mostrar el widget de solución
             if secuencia_movimientos is not None:
-                self.solutionWidget = SolutionWidget(secuencia_movimientos)
+                self.solutionWidget = SolutionWidget(secuencia_movimientos, historial)
                 self.stacked.addWidget(self.solutionWidget)
                 self.stacked.setCurrentWidget(self.solutionWidget)
             
-            return secuencia_movimientos
+            return secuencia_movimientos, historial
 
         except Exception as e:
             self.mostrarMensaje(f"Error: {str(e)}")

@@ -414,6 +414,7 @@ def buscar_identidad(nodo_inicial):
     visitados = set()
     
     secuencia_movimientos = [] # guardamos los movimientos
+    historial = []
     cola.append(nodo_inicial)
     
     while cola:
@@ -432,7 +433,9 @@ def buscar_identidad(nodo_inicial):
             for indice, nodo in enumerate(nodos_adyacentes):
                 if nodo.numero == movimiento_identidad:
                     secuencia_movimientos.append(movimientos_iniciales.get(indice, f"Movimiento_{indice}"))
-                    return secuencia_movimientos  # Terminamos porque llegamos a 51
+                    historial.append(movimiento_identidad)
+                    print(historial)
+                    return secuencia_movimientos, historial  # Terminamos porque llegamos a 51
         
         # Si no encontramos el 51, buscamos el nodo con el número más pequeño
         nodo_mas_pequeno = min(nodos_adyacentes, key=lambda nodo: nodo.numero, default=None)
@@ -442,15 +445,16 @@ def buscar_identidad(nodo_inicial):
             for indice, nodo in enumerate(nodos_adyacentes):
                 if nodo.numero == nodo_mas_pequeno.numero:
                     secuencia_movimientos.append(movimientos_iniciales.get(indice, f"Movimiento_{indice}"))
+                    historial.append(nodo_mas_pequeno.numero)
                     cola.append(nodo_mas_pequeno.numero)
                     break  # Solo agregamos el primer camino encontrado
     
-    return secuencia_movimientos
+    return secuencia_movimientos, historial
 
 
 
 '''# buscamos el camino desde un nodo aleatorio
-camino_movimientos = buscar_identidad(grafo_final, 18, movimientos_iniciales)
+camino_movimientos = buscar_identidad(9999)
 
 if camino_movimientos:
     print("Secuencia de movimientos para llegar a la identidad:")

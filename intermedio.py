@@ -50,10 +50,15 @@ def asignar_color(cubo, cara, fila, columna, nuevo_color):
                 elif isinstance(mol, Vertice) and mol.precedente.fila == fila and mol.precedente.columna == columna and mol.precedente.cara == cara:
                     #print(f"Encontrado: {mol.precedente.cara} en fila {fila}, columna {columna}, en {i}, {j}")
                     mol.precedente.set_color(nuevo_color)
-                
-                else:
-                    print("No encontrado")
     #print("Color asignado correctamente")   
+    
+def asignar_color_deuna(cubo):
+    for cara in cube_state:
+        for fila in range(3):
+            for columna in range(3):
+                color = cube_state[cara][fila][columna]
+                if color is not None:
+                    asignar_color(cubo, cara, fila, columna, color)
     
 def iniciar():
     cubo = [
@@ -210,6 +215,7 @@ def traducir_a_cubo(movimiento, cube_state):
             {"B": matriz, "R": matriz, "AZ": matriz, "N": matriz, "V": matriz, ...}
         donde cada matriz es una lista de listas (filas, columnas).
     """
+    print("Movimiento para traducir:", movimiento)
     # --- Preparación y mapeos ---
     # Extraemos los elementos del movimiento:
     edge_perm = movimiento[0]       # Diccionario para aristas; ej: {1:"a", 2:"b", 3:"c", 4:"d"}
@@ -218,8 +224,8 @@ def traducir_a_cubo(movimiento, cube_state):
     orient_corners = movimiento[3]  # Lista de orientaciones para esquinas, para posiciones destino 1..4
     
     # Mapeo de letra a posición destino para aristas y esquinas:
-    edge_perm_mapping = {"a": 1, "b": 2, "c": 3, "d": 4}
-    corner_perm_mapping = {"e": 1, "f": 2, "g": 3, "h": 4}
+    edge_perm_mapping = {1: 1, 2: 2, 3: 3, 4: 4}
+    corner_perm_mapping = {1: 1, 2: 2, 3: 3, 4: 4}
     
     # Mapeos de la net para aristas:
     net_aristas_blanca = {1: (0, 1), 2: (1, 0), 3: (2, 1), 4: (1, 2)}
@@ -334,10 +340,10 @@ def traducir_a_cubo(movimiento, cube_state):
 
     
 
-cubo = iniciar()  # función que inicializa el cubo
+'''cubo = iniciar()  # función que inicializa el cubo
 movimiento = traducir_a_mov(cubo)
 print("Movimiento traducido:")
-print(movimiento)
+print(movimiento'''
 
 instrucciones = {
     "b1": "Gira la cara blanca 1 vez.",
