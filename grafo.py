@@ -260,7 +260,6 @@ def cargar_grafo_de_csv(archivo_csv):
             for i, adyacente in enumerate(adyacentes):
                 grafo.agregar_arista(numero, adyacente, i)                
     
-    print(f"Grafo cargado desde {archivo_csv}")
     return grafo
 
 

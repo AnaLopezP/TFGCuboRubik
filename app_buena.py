@@ -9,10 +9,10 @@ from PyQt6.QtWidgets import QLabel
 from PyQt6.QtCore import QTimer
 from OpenGL.GL import *
 from OpenGL.GLU import *
-from intermedio import *
+from cubo import *
 from grafo import *
 import random
-from estado_cubo import cube_state
+from variables_globales import *
 
 # ---------------------------
 # Estado global del cubo
@@ -397,7 +397,6 @@ class MainWidget(QWidget):
         try:
             # Obtener un nodo aleatorio del grafo
             numnodo_aleatorio = random.choice(list(grafo.nodos.values()))
-            print(numnodo_aleatorio)
             mov = numnodo_aleatorio.movimiento
             traducir_a_cubo(mov, cube_state)
             asignar_color_deuna(self.cubo)
@@ -488,6 +487,13 @@ class MainWindow(QMainWindow):
     def get_mainwidget(self):
         return self.mainWidget
         
+def run_app():
+    cubo = iniciar()
+    app = QApplication(sys.argv)
+    window = MainWindow()
+    window.resize(800, 600)
+    window.show()
+    sys.exit(app.exec())
 
 if __name__ == '__main__':
     cubo = iniciar()
