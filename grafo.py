@@ -1,20 +1,6 @@
 import csv
 from tqdm import tqdm
-import networkx as nx
-import matplotlib.pyplot as plt
-import sys
-
-
-'''
-Cuando se componen dos movimientos, se crea una arista entre el estado inicial y el resultado o nodo final. el peso del nodo es el movimiento aplicado para pasar de uno a otro. 
-entonces, para volver hacia atrás, se debe aplicar el movimiento inverso, osea que la arista que lleva del nodo resultado al nodo inicial tiene el peso del movimiento inverso.
-Para calcular el movimiento inverso, hay que operar el vertice resultado con todos los vertices del grafo hasta encontrar el vertice que da como resultado la identidad.
-Hay que hacer una funcion que haga eso, y en la funcion "agregar_arista" hay que aplicar la fuincion (224)
-'''
-
-'''
-Hacer tambien una funcion que me diga las aristas entre nodos
-'''
+from collections import deque
 
 csv.field_size_limit(1000000000)
 
@@ -22,7 +8,6 @@ class LeyGrupo():
     def __init__(self, movimiento, nombre):
         self.movimiento = movimiento
         self.nombre = nombre
-    
     
     def generar_movimiento(self):
         ciclo_alpha = self.crear_ciclo()
@@ -85,14 +70,11 @@ class LeyGrupo():
         return f"El movimiento {self.nombre} es: {self.movimiento}"
     
     def componer_movimientos(self, m1, m2):
-        '''print(m1)
-        print(m2)'''
         nuevo_mov = []
         nuevo_mov.append(self.componer_ciclos(m1[0], m2[0]))
         nuevo_mov.append(self.componer_posiciones_mod2(m1[1], m2[1], m2[0]))
         nuevo_mov.append(self.componer_ciclos(m1[2], m2[2]))
         nuevo_mov.append(self.componer_posiciones_mod3(m1[3], m2[3], m2[2]))
-        #print(nuevo_mov)
         return nuevo_mov
         
     def componer_ciclos(self, c1, c2):
@@ -101,7 +83,6 @@ class LeyGrupo():
             valor = c1[i+1]
             valor2 = c2[valor]
             nuevo_ciclo[i+1] = valor2
-        #print(nuevo_ciclo)
         return nuevo_ciclo
     
     def calcular_ciclo_inverso(self, c2):
@@ -110,30 +91,24 @@ class LeyGrupo():
     
     def componer_posiciones_mod2(self, p1, p2, c2):
         ciclo_inverso = self.calcular_ciclo_inverso(c2)
-        #print("Ciclo inverso:", ciclo_inverso)
 
         pos = [0] * 4
         for k in range(4):
             x = ciclo_inverso[k+1]
             pos[k] = p1[x-1]
-        #print("Pos mod 2:", pos)
 
         nueva_pos = [(pos[i] + p2[i]) % 2 for i in range(4)]
-        #print("Nueva posición mod 2:", nueva_pos)
         return nueva_pos
 
     def componer_posiciones_mod3(self, p1, p2, c2):
         ciclo_inverso = self.calcular_ciclo_inverso(c2)
-        #print("Ciclo inverso:", ciclo_inverso)
 
         pos = [0] * 4
         for k in range(4):
             x = ciclo_inverso[k+1]
             pos[k] = p1[x-1]
-        #print("Pos mod 3:", pos)
 
         nueva_pos = [(pos[i] + p2[i]) % 3 for i in range(4)]
-        #print("Nueva posición mod 3:", nueva_pos)
         return nueva_pos
     
     def comprobar_restricciones(self, m1):
@@ -158,6 +133,7 @@ class LeyGrupo():
 
 
 # creamos un csv con los movimientos base de datos (son 34) solo si no existe
+# Este codigo solo se ejecuta una vez, para crear el csv
 def crear_csv():
     while True:
         print("-------------------- GENERANDO MOVIMIENTO --------------------")
@@ -169,13 +145,7 @@ def crear_csv():
         if continuar != "s":
             break
         
-'''# cargamos los movimientos del csv
-movimientos = LeyGrupo.cargar_desde_csv("movimientos.csv")
-print("Movimientos cargados:")
-for nombre, movimiento in movimientos:
-    print(f"{nombre}: {movimiento}")
-    '''
-    
+
 # creamos una clase Nodo para almacenar los movimientos
 class Nodo():
     def __init__(self, numero, nombre, movimiento):
@@ -188,9 +158,7 @@ class Nodo():
         # Asegurarse de que no se agregue el propio nodo ni duplicados. ponemos el nodo adyacente en la posicion del movimiento aplicado para llegar a él
         if nodo != self and nodo not in self.adyacentes:
             self.adyacentes.insert(posicion, nodo)
-            #print("Arista añadida.")
-
-    
+            
     def __str__(self):
         return f"El movimiento es: {self.movimiento}"    
 
@@ -199,12 +167,10 @@ class Grafo():
     def __init__(self):
         self.nodos = {} # diccionario {numero del nodo: nodo}
         self.ley = LeyGrupo([], "")
-        
     
     def agregar_nodo(self, numero, nombre, movimiento):
         if numero not in self.nodos:
             self.nodos[numero] = Nodo(numero, nombre, movimiento)
-            #print("Nodo añadido.")
         else:
             print("Ya existe un nodo con ese número.")
     
@@ -213,15 +179,12 @@ class Grafo():
         # evitamos crear una arista con el mismo nodo
         if nodo1 != nodo2:
             if nodo1 in self.nodos and nodo2 in self.nodos:
-                self.nodos[nodo1].agregar_adyacente(self.nodos[nodo2], posicion)
-                #print(f"Arista añadida desde {nodo1} a {nodo2} en la posicion {posicion}.")
-            
+                self.nodos[nodo1].agregar_adyacente(self.nodos[nodo2], posicion)            
     
     def mostrar_grafo(self):
         for num, nodo in self.nodos.items():
             print(f"Nodo {num} ({nodo.movimiento}): {[n.numero for n in nodo.adyacentes]}")           
-
-        
+   
     def combinar_grafo(self, nodos_fuente, nodos_destino, grafo_destino):
         """
         Combina los movimientos de dos grupos de nodos y guarda los nuevos en dos grafos, uno con toda la informacion y otro solo con la nueva
@@ -284,7 +247,6 @@ def cargar_grafo_de_csv(archivo_csv):
 
         # Crear los nodos
         for row in reader:
-            #print(row)
             numero = int(row[0])
             nombre = row[1]
             movimiento = eval(row[2])  # Convertimos la cadena a su estructura original 
@@ -296,7 +258,6 @@ def cargar_grafo_de_csv(archivo_csv):
         # crear las aristas
         for numero, adyacentes in conexiones.items():
             for i, adyacente in enumerate(adyacentes):
-                #print(f"Agregando arista desde {numero} a {adyacente} en la posición {i}")
                 grafo.agregar_arista(numero, adyacente, i)                
     
     print(f"Grafo cargado desde {archivo_csv}")
@@ -312,7 +273,6 @@ def cargar_movimientos_iniciales(archivo_csv):
         reader = csv.reader(file)
         for i, row in enumerate(reader):
             movimientos[i] = row[0]
-    #print(movimientos)
     return movimientos
 
 
@@ -330,30 +290,8 @@ def buscar_nodo(movimiento):
             return nodo.numero
     return None
         
-'''def visualizar_grafo(grafo):
-    # Crear un grafo vacío de NetworkX
-    G = nx.Graph()
-
-    # Agregar los nodos al grafo
-    for num, nodo in grafo.nodos.items():
-        G.add_node(num, label=nodo.nombre)
-    
-    # Agregar las aristas entre los nodos
-    for num, nodo in grafo.nodos.items():
-        for adyacente in nodo.adyacentes:
-            G.add_edge(num, adyacente.numero)
-
-    # Dibujar el grafo
-    pos = nx.spring_layout(G)  # Algoritmo de disposición para los nodos
-    labels = nx.get_node_attributes(G, 'label')  # Etiquetas para los nodos
-
-    plt.figure(figsize=(100, 100))  # Tamaño de la imagen
-    nx.draw(G, pos, with_labels=True, node_size=1000, node_color='skyblue', font_size=10, font_weight='bold')
-    nx.draw_networkx_labels(G, pos, labels=labels, font_size=10, font_weight='bold')
-
-    plt.title("Visualización del Grafo de Movimientos")
-    plt.show()
-'''
+# ------------- CODIGO PARA CREAR EL GRAFO FINAL------------------
+# Este código se ejecuta una vez para crear el grafo final
 #cargo los movimientos del csv
 '''grafo = Grafo()
 
@@ -396,11 +334,7 @@ grafo_final.combinar_grafo(grafo_combinado4.nodos.values(), grafo.nodos.values()
 grafo_final.guardar_grafo_csv("grafo_final.csv")'''
 
 
-#grafo_final= cargar_grafo_de_csv("grafo_final.csv")
-#grafo_final.mostrar_grafo()
-
 # Algoritmo de búsqueda en anchura para encontrar el camino más corto a la identidad
-from collections import deque
 
 def buscar_identidad(nodo_inicial):
     ''' 
@@ -414,7 +348,7 @@ def buscar_identidad(nodo_inicial):
     visitados = set()
     
     secuencia_movimientos = [] # guardamos los movimientos
-    historial = []
+    historial = [] # micky herramienta que usaremos más adelante (guarda los nodos visitados)
     cola.append(nodo_inicial)
     
     while cola:
@@ -434,7 +368,6 @@ def buscar_identidad(nodo_inicial):
                 if nodo.numero == movimiento_identidad:
                     secuencia_movimientos.append(movimientos_iniciales.get(indice, f"Movimiento_{indice}"))
                     historial.append(movimiento_identidad)
-                    print(historial)
                     return secuencia_movimientos, historial  # Terminamos porque llegamos a 51
         
         # Si no encontramos el 51, buscamos el nodo con el número más pequeño
@@ -450,14 +383,3 @@ def buscar_identidad(nodo_inicial):
                     break  # Solo agregamos el primer camino encontrado
     
     return secuencia_movimientos, historial
-
-
-
-'''# buscamos el camino desde un nodo aleatorio
-camino_movimientos = buscar_identidad(9999)
-
-if camino_movimientos:
-    print("Secuencia de movimientos para llegar a la identidad:")
-    print(camino_movimientos)
-else:
-    print("No se encontró un camino a la identidad desde el nodo indicado.")'''

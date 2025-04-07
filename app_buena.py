@@ -1,4 +1,4 @@
-import sys, math
+import sys
 from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,  QPushButton, QStackedWidget, QGraphicsView, QGraphicsScene, QGraphicsRectItem
 from PyQt6.QtOpenGLWidgets import QOpenGLWidget
 from PyQt6.QtWidgets import QTextEdit, QHBoxLayout, QWidget
@@ -10,7 +10,7 @@ from PyQt6.QtCore import QTimer
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from intermedio import *
-from main import *
+from grafo import *
 import random
 from estado_cubo import cube_state
 
@@ -87,10 +87,7 @@ class CuboTile(QGraphicsRectItem):
         elif self.cara == "N" and self.fila == 0:
             self.cambiar_color()
         # Actualizamos el estado global
-        cube_state[self.cara][self.fila][self.columna] = self.color_actual
-        print(f"Estado global actualizado: {self.cara} [{self.fila}, {self.columna}] = {self.color_actual}")
-        
-                
+        cube_state[self.cara][self.fila][self.columna] = self.color_actual  
         # actualizamos la vista 3D
         self.cube3d.update()
 
@@ -99,17 +96,14 @@ class CuboTile(QGraphicsRectItem):
         nuevo_color = COLORES_CAMBIABLES[(indice_actual + 1) % len(COLORES_CAMBIABLES)]
         self.setBrush(QBrush(COLORES_MAPA[nuevo_color]))
         self.color_actual = nuevo_color
-        asignar_color(cubo, self.cara, self.fila, self.columna, nuevo_color)
 
 class RubiksCubeNet(QGraphicsView):
     def __init__(self, parent=None, cube3d=None):
         super().__init__(parent)
         self.setFixedSize(1000, 800)
         self.scene = QGraphicsScene()
-        #self.cubo_total = 
         self.setScene(self.scene)
         self.cube3d = cube3d
-        # color de fondo gris oscuro
         self.setBackgroundBrush(QColor(25, 25, 25))
         self.scene.setSceneRect(0, 0, 600, 500)
         self.tile = None
@@ -148,7 +142,7 @@ class RubiksCube3D(QOpenGLWidget):
         glEnable(GL_DEPTH_TEST)
         glEnable(GL_COLOR_MATERIAL)
         glShadeModel(GL_SMOOTH)
-        glDisable(GL_LIGHTING)  # Colores planos
+        glDisable(GL_LIGHTING) 
 
     def resizeGL(self, w, h):
         glViewport(0, 0, w, h)
@@ -292,7 +286,7 @@ class SolutionWidget(QWidget):
         self.setWindowTitle("Solución paso a paso")
         self.secuencia_movimientos = secuencia_movimientos
         self.historial = historial
-        self.current_step = 0  # Índice del paso actual
+        self.current_step = 0 
         
         # Layout principal horizontal
         mainLayout = QHBoxLayout(self)
@@ -316,12 +310,10 @@ class SolutionWidget(QWidget):
         
         # Panel derecho: vista 3D del cubo
         self.cube3DView = RubiksCube3D()
-        
-        # Agregar ambos paneles al layout principal con estiramientos
-        mainLayout.addWidget(leftPanel, 2)  # Izquierda más ancha
-        mainLayout.addWidget(self.cube3DView, 1)  # Derecha con vista 3D
-        
-        # Mostrar el primer paso (puede ser una descripción inicial)
+
+        mainLayout.addWidget(leftPanel, 2)
+        mainLayout.addWidget(self.cube3DView, 1) 
+
         self.updateStep()
     
     def updateStep(self):
@@ -329,7 +321,7 @@ class SolutionWidget(QWidget):
         if self.current_step < len(self.secuencia_movimientos):
             mov = self.secuencia_movimientos[self.current_step]
             texto = instrucciones.get(mov, f"Movimiento desconocido: {mov}")
-            self.instructionsText.setText(f"Paso {self.current_step + 1}:\n  {texto}")
+            self.instructionsText.setText(f"Paso {self.current_step + 1}/{len(self.secuencia_movimientos)}:\n {texto}")
             
         else:
             self.instructionsText.setText("¡Solución completada!")
@@ -339,17 +331,18 @@ class SolutionWidget(QWidget):
         """Avanza al siguiente paso de la solución."""
         if self.current_step < len(self.secuencia_movimientos): 
             num_movimiento_actual = self.historial[self.current_step] 
-            print("Movimiento actual numero:", num_movimiento_actual)
+            
             # buscamos el movimiento en el grafo
             movimiento_actual = grafo.nodos[num_movimiento_actual].movimiento
             traducir_a_cubo(movimiento_actual, cube_state)
-            main_widget = self.parent().parent()  # Acceder al widget principal
+            main_widget = self.parent().parent()
             if hasattr(main_widget, 'get_cubenet'):
                 cubenet = main_widget.get_cubenet()
                 cubenet.drawNet()
+                
             # Actualizar la vista 3D
             self.cube3DView.update()
-            self.current_step += 1  # Ahora incrementamos el paso aquí
+            self.current_step += 1 
             self.updateStep()
 
 
@@ -411,8 +404,6 @@ class MainWidget(QWidget):
 
             # Actualizar la vista net
             self.cubeNet.drawNet()
-            # Actualizar la vista 3D
-            #self.cube3D.update()
             self.mostrarMensaje("Cubo mezclado")
             
         except Exception as e:
@@ -427,16 +418,11 @@ class MainWidget(QWidget):
                 for j in range(3):
                     cube_state[cara][i][j] = cara
         
-        
         self.cubo = iniciar()
-
-
         self.cubeNet.drawNet()
         self.cube3D.update()
         
-        # Si la vista actual es la de solución, volver a la vista original
-        if isinstance(self.stacked.currentWidget(), SolutionWidget):
-            self.stacked.setCurrentIndex(0)  # Volver a la vista original
+        self.stacked.setCurrentIndex(0)  # Volver a la vista original
 
         self.mostrarMensaje("Cubo reiniciado")
         return cube_state, self.cubo
@@ -444,14 +430,12 @@ class MainWidget(QWidget):
     def toggleView(self):
         current = self.stacked.currentIndex()
         self.stacked.setCurrentIndex(1 - current)
-        # Al cambiar de vista, se actualiza la escena (la vista net se reconstruye)
         self.cubeNet.drawNet()
         self.cube3D.update()
     
     def mostrarMensaje(self, texto):
         self.messageLabel.setText(texto)
         self.messageLabel.show()
-        # Ocultar el mensaje después de 3 segundos
         QTimer.singleShot(3000, self.messageLabel.hide)
 
     def solucionar(self):
@@ -468,36 +452,20 @@ class MainWidget(QWidget):
                 if count != 9:
                     raise ValueError("Solo pueden haber 9 casillas de cada color")
 
-            '''# Debug: Mostrar información de las piezas
-            for i in range(3):
-                for j in range(3):
-                    mol = cubo[i][j]
-                    if mol is not None:
-                        print(mol.cara, mol.fila, mol.columna, mol.color, i, j)
-                        if isinstance(mol, Vertice):
-                            print(mol.adyacente.cara, mol.adyacente.fila, mol.adyacente.columna, mol.adyacente.color, i, j)
-                            print(mol.precedente.cara, mol.precedente.fila, mol.precedente.columna, mol.precedente.color, i, j)
-                        elif isinstance(mol, Arista):
-                            print(mol.adyacente.cara, mol.adyacente.fila, mol.adyacente.columna, mol.adyacente.color, i, j)
-'''
+            asignar_color_deuna(self.cubo)  # Asignar colores a las piezas del cubo
+            
             # Convertimos el cubo a su representación de movimiento
-            print(cubo)
             movimiento = traducir_a_mov(self.cubo)  # Aquí puede haber un raise
-            print("Movimiento traducido:", movimiento)
 
             # Buscamos el nodo en el grafo
             numero_mov = buscar_nodo(movimiento)  # Aquí puede haber otro raise
             if numero_mov is None:
                 raise ValueError("No se encontró un nodo en el grafo")
 
-            #print("Número de nodo encontrado:", numero_mov)
-
             # Buscamos la secuencia de movimientos
             secuencia_movimientos, historial = buscar_identidad(numero_mov)
-            print("Secuencia de movimientos:", secuencia_movimientos)
-            print("historial de movimientos:", historial)
         
-        # Si se obtuvo una solución, crear y mostrar el widget de solución
+            # Si se obtuvo una solución, crear y mostrar el widget de solución
             if secuencia_movimientos is not None:
                 self.solutionWidget = SolutionWidget(secuencia_movimientos, historial)
                 self.stacked.addWidget(self.solutionWidget)

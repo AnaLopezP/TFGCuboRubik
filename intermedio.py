@@ -1,17 +1,9 @@
 from estado_cubo import cube_state
-from main import *
+from grafo import *
 class Molecula:
-    def __init__(self):
-        self.cara = None
-        self.fila = None
-        self.columna = None
-        self.color = None
-        
     def set_color(self, color):
         self.color = color
-        
-    
-        
+                
     def __init__(self, cara, fila, columna, color):
         self.cara = cara
         self.fila = fila
@@ -29,28 +21,20 @@ class Vertice(Arista):
         self.precedente = precedente
 
 
-    
 def asignar_color(cubo, cara, fila, columna, nuevo_color):
-    cube_state[cara][fila][columna] = nuevo_color
-    #print(f"Color asignado a {cara} en fila {fila}, columna {columna}: {nuevo_color}")
-    
+    cube_state[cara][fila][columna] = nuevo_color 
     for i in range(3):
         for j in range(3):
             mol = cubo[i][j]
             if isinstance(mol, Molecula):
-                #print(mol.fila)
                 if mol.fila == fila and mol.columna == columna and mol.cara == cara:
-                    #print(f"Encontrado: {mol.cara} en fila {fila}, columna {columna}, en {i}, {j}")
                     mol.set_color(nuevo_color)
                 
                 elif mol.adyacente.fila == fila and mol.adyacente.columna == columna and mol.adyacente.cara == cara:
-                    #print(f"Encontrado: {mol.adyacente.cara} en fila {fila}, columna {columna}, en {i}, {j}")
                     mol.adyacente.set_color(nuevo_color)
                     
                 elif isinstance(mol, Vertice) and mol.precedente.fila == fila and mol.precedente.columna == columna and mol.precedente.cara == cara:
-                    #print(f"Encontrado: {mol.precedente.cara} en fila {fila}, columna {columna}, en {i}, {j}")
                     mol.precedente.set_color(nuevo_color)
-    #print("Color asignado correctamente")   
     
 def asignar_color_deuna(cubo):
     for cara in cube_state:
@@ -197,31 +181,13 @@ def traducir_a_mov(cubo):
     return [permutación_aristas, orientacion_aristas, permutación_esquinas, orientacion_esquinas]
 
 def traducir_a_cubo(movimiento, cube_state):
-    """
-    Aplica un movimiento al cubo actualizando el cube_state.
-    
-    El movimiento es una lista de 4 elementos:
-      [
-         {1: letra, 2: letra, 3: letra, 4: letra},   # Permutación de aristas (valores: "a", "b", "c", "d")
-         [n, n, n, n],                              # Orientaciones de aristas (0 o 1) para posiciones 1..4
-         {1: letra, 2: letra, 3: letra, 4: letra},   # Permutación de esquinas (valores: "e", "f", "g", "h")
-         [m, m, m, m]                               # Orientaciones de esquinas (0, 1 o 2) para posiciones 1..4
-      ]
-    
-    Se asume que:
-      - La cara blanca se denota "B".
-      - Las caras laterales se denotan "R", "AZ", "N" y "V".
-      - El cube_state es un diccionario de la forma:
-            {"B": matriz, "R": matriz, "AZ": matriz, "N": matriz, "V": matriz, ...}
-        donde cada matriz es una lista de listas (filas, columnas).
-    """
     print("Movimiento para traducir:", movimiento)
     # --- Preparación y mapeos ---
     # Extraemos los elementos del movimiento:
-    edge_perm = movimiento[0]       # Diccionario para aristas; ej: {1:"a", 2:"b", 3:"c", 4:"d"}
-    orient_edges = movimiento[1]    # Lista de orientaciones para aristas, en orden para posiciones destino 1..4
-    corner_perm = movimiento[2]     # Diccionario para esquinas; ej: {1:"e", 2:"f", 3:"g", 4:"h"}
-    orient_corners = movimiento[3]  # Lista de orientaciones para esquinas, para posiciones destino 1..4
+    edge_perm = movimiento[0]       
+    orient_edges = movimiento[1]    
+    corner_perm = movimiento[2]     
+    orient_corners = movimiento[3]
     
     # Mapeo de letra a posición destino para aristas y esquinas:
     edge_perm_mapping = {1: 1, 2: 2, 3: 3, 4: 4}
@@ -253,7 +219,6 @@ def traducir_a_cubo(movimiento, cube_state):
         4: ("R", (2, 2))
     }
     # Colores laterales intrínsecos de las esquinas (según la pieza original):
-    # (orden: (pegatina lateral1, pegatina lateral2))
     corner_colors = {
         1: ("R", "AZ"),
         2: ("AZ", "N"),
@@ -335,15 +300,6 @@ def traducir_a_cubo(movimiento, cube_state):
             raise ValueError("Orientación de esquina desconocida: " + str(orient))
     
     return cube_state
-
-
-
-    
-
-'''cubo = iniciar()  # función que inicializa el cubo
-movimiento = traducir_a_mov(cubo)
-print("Movimiento traducido:")
-print(movimiento'''
 
 instrucciones = {
     "b1": "Gira la cara blanca 1 vez.",
