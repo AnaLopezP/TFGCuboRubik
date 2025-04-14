@@ -72,7 +72,7 @@ class CuboTile(QGraphicsRectItem):
         self.setPen(QPen(Qt.GlobalColor.black, 2))
        
         
-    def mousePressEvent(self, event):
+    def mousePressEvent(self):
         # Lógica de cambio de color:
         # - Si es la cara blanca ("B") y la casilla no es la central, o
         # - Si es una cara contigua a la blanca (V, N, R, AZ) y es la fila 0.
@@ -287,63 +287,113 @@ class SolutionWidget(QWidget):
         self.secuencia_movimientos = secuencia_movimientos
         self.historial = historial
         self.current_step = 0 
-        
+        self.showingFullCube = False  # Estado de vista actual
+
         # Layout principal horizontal
-        mainLayout = QHBoxLayout(self)
-        
-        # Panel izquierdo: instrucciones + botón de siguiente paso
-        leftPanel = QWidget()
-        leftLayout = QVBoxLayout(leftPanel)
+        self.mainLayout = QHBoxLayout(self)
+
+        # Panel izquierdo: instrucciones + botones
+        self.leftPanel = QWidget()
+        leftLayout = QVBoxLayout(self.leftPanel)
         
         self.instructionsText = QTextEdit()
         self.instructionsText.setReadOnly(True)
         self.comentario = QTextEdit()
         self.comentario.setReadOnly(True)
-        self.comentario.setText("¡Bienvenido a la solución del cubo Rubik!\n\n Todos los giros se hacen hacia la izquierda, en sentido antihorario, y cada giro es de 90º.\n\n :)")
+        self.comentario.setText("¡Bienvenido a la solución del cubo Rubik!\n\nTodos los giros son de 90º en sentido antihorario.\n\n :)")
         leftLayout.addWidget(self.comentario, 1)
         leftLayout.addWidget(self.instructionsText, 1)
-
         
+        # Botón para pasar al siguiente paso
         self.nextStepBtn = QPushButton("Siguiente paso")
         self.nextStepBtn.clicked.connect(self.nextStep)
         leftLayout.addWidget(self.nextStepBtn)
         
+        # Botón para volver a la pantalla principal
+        self.volverBtn = QPushButton("Volver al menú")
+        self.volverBtn.clicked.connect(self.volverMenu)
+        leftLayout.addWidget(self.volverBtn)
+
+        # Botón redondo para cambiar vista
+        self.toggleViewBtn = QPushButton("<<")
+        self.toggleViewBtn.setFixedSize(40, 40)
+        self.toggleViewBtn.setStyleSheet("""
+            QPushButton {
+                border-radius: 20px;
+                background-color: #E74C3C;
+                color: white;
+                font-weight: bold;
+                font-size: 18px;
+            }
+            QPushButton:hover {
+                background-color: #C0392B;
+            }
+        """)
+        self.toggleViewBtn.clicked.connect(self.toggleView)
+
+        # Contenedor del botón para centrar verticalmente
+        buttonContainer = QVBoxLayout()
+        buttonContainer.addStretch()
+        buttonContainer.addWidget(self.toggleViewBtn)
+        buttonContainer.addStretch()
+
+        self.middleWidget = QWidget()
+        self.middleWidget.setLayout(buttonContainer)
+
         # Panel derecho: vista 3D del cubo
         self.cube3DView = RubiksCube3D()
 
-        mainLayout.addWidget(leftPanel, 2)
-        mainLayout.addWidget(self.cube3DView, 1) 
+        # Añadir widgets al layout principal
+        self.mainLayout.addWidget(self.leftPanel, 2)
+        self.mainLayout.addWidget(self.middleWidget)
+        self.mainLayout.addWidget(self.cube3DView, 3)
 
         self.updateStep()
-    
+
     def updateStep(self):
-        """Actualiza la instrucción y aplica el siguiente movimiento (si existe)."""
         if self.current_step < len(self.secuencia_movimientos):
             mov = self.secuencia_movimientos[self.current_step]
             texto = instrucciones.get(mov, f"Movimiento desconocido: {mov}")
             self.instructionsText.setText(f"Paso {self.current_step + 1}/{len(self.secuencia_movimientos)}:\n {texto}")
-            
         else:
             self.instructionsText.setText("¡Solución completada!")
             self.nextStepBtn.setEnabled(False)
 
     def nextStep(self):
-        """Avanza al siguiente paso de la solución."""
         if self.current_step < len(self.secuencia_movimientos): 
             num_movimiento_actual = self.historial[self.current_step] 
-            
-            # buscamos el movimiento en el grafo
             movimiento_actual = grafo.nodos[num_movimiento_actual].movimiento
             traducir_a_cubo(movimiento_actual, cube_state)
-            main_widget = self.parent().parent()
+            main_widget = self.parent().parent()  # Asumiendo que está anidado en MainWidget → MainContainer
             if hasattr(main_widget, 'get_cubenet'):
                 cubenet = main_widget.get_cubenet()
                 cubenet.drawNet()
-                
-            # Actualizar la vista 3D
             self.cube3DView.update()
             self.current_step += 1 
             self.updateStep()
+
+    def volverMenu(self):
+        parent = self.parent()
+        while parent is not None and not isinstance(parent, MainContainer):
+            parent = parent.parent()
+        if parent is not None:
+            parent.stacked.setCurrentIndex(0)  # Índice 0 para el menú
+
+    def toggleView(self):
+        if self.showingFullCube:
+            # Volver a la vista dividida
+            self.leftPanel.show()
+            self.toggleViewBtn.setText("<<")
+            self.mainLayout.insertWidget(0, self.leftPanel)
+            self.mainLayout.insertWidget(1, self.middleWidget)
+        else:
+            # Ocultar panel izquierdo, mover botón al borde
+            self.leftPanel.hide()
+            self.toggleViewBtn.setText(">>")
+            self.mainLayout.removeWidget(self.leftPanel)
+            self.mainLayout.removeWidget(self.middleWidget)
+            self.mainLayout.insertWidget(0, self.middleWidget)
+        self.showingFullCube = not self.showingFullCube
 
 
 # ---------------------------
@@ -366,20 +416,33 @@ class MainWidget(QWidget):
         
         # Mensajes temporales de restricciones 
         self.messageLabel = QLabel("")
-        self.messageLabel.setStyleSheet("background-color: pink; color: black; font-size: 16px; padding: 5px;")
+        self.messageLabel.setStyleSheet("""
+                                        background-color: red; 
+                                        color: white; 
+                                        font-size: 16px; 
+                                        padding: 10px; 
+                                        border-radius: 5px;
+                                    """)
         self.messageLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(self.messageLabel)
         self.messageLabel.hide()
         
         # Layout horizontal para botones
         btnLayout = QHBoxLayout()
-        self.solucionarBtn = QPushButton("Solucionar")
+        self.solucionarBtn = QPushButton("Resolver Cubo")
+        self.solucionarBtn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.solucionarBtn.clicked.connect(self.solucionar)
-        self.toggleBtn = QPushButton("Cambiar Vista")
+        
+        self.toggleBtn = QPushButton("Alternar Vista 3D/plana")
+        self.toggleBtn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.toggleBtn.clicked.connect(self.toggleView)
-        self.reiniciarBtn = QPushButton("Reiniciar Cubo")
+        
+        self.reiniciarBtn = QPushButton("Restablecer Cubo")
+        self.reiniciarBtn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.reiniciarBtn.clicked.connect(self.reiniciarCubo)
-        self.shuffleBtn = QPushButton("Mezclar")
+        
+        self.shuffleBtn = QPushButton("Aleatorizar Cubo")
+        self.shuffleBtn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.shuffleBtn.clicked.connect(self.mezclarCubo)
         
         btnLayout.addWidget(self.solucionarBtn)
@@ -408,10 +471,25 @@ class MainWidget(QWidget):
         except Exception as e:
             self.mostrarMensaje(f"Error al mezclar: {str(e)}")
             print("Error al mezclar el cubo:", e)
+            
+    def cubo_solucionado(self):
+        # Recorremos cada cara y comprobamos que todas las casillas sean iguales a la letra de la cara.
+        for cara, matriz in cube_state.items():
+            for fila in matriz:
+                for color in fila:
+                    if color != cara:
+                        return False
+        return True
     
     def reiniciarCubo(self):
+        
+        if self.cubo_solucionado():
+            self.mostrarMensaje("El cubo ya está solucionado. No se puede reiniciar.")
+            return cube_state, self.cubo
+        
+        current_index = self.stacked.currentIndex() # la pestaña actual
+        
         # Reiniciar el cubo a su estado inicial
-        # Modificar el estado del cubo en el mismo objeto, en lugar de reassignar cube_state
         for cara in cube_state:
             for i in range(3):
                 for j in range(3):
@@ -421,7 +499,7 @@ class MainWidget(QWidget):
         self.cubeNet.drawNet()
         self.cube3D.update()
         
-        self.stacked.setCurrentIndex(0)  # Volver a la vista original
+        self.stacked.setCurrentIndex(current_index) # ponemos la vista actual pero reiniciada
 
         self.mostrarMensaje("Cubo reiniciado")
         return cube_state, self.cubo
@@ -438,6 +516,11 @@ class MainWidget(QWidget):
         QTimer.singleShot(3000, self.messageLabel.hide)
 
     def solucionar(self):
+        # comprebamos que el cubo no está solucionado
+        if self.cubo_solucionado():
+            self.mostrarMensaje("El cubo ya está solucionado.")
+            return None
+        
         try:
             # Contar casillas por color
             counts = {}
@@ -469,7 +552,10 @@ class MainWidget(QWidget):
                 self.solutionWidget = SolutionWidget(secuencia_movimientos, historial)
                 self.stacked.addWidget(self.solutionWidget)
                 self.stacked.setCurrentWidget(self.solutionWidget)
-            
+                self.toggleBtn.setEnabled(False)  # Deshabilitar el botón de cambiar vista
+                self.shuffleBtn.setEnabled(False)  # Deshabilitar el botón de mezclar
+                self.reiniciarBtn.setEnabled(False)  # Deshabilitar el botón de reiniciar
+                self.solucionarBtn.setEnabled(False)  # Deshabilitar el botón de resolver
             return secuencia_movimientos, historial
 
         except Exception as e:
@@ -477,15 +563,100 @@ class MainWidget(QWidget):
             print("Error detectado:", e)
             return None
 
+
+class MainMenuWidget(QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        layout = QVBoxLayout(self)
+        
+        # Definir un estilo global para el menú
+        self.setStyleSheet("""
+            QWidget {
+                background-color: #2C3E50;  /* Color de fondo azul oscuro */
+            }
+            QLabel#titleLabel {
+                color: #ECF0F1;    /* Texto blanco */
+                font-size: 32px;
+                font-weight: bold;
+            }
+            QLabel#subtitleLabel {
+                color: #BDC3C7;   /* Gris claro */
+                font-size: 18px;
+            }
+            QPushButton {
+                background-color: #E74C3C; /* Botón rojo brillante */
+                color: white;
+                padding: 10px;
+                font-size: 16px;
+                border: none;
+                border-radius: 8px;
+            }
+            QPushButton:hover {
+                background-color: #C0392B;
+            }
+        """)
+        
+        # Títulos con identificadores para aplicar estilos
+        titulo = QLabel("Bienvenido al Cubo Rubik")
+        titulo.setObjectName("titleLabel")
+        titulo.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        
+        subtitulo = QLabel("Seleccione el idioma y presione Comenzar")
+        subtitulo.setObjectName("subtitleLabel")
+        subtitulo.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        
+        self.startBtn = QPushButton("Comenzar")
+        self.startBtn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        
+        layout.addStretch(1)
+        layout.addWidget(titulo)
+        layout.addWidget(subtitulo)
+        layout.addStretch(1)
+        layout.addWidget(self.startBtn, alignment=Qt.AlignmentFlag.AlignCenter)
+        layout.addStretch(1)
+
+
+class MainContainer(QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.stacked = QStackedWidget()
+
+        self.menuWidget = MainMenuWidget()
+        self.cubeWidget = MainWidget()  # Creamos una primera instancia (por si acaso)
+        
+        self.stacked.addWidget(self.menuWidget)
+        self.stacked.addWidget(self.cubeWidget)
+
+        layout = QVBoxLayout(self)
+        layout.addWidget(self.stacked)
+
+        # Conecta el botón de "Comenzar"
+        self.menuWidget.startBtn.clicked.connect(self.startNewSession)
+
+    def startNewSession(self):
+        # Elimina el widget anterior del cubo
+        self.stacked.removeWidget(self.cubeWidget)
+        self.cubeWidget.deleteLater()
+
+        # Crea una nueva instancia de MainWidget
+        self.cubeWidget = MainWidget()
+        self.stacked.addWidget(self.cubeWidget)
+        
+        # Cambia a la nueva instancia
+        self.stacked.setCurrentWidget(self.cubeWidget)
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.mainWidget = MainWidget()
+        self.mainContainer = MainContainer()
         self.setMinimumSize(800, 600)
-        self.setCentralWidget(self.mainWidget)
+        self.setCentralWidget(self.mainContainer)
     
     def get_mainwidget(self):
         return self.mainWidget
+    
+    def keyPressEvent(self, event):
+        event.ignore()
         
 def run_app():
     cubo = iniciar()
@@ -495,10 +666,3 @@ def run_app():
     window.show()
     sys.exit(app.exec())
 
-if __name__ == '__main__':
-    cubo = iniciar()
-    app = QApplication(sys.argv)
-    window = MainWindow()
-    window.resize(400, 400)
-    window.show()
-    sys.exit(app.exec())
