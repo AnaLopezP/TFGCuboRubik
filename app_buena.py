@@ -642,6 +642,12 @@ class MainContainer(QWidget):
         self.cubeWidget = MainWidget()
         self.stacked.addWidget(self.cubeWidget)
         
+        # Asegúrate de que el cubo esté en su estado inicial
+        for cara in cube_state:
+            for i in range(3):
+                for j in range(3):
+                    cube_state[cara][i][j] = cara
+        
         # Cambia a la nueva instancia
         self.stacked.setCurrentWidget(self.cubeWidget)
 
