@@ -1,5 +1,6 @@
 from variables_globales import cube_state
 from grafo import *
+from orbitas import *
 
 
 class Molecula:
@@ -179,7 +180,54 @@ def traducir_a_mov(cubo):
     permutación_aristas = dict(sorted(permutación_aristas.items()))
     permutación_esquinas = dict(sorted(permutación_esquinas.items()))
     
-    return [permutación_aristas, orientacion_aristas, permutación_esquinas, orientacion_esquinas]
+    movimiento = [permutación_aristas, orientacion_aristas, permutación_esquinas, orientacion_esquinas]
+    
+    '''# -- PASO EXTRA: verificar las restricciones de orientacion y aplicar conjugacion si es necesario --
+    # Para las aristas, la suma de orientaciones debe ser 0 mod 2
+    if sum(orientacion_aristas) % 2 != 0:
+       # buscamos en cada arista las orientaciones que no son 0 y las cambiamos a 0
+       for pos, indice in aristas_pos_actual.items():
+            pieza = cubo[pos[0]][pos[1]]
+            if pieza is not None:
+                # Determinar la orientación real de esta arista
+                ori = 0
+                if pieza.color != "B":
+                    ori = 1  # asumiendo que 1 indica que la arista está flippeada
+                if ori != 0:
+                    # Identificar la órbita usando nuestro diccionario (para esta posición y orientación)
+                    orb_actual = identificar_orbita(pos, ori)
+                    # Suponiendo que la órbita canónica es 0
+                    if orb_actual != 0:
+                        g = calcular_transformacion(orb_actual, orbita_canonica=0)
+                        # Aplicar la conjugación a todo el movimiento (aquí puedes decidir aplicar solo a la parte de aristas)
+                        movimiento = aplicar_conjugacion_movimiento(movimiento, g)
+                        print(f"Aplicada conjugación para corregir una arista en órbita {orb_actual}")
+                        break  # Se corrige con la primera que se encuentre
+                    
+    # Para las esquinas, la suma de orientaciones debe ser 0 mod 3
+    if sum(orientacion_esquinas) % 3 != 0:
+       # buscamos en cada esquina las orientaciones que no son 0 y las cambiamos a 0
+       for pos, indice in esquinas_pos_actual.items():
+            pieza = cubo[pos[0]][pos[1]]
+            if pieza is not None:
+                # Determinar la orientación real de esta esquina
+                ori = 0
+                if pieza.color != "B":
+                    ori = 1  # asumiendo que 1 indica que la esquina está rotada una vez
+                elif pieza.adyacente.color != "B":
+                    ori = 2  # asumiendo que 2 indica que la esquina está rotada dos veces
+                if ori != 0:
+                    # Identificar la órbita usando nuestro diccionario (para esta posición y orientación)
+                    orb_actual = identificar_orbita(pos, ori)
+                    # Suponiendo que la órbita canónica es 0
+                    if orb_actual != 0:
+                        g = calcular_transformacion(orb_actual, orbita_canonica=0)
+                        # Aplicar la conjugación a todo el movimiento (aquí puedes decidir aplicar solo a la parte de esquinas)
+                        movimiento = aplicar_conjugacion_movimiento(movimiento, g)
+                        print(f"Aplicada conjugación para corregir una esquina en órbita {orb_actual}")
+                        break  # Se corrige con la primera que se encuentre'''
+    
+    return movimiento
 
 def traducir_a_cubo(movimiento, cube_state):
 

@@ -72,7 +72,7 @@ class CuboTile(QGraphicsRectItem):
         self.setPen(QPen(Qt.GlobalColor.black, 2))
        
         
-    def mousePressEvent(self):
+    def mousePressEvent(self, event):
         # Lógica de cambio de color:
         # - Si es la cara blanca ("B") y la casilla no es la central, o
         # - Si es una cara contigua a la blanca (V, N, R, AZ) y es la fila 0.
@@ -344,7 +344,7 @@ class SolutionWidget(QWidget):
         self.cube3DView = RubiksCube3D()
 
         # Añadir widgets al layout principal
-        self.mainLayout.addWidget(self.leftPanel, 2)
+        self.mainLayout.addWidget(self.leftPanel, 3)
         self.mainLayout.addWidget(self.middleWidget)
         self.mainLayout.addWidget(self.cube3DView, 3)
 
