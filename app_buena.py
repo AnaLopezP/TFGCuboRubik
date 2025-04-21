@@ -13,6 +13,8 @@ from cubo import *
 from grafo import *
 import random
 from variables_globales import *
+from PyQt6.QtWidgets import QMessageBox
+from orbitas import *
 
 # ---------------------------
 # Estado global del cubo
@@ -281,11 +283,15 @@ class RubiksCube3D(QOpenGLWidget):
 
 
 class SolutionWidget(QWidget):
-    def __init__(self, secuencia_movimientos, historial, parent=None):
+    def __init__(self, secuencia_movimientos, parent=None, *, mov_recibido=None, tipo_diferente=None, idx_diferente=None):
         super().__init__(parent)
         self.setWindowTitle("Solución paso a paso")
         self.secuencia_movimientos = secuencia_movimientos
-        self.historial = historial
+        self.tipo_diferente = tipo_diferente
+        self.idx_diferente = idx_diferente
+        self.current_idx = self.idx_diferente
+        self.mov_recibido = mov_recibido
+        self.secuencia_movimientos = secuencia_movimientos
         self.current_step = 0 
         self.showingFullCube = False  # Estado de vista actual
 
@@ -360,17 +366,55 @@ class SolutionWidget(QWidget):
             self.nextStepBtn.setEnabled(False)
 
     def nextStep(self):
-        if self.current_step < len(self.secuencia_movimientos): 
-            num_movimiento_actual = self.historial[self.current_step] 
-            movimiento_actual = grafo.nodos[num_movimiento_actual].movimiento
-            traducir_a_cubo(movimiento_actual, cube_state)
-            main_widget = self.parent().parent()  # Asumiendo que está anidado en MainWidget → MainContainer
-            if hasattr(main_widget, 'get_cubenet'):
-                cubenet = main_widget.get_cubenet()
-                cubenet.drawNet()
-            self.cube3DView.update()
-            self.current_step += 1 
-            self.updateStep()
+        if self.current_step >= len(self.secuencia_movimientos):
+            return
+        
+        # --- PASO ÚNICO: tomar el movimiento directamente de la secuencia ---
+        mov = self.secuencia_movimientos[self.current_step]
+        traducir_a_cubo(mov, cube_state)
+
+        # Actualizamos las vistas
+        main_widget = self.parent().parent()
+        if hasattr(main_widget, 'get_cubenet'):
+            main_widget.get_cubenet().drawNet()
+        self.cube3DView.update()
+
+        # Avanzamos el contador y actualizamos el texto
+        self.current_step += 1
+        self.updateStep()
+        
+    def _reinsertar(self):
+        """
+        Saca la pieza mal orientada de la cara blanca y la coloca
+        en su posición lateral/adya­cente, según mov_recibido.
+        """
+        idx = self.idx_diferente           # 0..3 en tus listas de orientaciones
+        i = idx + 1                        # llave para net_aristas_*/net_esquinas_*
+        
+        # --- ARISTAS ---
+        if self.tipo_diferente == 'arista':
+            ori = self.mov_recibido[1][idx]  # 1 si está girada
+            if ori == 1:
+                # posición en cara blanca
+                wb_r, wb_c = net_aristas_blanca[i]
+                # posición en cara lateral
+                lat_face, (lat_r, lat_c) = net_aristas_lateral[i]
+                # swap blanco ↔ lateral
+                cube_state["B"][wb_r][wb_c], cube_state[lat_face][lat_r][lat_c] = \
+                    cube_state[lat_face][lat_r][lat_c], cube_state["B"][wb_r][wb_c]
+
+        # --- ESQUINAS ---
+        else:  # tipo_diferente == 'vertice'
+            ori = self.mov_recibido[3][idx]  # 1 o 2 según dónde esté el sticker blanco
+            if ori != 0:
+                wb_r, wb_c = net_esquinas_blanca[i]
+                if ori == 1:
+                    face, (r, c) = net_esquinas_lateral1[i]
+                else:  # ori == 2
+                    face, (r, c) = net_esquinas_lateral2[i]
+                # swap blanco ↔ adyacente
+                cube_state["B"][wb_r][wb_c], cube_state[face][r][c] = \
+                    cube_state[face][r][c], cube_state["B"][wb_r][wb_c]
 
     def volverMenu(self):
         parent = self.parent()
@@ -514,13 +558,19 @@ class MainWidget(QWidget):
         self.messageLabel.setText(texto)
         self.messageLabel.show()
         QTimer.singleShot(3000, self.messageLabel.hide)
-
+        
     def solucionar(self):
-        # comprebamos que el cubo no está solucionado
+        # 1) Variables comunes (inicializamos todo para cubrir ambos casos)
+        secuencia_movimientos = None
+        tipo_diferente        = None
+        idx_diferente         = None
+        mov_recibido          = None
+        
+        # Comprobamos que el cubo no está solucionado
         if self.cubo_solucionado():
             self.mostrarMensaje("El cubo ya está solucionado.")
             return None
-        
+
         try:
             # Contar casillas por color
             counts = {}
@@ -535,34 +585,64 @@ class MainWidget(QWidget):
                     raise ValueError("Solo pueden haber 9 casillas de cada color")
 
             asignar_color_deuna(self.cubo)  # Asignar colores a las piezas del cubo
-            
+
             # Convertimos el cubo a su representación de movimiento
             movimiento = traducir_a_mov(self.cubo)  # Aquí puede haber un raise
 
             # Buscamos el nodo en el grafo
             numero_mov = buscar_nodo(movimiento)  # Aquí puede haber otro raise
-            if numero_mov is None:
-                raise ValueError("No se encontró un nodo en el grafo")
 
-            # Buscamos la secuencia de movimientos
-            secuencia_movimientos, historial = buscar_identidad(numero_mov)
-        
+            if numero_mov is None:
+                self.mostrarMensaje("Movimiento no encontrado en el grafo. Es posible que estés en otra órbita.")
+
+                # Mostrar ventana emergente con opciones
+                msgBox = QMessageBox()
+                msgBox.setIcon(QMessageBox.Icon.Warning)
+                msgBox.setWindowTitle("Movimiento no encontrado")
+                msgBox.setText("Movimiento no encontrado en el grafo. Es posible que estés en otra órbita.")
+                msgBox.setInformativeText("¿Deseas continuar en otra órbita o corregir el cubo?")
+                btn_otra_orbita = msgBox.addButton("Continuar en otra órbita", QMessageBox.ButtonRole.AcceptRole)
+                btn_corregir = msgBox.addButton("Corregir el cubo", QMessageBox.ButtonRole.RejectRole)
+                msgBox.setDefaultButton(QMessageBox.StandardButton.Cancel)
+
+                response = msgBox.exec()
+
+                if msgBox.clickedButton() == btn_otra_orbita:
+                    self.mostrarMensaje("Continuando en otra órbita...")
+                    secuencia, historial = solucionar_otra_orbita(movimiento)
+
+                    # le pasamos también la info de corrección al widget
+                    self.solutionWidget = SolutionWidget(
+                        secuencia,
+                        tipo_diferente=None,
+                        idx_diferente=None,
+                        mov_recibido=None
+                    )
+                    self.stacked.addWidget(self.solutionWidget)
+                    self.stacked.setCurrentWidget(self.solutionWidget)
+                    
+                else:
+                    self.mostrarMensaje("Corrige el cubo y vuelve a intentar.")
+                    return None
+            else:
+                # Movimiento encontrado en el grafo
+                secuencia_movimientos, historial = buscar_identidad(numero_mov)
+
             # Si se obtuvo una solución, crear y mostrar el widget de solución
             if secuencia_movimientos is not None:
                 self.solutionWidget = SolutionWidget(secuencia_movimientos, historial)
                 self.stacked.addWidget(self.solutionWidget)
                 self.stacked.setCurrentWidget(self.solutionWidget)
-                self.toggleBtn.setEnabled(False)  # Deshabilitar el botón de cambiar vista
-                self.shuffleBtn.setEnabled(False)  # Deshabilitar el botón de mezclar
-                self.reiniciarBtn.setEnabled(False)  # Deshabilitar el botón de reiniciar
-                self.solucionarBtn.setEnabled(False)  # Deshabilitar el botón de resolver
+                self.toggleBtn.setEnabled(False)
+                self.shuffleBtn.setEnabled(False)
+                self.reiniciarBtn.setEnabled(False)
+                self.solucionarBtn.setEnabled(False)
+
             return secuencia_movimientos, historial
 
         except Exception as e:
             self.mostrarMensaje(f"Error: {str(e)}")
-            print("Error detectado:", e)
             return None
-
 
 class MainMenuWidget(QWidget):
     def __init__(self, parent=None):

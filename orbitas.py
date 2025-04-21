@@ -1,105 +1,119 @@
-# Diccionario de órbitas
-ORBITAS = {
-    # vertice 0,0
-    ((0, 0), 1): 1,
-    ((0, 0), 2): 2,
-    # arista 0,1
-    ((0, 1), 1): 3,
-    # vertice 0,2
-    ((0, 2), 1): 4,
-    ((0, 2), 2): 5,
-    # arista 1,0
-    ((1, 0), 1): 6,
-    # arista 1,2
-    ((1, 2), 1): 7,
-    # vertice 2,0
-    ((2, 0), 1): 8,
-    ((2, 0), 2): 9,
-    # arista 2,1
-    ((2, 1), 1): 10,
-    # vertice 2,2
-    ((2, 2), 1): 11,
-    ((2, 2), 2): 12,
+
+from grafo import grafo, buscar_nodo, buscar_identidad
+
+# --- en orbitas.py (o justo después de importarlo) ---
+
+# Posición de cada arista en la cara blanca y su posición lateral
+net_aristas_blanca = {
+    1: (0, 1),
+    2: (1, 0),
+    3: (2, 1),
+    4: (1, 2)
+}
+net_aristas_lateral = {
+    1: ("R", (2, 1)),
+    2: ("AZ", (1, 2)),
+    3: ("N", (0, 1)),
+    4: ("V", (1, 0))
 }
 
-EDGE_POS   = [(0,1), (1,0), (2,1), (1,2)]
-CORNER_POS = [(0,0), (2,0), (2,2), (0,2)]
+# Posición de cada esquina en la cara blanca y sus dos posiciones laterales
+net_esquinas_blanca = {
+    1: (0, 0),
+    2: (2, 0),
+    3: (2, 2),
+    4: (0, 2)
+}
+net_esquinas_lateral1 = {
+    1: ("R", (2, 0)),
+    2: ("AZ", (2, 2)),
+    3: ("N", (0, 2)),
+    4: ("V", (0, 0))
+}
+net_esquinas_lateral2 = {
+    1: ("AZ", (0, 2)),
+    2: ("N",  (0, 0)),
+    3: ("V",  (2, 0)),
+    4: ("R",  (2, 2))
+}
 
-def restricciones_orientaciones(orient_edges, orient_corners):
-    """
-    Devuelve True si:
-      - sum(orient_edges) % 2 == 0
-      - sum(orient_corners) % 3 == 0
-    False en caso contrario.
-    """
-    ok_aristas  = (sum(orient_edges) % 2 == 0)
-    ok_esquinas = (sum(orient_corners) % 3 == 0)
-    return ok_aristas and ok_esquinas
 
-def detectar_orbita_desde_movimiento(movimiento):
-    perm_edges, orient_edges, perm_corners, orient_corners = movimiento
-    
-    # 1) Si está en órbita canónica, no hace falta más
-    if restricciones_orientaciones(orient_edges, orient_corners):
-        return 0  # órbita canónica
+def solucionar_otra_orbita(mov_recibido):
+    movimiento_cercano = None
+    diferencia_minima = float('inf')
+    indice_diferente = None
+    tipo_diferente = None  # 'arista' o 'vertice'
 
-    # 2) Si la suma de aristas no cuadra, buscamos qué arista está “flippeada”
-    if sum(orient_edges) % 2 != 0:
-        for idx, o in enumerate(orient_edges):
-            if o != 0:
-                pos = EDGE_POS[idx]
-                return identificar_orbita(pos, o)
+    for nodo in grafo.nodos.values():
+        mov = nodo.movimiento
+        dif = 0
+        idx_dif = None
+        tipo = None
 
-    # 3) Si la suma de esquinas no cuadra, buscamos qué esquina está mal girada
-    if sum(orient_corners) % 3 != 0:
-        for idx, o in enumerate(orient_corners):
-            if o != 0:
-                pos = CORNER_POS[idx]
-                return identificar_orbita(pos, o)
+        # Comparar orientaciones de aristas
+        for i, (a, b) in enumerate(zip(mov_recibido[1], mov[1])):
+            if a != b:
+                dif += 1
+                idx_dif = i
+                tipo = 'arista'
 
-    # En caso extraño (oriento sumas mal pero no encuentro pieza), devolvemos None
-    return None
+        # Comparar orientaciones de vértices
+        for i, (a, b) in enumerate(zip(mov_recibido[3], mov[3])):
+            if a != b:
+                dif += 1
+                idx_dif = i
+                tipo = 'vertice'
 
-def identificar_orbita(posicion, orientacion):
-    """
-    Dada una posición (por ejemplo, (fila, columna)) y la orientación
-    (por ejemplo, 1 o 2 para las piezas mal puestas), devuelve el número de órbita.
-    Si la pieza estuviese en estado canónico se devolverá 0 (o None).
-    """
-    # Suponiendo que en el estado canónico la orientación sea 0 (y no esté en el diccionario)
-    return ORBITAS.get((posicion, orientacion), 0)
+        if dif == 1:
+            # Encontramos un candidato válido
+            movimiento_cercano = mov
+            indice_diferente = idx_dif
+            tipo_diferente = tipo
+            break  # Terminamos la búsqueda al encontrar el primero válido
 
-def calcular_transformacion(orbita_actual, orbita_canonica=0):
-    """
-    Dada la órbita de la pieza (por ejemplo, 3, 5, etc.) y la órbita canónica (usualmente 0),
-    retorna una transformación g que corrija la diferencia.
-    En este ejemplo se retorna una "transformación" dummy, representada como una lista de movimientos.
-    """
-    if orbita_actual == orbita_canonica:
-        return []  # Identidad
-    # Para ilustrar: supondremos que la transformación es simplemente un "flip"
-    # La cantidad de "flip" o el contenido dependerá de la diferencia.
-    diferencia = orbita_actual - orbita_canonica
-    # Por ejemplo, cada unidad de diferencia se corrige con un "flip"
-    return ["flip"] * abs(diferencia)
+    if not movimiento_cercano:
+        raise ValueError("No se encontró ningún movimiento cercano en el grafo.")
 
-def inversa(transf):
-    """
-    Calcula la transformación inversa.
-    Asumimos que "flip" es involutiva (flip = flip), así que la inversa es la misma secuencia, invertida.
-    """
-    return transf[::-1]
+    # Obtener la solución desde el movimiento cercano
+    numero_mov = buscar_nodo(movimiento_cercano)
+    secuencia, historial = buscar_identidad(numero_mov)
 
-def concatenar(*listas):
-    """Concatena varias listas de movimientos"""
-    resultado = []
-    for L in listas:
-        resultado += L
-    return resultado
+    # Corregimos el historial, cambiando la pieza 'buena' por la 'incorrecta'
+    historial_corregido = []
+    for num in historial:
+        mov = grafo.nodos[num].movimiento
+        mov_corregido = list(mov)
 
-def aplicar_conjugacion_movimiento(movimiento, g):
+        if tipo_diferente == 'arista':
+            orientacion = mov_corregido[1][:]
+            orientacion[indice_diferente] = mov_recibido[1][indice_diferente]
+            mov_corregido[1] = orientacion
+        else:
+            orientacion = mov_corregido[3][:]
+            orientacion[indice_diferente] = mov_recibido[3][indice_diferente]
+            mov_corregido[3] = orientacion
+
+        historial_corregido.append(tuple(mov_corregido))
+
+    return secuencia, historial_corregido
+
+
+def corregir_movimiento(mov_recibido):
     """
-    Dada una secuencia de movimiento y una transformación g,
-    retorna: g + movimiento + g^-1
+    Busca en el grafo el único movimiento que coincide en todo salvo
+    en una orientación, y devuelve:
+      - mov_can:  el movimiento “canónico” (en tu grafo)
+      - tipo:     'arista' o 'vertice'
+      - idx:      índice 0..3 de la pieza distinta
     """
-    return concatenar(g, movimiento, inversa(g))
+    for nodo in grafo.nodos.values():
+        mov = nodo.movimiento
+        # contamos diferencias en orient_edges y orient_corners
+        dif = 0; idx = None; tipo = None
+        for i,(a,b) in enumerate(zip(mov_recibido[1], mov[1])):
+            if a!=b: dif+=1; idx=i; tipo='arista'
+        for i,(a,b) in enumerate(zip(mov_recibido[3], mov[3])):
+            if a!=b: dif+=1; idx=i; tipo='vertice'
+        if dif==1:
+            return mov, tipo, idx
+    raise ValueError("No se encontró movimiento cercano")
