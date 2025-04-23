@@ -283,11 +283,12 @@ class RubiksCube3D(QOpenGLWidget):
 
 
 class SolutionWidget(QWidget):
-    def __init__(self, secuencia_movimientos, historial, parent=None):
+    def __init__(self, secuencia_movimientos, historial, piecita_cambiada, parent=None):
         super().__init__(parent)
         self.setWindowTitle("Solución paso a paso")
         self.secuencia_movimientos = secuencia_movimientos
         self.historial = historial
+        self.piecita_cambiada = piecita_cambiada
         self.current_step = 0 
         self.showingFullCube = False  # Estado de vista actual
 
@@ -366,6 +367,20 @@ class SolutionWidget(QWidget):
             num_movimiento_actual = self.historial[self.current_step] 
             movimiento_actual = grafo.nodos[num_movimiento_actual].movimiento
             traducir_a_cubo(movimiento_actual, cube_state)
+            if self.piecita_cambiada is not None:
+                # buscamos su posicion en el cubo
+                orb = Orbitas(movimiento_actual)
+                pieza = orb.buscar_posicion_por_color_arista(cubo, self.piecita_cambiada) # esto nos devuelve la posicion de la pieza que hay que flippear
+                orb.flippear_arista(cubo, (pieza.fila, pieza.columna)) # flippeamos la pieza
+                # Actualizamos el color de la pieza en el cubo
+                cube_state[self.piecita_cambiada[0]][pieza.fila][pieza.columna] = self.piecita_cambiada[1]
+                # Actualizamos el color de la pieza en la vista 3D
+                self.cube3DView.update()
+                # Actualizamos el color de la pieza en la vista net
+                '''cubo_tile = self.parent().get_cubotile()
+                if cubo_tile is not None:
+                    cubo_tile.setBrush(QBrush(COLORES_MAPA[self.piecita_cambiada[1]]))
+                    cubo_tile.color_actual = self.piecita_cambiada[1]'''
             main_widget = self.parent().parent()  # Asumiendo que está anidado en MainWidget → MainContainer
             if hasattr(main_widget, 'get_cubenet'):
                 cubenet = main_widget.get_cubenet()
@@ -553,25 +568,44 @@ class MainWidget(QWidget):
                 msgBox.setWindowTitle("Movimiento no encontrado")
                 msgBox.setText("Movimiento no encontrado en el grafo. Es posible que estés en otra órbita.")
                 msgBox.setInformativeText("¿Deseas continuar en otra órbita o corregir el cubo?")
-                msgBox.addButton("Continuar en otra órbita", QMessageBox.ButtonRole.AcceptRole)
-                msgBox.addButton("Corregir el cubo", QMessageBox.ButtonRole.RejectRole)
-                msgBox.setDefaultButton(QMessageBox.StandardButton.Cancel)
-
-
-
-            # Buscamos la secuencia de movimientos
-            secuencia_movimientos, historial = buscar_identidad(numero_mov)
+                
+                aceptar = msgBox.addButton("Continuar en otra órbita", QMessageBox.ButtonRole.AcceptRole)
+                corregir = msgBox.addButton("Corregir el cubo", QMessageBox.ButtonRole.RejectRole)
+                msgBox.setDefaultButton(corregir)
+                
+                msgBox.exec()
+                
+                if msgBox.clickedButton() == aceptar:
+                    # Aquí puedes implementar la lógica para continuar en otra órbita
+                    orbita = Orbitas(movimiento)
+                    orientaciones_opciones = orbita.opciones_mod2_correcto()
+                    opciones = orbita.movimientos_opciones()
+                    numero_nodo1 = buscar_nodo(opciones[0])
+                    numero_nodo2 = buscar_nodo(opciones[1])
+                    numero_nodo3 = buscar_nodo(opciones[2])
+                    numero_nodo4 = buscar_nodo(opciones[3])
+                    
+                    cambio1 = orientaciones_opciones[0]
+                    piecita_cambiada = orbita.buscar_color_por_posicion_arista(cambio1, self.cubo)
+                    
+                    
+                    secuencia_movimientos, historial = buscar_identidad(numero_nodo1)
+                
+            else:
+                # Buscamos la secuencia de movimientos
+                secuencia_movimientos, historial = buscar_identidad(numero_mov)
+                piecita_cambiada = None
         
             # Si se obtuvo una solución, crear y mostrar el widget de solución
             if secuencia_movimientos is not None:
-                self.solutionWidget = SolutionWidget(secuencia_movimientos, historial)
+                self.solutionWidget = SolutionWidget(secuencia_movimientos, historial, piecita_cambiada)
                 self.stacked.addWidget(self.solutionWidget)
                 self.stacked.setCurrentWidget(self.solutionWidget)
                 self.toggleBtn.setEnabled(False)  # Deshabilitar el botón de cambiar vista
                 self.shuffleBtn.setEnabled(False)  # Deshabilitar el botón de mezclar
                 self.reiniciarBtn.setEnabled(False)  # Deshabilitar el botón de reiniciar
                 self.solucionarBtn.setEnabled(False)  # Deshabilitar el botón de resolver
-            return secuencia_movimientos, historial
+            return secuencia_movimientos, historial, piecita_cambiada
 
         except Exception as e:
             self.mostrarMensaje(f"Error: {str(e)}")

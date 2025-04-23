@@ -1,6 +1,6 @@
 from variables_globales import cube_state
 from grafo import *
-from orbitas import *
+
 
 
 class Molecula:
