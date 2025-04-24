@@ -283,9 +283,10 @@ class RubiksCube3D(QOpenGLWidget):
 
 
 class SolutionWidget(QWidget):
-    def __init__(self, secuencia_movimientos, historial, piecita_cambiada, parent=None):
+    def __init__(self, secuencia_movimientos, historial, piecita_cambiada, cubo_modelo, parent=None):
         super().__init__(parent)
         self.setWindowTitle("Solución paso a paso")
+        self.cubo = cubo_modelo
         self.secuencia_movimientos = secuencia_movimientos
         self.historial = historial
         self.piecita_cambiada = piecita_cambiada
@@ -363,30 +364,33 @@ class SolutionWidget(QWidget):
             self.nextStepBtn.setEnabled(False)
 
     def nextStep(self):
-        if self.current_step < len(self.secuencia_movimientos): 
-            num_movimiento_actual = self.historial[self.current_step] 
-            movimiento_actual = grafo.nodos[num_movimiento_actual].movimiento
-            traducir_a_cubo(movimiento_actual, cube_state)
+        if self.current_step < len(self.secuencia_movimientos):
+            num_mov = self.historial[self.current_step]
+            mov = grafo.nodos[num_mov].movimiento
+
+            # 1) Aplica el giro normal en cube_state
+            traducir_a_cubo(mov, cube_state)
+
+            # 2) Si hay pieza cambiada, la volteamos en el modelo molecular
             if self.piecita_cambiada is not None:
-                # buscamos su posicion en el cubo
-                orb = Orbitas(movimiento_actual)
-                pieza = orb.buscar_posicion_por_color_arista(cubo, self.piecita_cambiada) # esto nos devuelve la posicion de la pieza que hay que flippear
-                orb.flippear_arista(cubo, (pieza.fila, pieza.columna)) # flippeamos la pieza
-                # Actualizamos el color de la pieza en el cubo
-                cube_state[self.piecita_cambiada[0]][pieza.fila][pieza.columna] = self.piecita_cambiada[1]
-                # Actualizamos el color de la pieza en la vista 3D
-                self.cube3DView.update()
-                # Actualizamos el color de la pieza en la vista net
-                '''cubo_tile = self.parent().get_cubotile()
-                if cubo_tile is not None:
-                    cubo_tile.setBrush(QBrush(COLORES_MAPA[self.piecita_cambiada[1]]))
-                    cubo_tile.color_actual = self.piecita_cambiada[1]'''
-            main_widget = self.parent().parent()  # Asumiendo que está anidado en MainWidget → MainContainer
-            if hasattr(main_widget, 'get_cubenet'):
-                cubenet = main_widget.get_cubenet()
-                cubenet.drawNet()
+                orb = Orbitas(mov)
+                pieza = orb.buscar_posicion_por_color_arista(self.cubo, self.piecita_cambiada)
+                print("posicion de la pieza cambiada:", pieza.fila, pieza.columna)
+                print("color de la pieza cambiada:", pieza.color, pieza.adyacente.color)
+                orb.flippear_arista(self.cubo, (pieza.fila, pieza.columna))
+                print("Color despues de flip: ", pieza.color, pieza.adyacente.color)
+
+                # 3) volvemos a poblar cube_state
+                asignar_color_deuna(self.cubo)
+
+            # 4) refrescamos vistas
             self.cube3DView.update()
-            self.current_step += 1 
+            main_widget = self.parent().parent()
+            if hasattr(main_widget, 'get_cubenet'):
+                main_widget.get_cubenet().drawNet()
+
+            self.current_step += 1
+            orb.flippear_arista(self.cubo, (pieza.fila, pieza.columna))
             self.updateStep()
 
     def volverMenu(self):
@@ -588,6 +592,15 @@ class MainWidget(QWidget):
                     cambio1 = orientaciones_opciones[0]
                     piecita_cambiada = orbita.buscar_color_por_posicion_arista(cambio1, self.cubo)
                     
+                    cambio2 = orientaciones_opciones[1]
+                    #piecita_cambiada = orbita.buscar_color_por_posicion_arista(cambio2, self.cubo)
+                    
+                    cambio3 = orientaciones_opciones[2]
+                    #piecita_cambiada = orbita.buscar_color_por_posicion_arista(cambio3, self.cubo)
+                    
+                    cambio4 = orientaciones_opciones[3]
+                    #piecita_cambiada = orbita.buscar_color_por_posicion_arista(cambio4, self.cubo)
+                    
                     
                     secuencia_movimientos, historial = buscar_identidad(numero_nodo1)
                 
@@ -598,7 +611,12 @@ class MainWidget(QWidget):
         
             # Si se obtuvo una solución, crear y mostrar el widget de solución
             if secuencia_movimientos is not None:
-                self.solutionWidget = SolutionWidget(secuencia_movimientos, historial, piecita_cambiada)
+                # Le pasamos también self.cubo
+                self.solutionWidget = SolutionWidget(
+                   secuencia_movimientos,
+                   historial,
+                   piecita_cambiada,
+                   cubo_modelo=self.cubo)
                 self.stacked.addWidget(self.solutionWidget)
                 self.stacked.setCurrentWidget(self.solutionWidget)
                 self.toggleBtn.setEnabled(False)  # Deshabilitar el botón de cambiar vista

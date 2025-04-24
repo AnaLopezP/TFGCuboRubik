@@ -78,6 +78,7 @@ class Orbitas:
         c2 = pieza.adyacente.color
         pieza.color = c2
         pieza.adyacente.color = c1
+        return cubo
 
 '''    
 mov = [{1: 2, 2: 1, 3: 4, 4: 3}, [1, 1, 1, 0], {1: 3, 2: 2ccfcfffdfgdfgdfgfff 1}, [2, 2, 1, 1]]
