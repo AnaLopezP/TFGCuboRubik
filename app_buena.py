@@ -847,20 +847,60 @@ class MainMenuWidget(QWidget):
         titulo = QLabel("Bienvenido al Cubo Rubik")
         titulo.setObjectName("titleLabel")
         titulo.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(titulo)
         
-        subtitulo = QLabel("Seleccione el idioma y presione Comenzar")
+        subtitulo = QLabel("Cuando esté listo, presione Comenzar")
         subtitulo.setObjectName("subtitleLabel")
         subtitulo.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(subtitulo)
         
+        layout.addStretch(1) # espacio bonito
+        
+        # Botones del menú
         self.startBtn = QPushButton("Comenzar")
         self.startBtn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
-        
-        layout.addStretch(1)
-        layout.addWidget(titulo)
-        layout.addWidget(subtitulo)
-        layout.addStretch(1)
         layout.addWidget(self.startBtn, alignment=Qt.AlignmentFlag.AlignCenter)
-        layout.addStretch(1)
+
+        self.languageBtn = QPushButton("Idioma")
+        self.languageBtn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        layout.addWidget(self.languageBtn, alignment=Qt.AlignmentFlag.AlignCenter)
+
+        self.aboutBtn = QPushButton("Acerca De")
+        self.aboutBtn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        layout.addWidget(self.aboutBtn, alignment=Qt.AlignmentFlag.AlignCenter)
+        
+        self.exitBtn = QPushButton("Salir")
+        self.exitBtn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        self.exitBtn.clicked.connect(QApplication.instance().quit)
+        layout.addWidget(self.exitBtn, alignment=Qt.AlignmentFlag.AlignCenter)
+
+        layout.addStretch(2)
+        
+        # Conexiones
+        # Originará señales hacia MainContainer
+        self.languageBtn.clicked.connect(self.showLanguageDialog)
+        self.aboutBtn.clicked.connect(self.showAboutDialog)
+        
+    def showLanguageDialog(self):
+        opciones = ["Español", "English"]
+        idioma, ok = QInputDialog.getItem(
+            self, "Seleccionar idioma", "Idioma:", opciones, 0, False
+        )
+        if ok:
+            # Aquí puedes emitir una señal o cambiar texto de la UI
+            QMessageBox.information(self, "Idioma seleccionado", f"Has seleccionado: {idioma}")
+
+    def showAboutDialog(self):
+        QMessageBox.about(
+            self,
+            "Acerca de Cubo Rubik",
+            "<b>Cubo Rubik App</b><br>Versión 1.0<br>Desarrollado por RanaCGames<br>"
+            "Este programa te permite resolver la última cara de un cubo Rubik de forma interactiva.<br>"
+            "Tiene en cuenta tamnién las distintas órbitas del grupo de Rubik.<br>"
+            "Es un prooyecto de TFG, Universidad Alfonso X, 2025<br>"
+            "Es posible que haya errores, pero no dudes en reportarlos.<br>"
+            "¡Gracias por usarlo!<br>"
+        )
 
 
 class MainContainer(QWidget):
