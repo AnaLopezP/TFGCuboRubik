@@ -307,7 +307,18 @@ class SolutionWidget(QWidget):
         self.instructionsText.setReadOnly(True)
         self.comentario = QTextEdit()
         self.comentario.setReadOnly(True)
-        self.comentario.setText("¡Bienvenido a la solución del cubo Rubik!\n\nTodos los giros son de 90º en sentido antihorario.\n\n :)")
+        self.comentario.setText(
+            "Cómo funciona la solución\n\n"
+            "- Órbita canónica: Si tu cubo ya pertenece a la órbita canónica, es decir, no tiene ninguna ficha mal colocada, buscamos directamente la secuencia de giros en el grafo.\n"
+            "- Otra órbita: Si detectamos una pieza desorientada, calculamos todas las orientaciones válidas, de las que hay 4 posibles en el grafo "
+                "te pedimos que indiques cuál está mal para utilizar la correcta y generamos la solución desde ese nodo.\n\n"
+            "El proceso en otra órbita tiene tres fases:\n"
+            "  1) Corrección inicial de la pieza desorientada. Ten esto en cuenta si te guías por la imágen de la derecha\n"
+            "  2) Giros canónicos para llevar la órbita a la solución.\n"
+            "  3) 'Descorrección' final para devolver la pieza a su órbita original.\n\n"
+            "Sigue los pasos en el panel de la derecha\n\n"
+            "Muchas gracias por usar el programa y espero que te haya sido útil.\n\n"
+        )
         leftLayout.addWidget(self.comentario, 1)
         leftLayout.addWidget(self.instructionsText, 1)
         
@@ -336,6 +347,9 @@ class SolutionWidget(QWidget):
                 background-color: #C0392B;
             }
         """)
+        self.toggleViewBtn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        self.toggleViewBtn.setAutoDefault(False)
+        self.toggleViewBtn.setDefault(False)
         self.toggleViewBtn.clicked.connect(self.toggleView)
 
         # Contenedor del botón para centrar verticalmente
