@@ -878,10 +878,10 @@ class MainMenuWidget(QWidget):
         
         # Conexiones
         # Originará señales hacia MainContainer
-        self.languageBtn.clicked.connect(self.showLanguageDialog)
-        self.aboutBtn.clicked.connect(self.showAboutDialog)
+        self.languageBtn.clicked.connect(self.cambiar_idioma)
+        self.aboutBtn.clicked.connect(self.acercaDe)
         
-    def showLanguageDialog(self):
+    def cambiar_idioma(self):
         opciones = ["Español", "English"]
         idioma, ok = QInputDialog.getItem(
             self, "Seleccionar idioma", "Idioma:", opciones, 0, False
@@ -890,7 +890,7 @@ class MainMenuWidget(QWidget):
             # Aquí puedes emitir una señal o cambiar texto de la UI
             QMessageBox.information(self, "Idioma seleccionado", f"Has seleccionado: {idioma}")
 
-    def showAboutDialog(self):
+    def acercaDe(self):
         QMessageBox.about(
             self,
             "Acerca de Cubo Rubik",
