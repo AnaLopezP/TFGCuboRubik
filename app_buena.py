@@ -13,6 +13,10 @@ import random
 from variables_globales import *
 import traceback
 from orbitas import *
+import gettext
+
+# para las traducciones
+_ = gettext.gettext
 
 # ---------------------------
 # Estado global del cubo
