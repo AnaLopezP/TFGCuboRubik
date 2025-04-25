@@ -14,6 +14,7 @@ from variables_globales import *
 import traceback
 from orbitas import *
 import gettext
+from traducciones import t
 
 # para las traducciones
 _ = gettext.gettext
@@ -285,124 +286,111 @@ class RubiksCube3D(QOpenGLWidget):
 
 
 class SolutionWidget(QWidget):
-    def __init__(self, secuencia_movimientos, historial, piecita_cambiada, cubo_modelo, movimiento_origen, parent=None):
+    def __init__(
+        self,
+        secuencia_movimientos, historial,
+        piecita_cambiada, cubo_modelo,
+        movimiento_origen, lang,
+        parent=None
+    ):
         super().__init__(parent)
-        self.setWindowTitle("Solución paso a paso")
+        self.lang = lang
+        self.setWindowTitle(t('solution_complete', self.lang))  # o título específico si lo añades
+
         self.cubo = cubo_modelo
         self.secuencia_movimientos = secuencia_movimientos
         self.historial = historial
         self.piecita_cambiada = piecita_cambiada
         self.movimiento_origen = movimiento_origen
-        self.instructionsText = None
-        self.current_step = 0 
-        self.soluciones = [(secuencia_movimientos, historial, piecita_cambiada, movimiento_origen)]
-        self.showingFullCube = False  # Estado de vista actual
-        self.flip_end_shown = False  # Estado de flip mostrado al final
-        
+        self.current_step = 0
+        self.flip_end_shown = False
+        self.flip_shown = (self.piecita_cambiada is None)
 
-        # Layout principal horizontal
+        # Layout principal
         self.mainLayout = QHBoxLayout(self)
 
-        # Panel izquierdo: instrucciones + botones
+        # Panel izquierdo
         self.leftPanel = QWidget()
         leftLayout = QVBoxLayout(self.leftPanel)
-        
-        self.instructionsText = QTextEdit()
-        self.instructionsText.setReadOnly(True)
+
         self.comentario = QTextEdit()
         self.comentario.setReadOnly(True)
-        self.comentario.setText(
-            "Cómo funciona la solución\n\n"
-            "- Órbita canónica: Si tu cubo ya pertenece a la órbita canónica, es decir, no tiene ninguna ficha mal colocada, buscamos directamente la secuencia de giros en el grafo.\n"
-            "- Otra órbita: Si detectamos una pieza desorientada, calculamos todas las orientaciones válidas, de las que hay 4 posibles en el grafo "
-                "te pedimos que indiques cuál está mal para utilizar la correcta y generamos la solución desde ese nodo.\n\n"
-            "El proceso en otra órbita tiene tres fases:\n"
-            "  1) Corrección inicial de la pieza desorientada. Ten esto en cuenta si te guías por la imágen de la derecha\n"
-            "  2) Giros canónicos para llevar la órbita a la solución.\n"
-            "  3) 'Descorrección' final para devolver la pieza a su órbita original.\n\n"
-            "Sigue los pasos en el panel de la derecha\n\n"
-            "Muchas gracias por usar el programa y espero que te haya sido útil.\n\n"
-        )
         leftLayout.addWidget(self.comentario, 1)
+
+        self.instructionsText = QTextEdit()
+        self.instructionsText.setReadOnly(True)
         leftLayout.addWidget(self.instructionsText, 1)
-        
-        # Botón para pasar al siguiente paso
-        self.nextStepBtn = QPushButton("Siguiente paso")
+
+        self.nextStepBtn = QPushButton()
         self.nextStepBtn.clicked.connect(self.nextStep)
         leftLayout.addWidget(self.nextStepBtn)
-        
-        # Botón para volver a la pantalla principal
-        self.volverBtn = QPushButton("Volver al menú")
+
+        self.volverBtn = QPushButton()
         self.volverBtn.clicked.connect(self.volverMenu)
         leftLayout.addWidget(self.volverBtn)
 
-        # Botón redondo para cambiar vista
-        self.toggleViewBtn = QPushButton("<<")
+        # Botón toggle central
+        self.toggleViewBtn = QPushButton()
         self.toggleViewBtn.setFixedSize(40, 40)
         self.toggleViewBtn.setStyleSheet("""
-            QPushButton {
-                border-radius: 20px;
-                background-color: #E74C3C;
-                color: white;
-                font-weight: bold;
-                font-size: 18px;
-            }
-            QPushButton:hover {
-                background-color: #C0392B;
-            }
+            QPushButton { border-radius: 20px; background-color: #E74C3C;
+                         color: white; font-weight: bold; font-size: 18px; }
+            QPushButton:hover { background-color: #C0392B; }
         """)
-        self.toggleViewBtn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
-        self.toggleViewBtn.setAutoDefault(False)
-        self.toggleViewBtn.setDefault(False)
         self.toggleViewBtn.clicked.connect(self.toggleView)
+        self.toggleViewBtn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
 
-        # Contenedor del botón para centrar verticalmente
         buttonContainer = QVBoxLayout()
         buttonContainer.addStretch()
         buttonContainer.addWidget(self.toggleViewBtn)
         buttonContainer.addStretch()
-
         self.middleWidget = QWidget()
         self.middleWidget.setLayout(buttonContainer)
 
-        # Panel derecho: vista 3D del cubo
+        # Panel 3D derecho
         self.cube3DView = RubiksCube3D()
 
-        # Añadir widgets al layout principal
+        # Montaje layout
         self.mainLayout.addWidget(self.leftPanel, 3)
         self.mainLayout.addWidget(self.middleWidget)
         self.mainLayout.addWidget(self.cube3DView, 3)
-        
-        # flip solo si hay pieza desorientada
-        self.flip_shown   = (self.piecita_cambiada is None)
-        self.current_step = 0
+
+        # Inicializar textos y estado
+        self.retranslate()
         self.updateStep()
 
-
+    def retranslate(self):
+        # Texto explicativo
+        self.comentario.setText( t('coment', self.lang) )
+        # Botones
+        self.nextStepBtn.setText( t('next_step',    self.lang) )
+        self.volverBtn.setText(   t('goto_menu',    self.lang) )
+        # Toggle view button remains an icon or arrows
 
     def updateStep(self):
-        total = len(self.secuencia_movimientos) + 2  # +1 para el flip inicial, +1 para el flip final
-
-        # --- Paso 0: flip inicial ---
+        total = len(self.secuencia_movimientos) + 2
+        # Paso 0
         if not self.flip_shown:
-            self.instructionsText.setText(f"Paso 0/{total}:\n Muestra la arista mal orientada")
+            self.instructionsText.setText(
+                f"0/{total}: {t('arista_flipped', self.lang)}"
+            )
             return
-
-        # --- Paso final: flip de vuelta ---
+        # Paso final antes de flip final
         if self.flip_shown and not self.flip_end_shown and self.current_step >= len(self.secuencia_movimientos):
-            self.instructionsText.setText(f"Paso {len(self.secuencia_movimientos)+1}/{total}:\n Muestra la arista en órbita “mala” de nuevo")
+            self.instructionsText.setText(
+                f"{len(self.secuencia_movimientos)+1}/{total}: {t('arista_flipped', self.lang)}"
+            )
             return
-
-        # --- Pasos intermedios canónicos ---
+        # Pasos intermedios
         idx = self.current_step
         if idx < len(self.secuencia_movimientos):
             mov = self.secuencia_movimientos[idx]
-            texto = instrucciones.get(mov, f"Movimiento desconocido: {mov}")
-            # +1 porque el paso 0 ya “consumió” la posición 0
-            self.instructionsText.setText(f"Paso {idx+1}/{total}:\n {texto}")
+            texto = instrucciones.get(mov, f"{t('solution_complete', self.lang)}: {mov}")
+            self.instructionsText.setText(
+                f"{idx+1}/{total}: {texto}"
+            )
         else:
-            # Después del flip final, todo completado
-            self.instructionsText.setText("¡Solución completada!")
+            self.instructionsText.setText( t('solution_complete', self.lang) )
             self.nextStepBtn.setEnabled(False)
             
     def nextStep(self):
@@ -550,58 +538,65 @@ class SolutionWidget(QWidget):
 # Integración en la interfaz
 # ---------------------------
 class MainWidget(QWidget):
-    def __init__(self):
+    def __init__(self, lang):
         super().__init__()
-        self.setWindowTitle("Cubo Rubik Integrado")
+        self.lang = lang
+        self.setWindowTitle(t('welcome', self.lang))  # se puede traducir también el título
+
         layout = QVBoxLayout(self)
         self.stacked = QStackedWidget()
         self.cubo = iniciar()
-        
-        # Crear ambas vistas
-        self.cube3D = RubiksCube3D()
+
+        # Vistas 3D y Net
+        self.cube3D  = RubiksCube3D()
         self.cubeNet = RubiksCubeNet(cube3d=self.cube3D)
         self.stacked.addWidget(self.cube3D)
         self.stacked.addWidget(self.cubeNet)
         layout.addWidget(self.stacked)
-        
-        # Mensajes temporales de restricciones 
+
+        # Label de mensajes temporales
         self.messageLabel = QLabel("")
-        self.messageLabel.setStyleSheet("""
-                                        background-color: red; 
-                                        color: white; 
-                                        font-size: 16px; 
-                                        padding: 10px; 
-                                        border-radius: 5px;
-                                    """)
+        self.messageLabel.setStyleSheet(
+            "background-color: red; color: white; font-size: 16px; padding: 10px; border-radius: 5px;"
+        )
         self.messageLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(self.messageLabel)
         self.messageLabel.hide()
-        
-        # Layout horizontal para botones
+
+        # Botones inferiores
         btnLayout = QHBoxLayout()
-        self.solucionarBtn = QPushButton("Resolver Cubo")
+        self.solucionarBtn = QPushButton()
         self.solucionarBtn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.solucionarBtn.clicked.connect(self.solucionar)
-        
-        self.toggleBtn = QPushButton("Alternar Vista 3D/plana")
+
+        self.toggleBtn = QPushButton()
         self.toggleBtn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.toggleBtn.clicked.connect(self.toggleView)
-        
-        self.reiniciarBtn = QPushButton("Restablecer Cubo")
+
+        self.reiniciarBtn = QPushButton()
         self.reiniciarBtn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.reiniciarBtn.clicked.connect(self.reiniciarCubo)
-        
-        self.shuffleBtn = QPushButton("Aleatorizar Cubo")
+
+        self.shuffleBtn = QPushButton()
         self.shuffleBtn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.shuffleBtn.clicked.connect(self.mezclarCubo)
-        
-        btnLayout.addWidget(self.solucionarBtn)
-        btnLayout.addWidget(self.toggleBtn)
-        btnLayout.addWidget(self.reiniciarBtn)
-        btnLayout.addWidget(self.shuffleBtn)
-        
+
+        for btn in (self.solucionarBtn, self.toggleBtn, self.reiniciarBtn, self.shuffleBtn):
+            btnLayout.addWidget(btn)
         layout.addLayout(btnLayout)
 
+        # finalmente, ponemos los textos
+        self.retranslate()
+        
+    def retranslate(self):
+        # Actualiza textos según el idioma actual
+        self.setWindowTitle(t('welcome', self.lang))
+        self.solucionarBtn.setText(t('solve_cube', self.lang))
+        self.toggleBtn.setText(t('toggle_view', self.lang))
+        self.reiniciarBtn.setText(t('reset_cube', self.lang))
+        self.shuffleBtn.setText(t('shuffle_cube', self.lang))
+
+    
     def get_cubenet(self):
         return self.cubeNet
     
@@ -616,10 +611,10 @@ class MainWidget(QWidget):
 
             # Actualizar la vista net
             self.cubeNet.drawNet()
-            self.mostrarMensaje("Cubo mezclado")
+            self.mostrarMensaje(t('cube_shuffled', self.lang))
             
         except Exception as e:
-            self.mostrarMensaje(f"Error al mezclar: {str(e)}")
+            self.mostrarMensaje(t('not_found', self.lang))
             print("Error al mezclar el cubo:", e)
             
     def cubo_solucionado(self):
@@ -634,7 +629,7 @@ class MainWidget(QWidget):
     def reiniciarCubo(self):
         
         if self.cubo_solucionado():
-            self.mostrarMensaje("El cubo ya está solucionado. No se puede reiniciar.")
+            self.mostrarMensaje(t('already_solved', self.lang))
             return cube_state, self.cubo
         
         current_index = self.stacked.currentIndex() # la pestaña actual
@@ -651,7 +646,7 @@ class MainWidget(QWidget):
         
         self.stacked.setCurrentIndex(current_index) # ponemos la vista actual pero reiniciada
 
-        self.mostrarMensaje("Cubo reiniciado")
+        self.mostrarMensaje(t('cube_reset', self.lang))
         return cube_state, self.cubo
 
     def toggleView(self):
@@ -683,7 +678,7 @@ class MainWidget(QWidget):
     def solucionar(self):
         # 1) Comprobamos que el cubo no está ya resuelto
         if self.cubo_solucionado():
-            self.mostrarMensaje("El cubo ya está solucionado.")
+            self.mostrarMensaje(t('already_solved', self.lang))
             return None
 
         try:
@@ -695,7 +690,7 @@ class MainWidget(QWidget):
                         counts[color] = counts.get(color, 0) + 1
             for color, count in counts.items():
                 if count != 9:
-                    raise ValueError("Solo pueden haber 9 casillas de cada color")
+                    raise ValueError(t('only_9', self.lang))
 
             # 3) Sincronizar colores al modelo molecular
             asignar_color_deuna(self.cubo)
@@ -709,14 +704,14 @@ class MainWidget(QWidget):
                 orb = Orbitas(movimiento)
                 
                 # --- Caso “otra órbita” ---
-                self.mostrarMensaje("Movimiento no encontrado en el grafo. Es posible que estés en otra órbita.")
+                self.mostrarMensaje(t('not_found', self.lang))
                 msgBox = QMessageBox()
                 msgBox.setIcon(QMessageBox.Icon.Warning)
                 msgBox.setWindowTitle("Movimiento no encontrado")
-                msgBox.setText("Movimiento no encontrado en el grafo. Es posible que estés en otra órbita.")
-                msgBox.setInformativeText("¿Deseas continuar en otra órbita o corregir el cubo?")
-                aceptar = msgBox.addButton("Continuar en otra órbita", QMessageBox.ButtonRole.AcceptRole)
-                corregir = msgBox.addButton("Corregir el cubo",    QMessageBox.ButtonRole.RejectRole)
+                msgBox.setText(t('not_found', self.lang))
+                msgBox.setInformativeText(t('question_orbit', self.lang))
+                aceptar = msgBox.addButton(t('continue_orbit', self.lang), QMessageBox.ButtonRole.AcceptRole)
+                corregir = msgBox.addButton(t('correct_cube', self.lang),    QMessageBox.ButtonRole.RejectRole)
                 msgBox.setDefaultButton(corregir)
                 msgBox.exec()
 
@@ -731,22 +726,22 @@ class MainWidget(QWidget):
                         etiquetas2 = [
                             f"{i+1}: {orb.buscar_color_por_posicion_arista(o, self.cubo)}"
                             for i,o in enumerate(orient2)
-                        ] + ["No sé cuál flippeé"]
+                        ] + [t('dontknow', self.lang)]
                         
                         elegido2, ok2 = QInputDialog.getItem(
                             self,
-                            "Arista flippeada",
-                            "Elige la arista que flippeaste (colores):",
+                            t('arista_flipped', self.lang),
+                            t('choose_arista_flipped', self.lang),
                             etiquetas2,
                             0, False
                         )
-                        if ok2 and elegido2 != "No sé cuál flippeé":
+                        if ok2 and elegido2 != t('dontknow', self.lang):
                             idx2 = int(elegido2.split(":")[0]) - 1
                         else:
                             # “No sé cuál” → elijo aleatoriamente
                             idx2 = random.randrange(len(orient2))
                             self.mostrarMensaje(
-                                "He seleccionado una solución aleatoria para la arista."
+                                t('random_solution', self.lang)
                             )
                             
                         sel_mov2 = movs2[idx2]
@@ -763,20 +758,20 @@ class MainWidget(QWidget):
                     etiquetas3 = [
                             f"{i+1}: {orb.buscar_color_por_posicion_esquina(o3, self.cubo)}"
                             for i, o3 in enumerate(orient3)
-                        ] + ["No sé cuál flippeé"]
+                        ] + [t('dontknow')]
                     
                     elegido3, ok3 = QInputDialog.getItem(
-                            self, "Esquina flippeada",
-                            "Elige la esquina + orientación:",
+                            self, t('esquina_flipped', self.lang),
+                            t('choose_esquina_flipped', self.lang),
                             etiquetas3, 0, False
                         )
 
-                    if ok3 and elegido3 != "No sé cuál flippeé":
+                    if ok3 and elegido3 != t('dontknow', self.lang):
                         idx3 = int(elegido3.split(":")[0]) - 1
                     else:
                         idx3 = random.randrange(len(orient3))
                         self.mostrarMensaje(
-                            "He seleccionado una solución aleatoria para la esquina."
+                            t('random_solution_esquina', self.lang)
                         )
                         
                     sel_mov3 = movs3[idx3]
@@ -816,9 +811,53 @@ class MainWidget(QWidget):
             return None
 
 class MainMenuWidget(QWidget):
-    def __init__(self, parent=None):
-        super().__init__(parent)
+    def __init__(self, lang, main_container):
+        super().__init__()
+        self.lang = lang
+        self.main_container = main_container
+        self.buildUI()
+        self.retranslate()
+        
+    def buildUI(self):
         layout = QVBoxLayout(self)
+
+        # Títulos con identificadores para aplicar estilos
+        titulo = QLabel()
+        titulo.setObjectName("titleLabel")
+        titulo.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(titulo)
+        
+        subtitulo = QLabel()
+        subtitulo.setObjectName("subtitleLabel")
+        subtitulo.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(subtitulo)
+        
+        layout.addStretch(1) # espacio bonito
+        
+        # Botones del menú
+        self.startBtn = QPushButton()
+        self.startBtn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        layout.addWidget(self.startBtn, alignment=Qt.AlignmentFlag.AlignCenter)
+
+        self.languageBtn = QPushButton()
+        self.languageBtn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        layout.addWidget(self.languageBtn, alignment=Qt.AlignmentFlag.AlignCenter)
+
+        self.aboutBtn = QPushButton()
+        self.aboutBtn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        layout.addWidget(self.aboutBtn, alignment=Qt.AlignmentFlag.AlignCenter)
+        
+        self.exitBtn = QPushButton()
+        self.exitBtn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        self.exitBtn.clicked.connect(QApplication.instance().quit)
+        layout.addWidget(self.exitBtn, alignment=Qt.AlignmentFlag.AlignCenter)
+
+        layout.addStretch(2)
+        
+        # Conexiones
+        # Originará señales hacia MainContainer
+        self.languageBtn.clicked.connect(self.cambiar_idioma)
+        self.aboutBtn.clicked.connect(self.acercaDe)
         
         # Definir un estilo global para el menú
         self.setStyleSheet("""
@@ -847,70 +886,51 @@ class MainMenuWidget(QWidget):
             }
         """)
         
-        # Títulos con identificadores para aplicar estilos
-        titulo = QLabel("Bienvenido al Cubo Rubik")
-        titulo.setObjectName("titleLabel")
-        titulo.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        layout.addWidget(titulo)
-        
-        subtitulo = QLabel("Cuando esté listo, presione Comenzar")
-        subtitulo.setObjectName("subtitleLabel")
-        subtitulo.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        layout.addWidget(subtitulo)
-        
-        layout.addStretch(1) # espacio bonito
-        
+    def retranslate(self):
+        # remplaza todos los textos 
+        # Títulos
+        self.titulo.setText(t('welcome', self.lang))
+        self.subtitulo.setText(t('press_start', self.lang) )
         # Botones del menú
-        self.startBtn = QPushButton("Comenzar")
-        self.startBtn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
-        layout.addWidget(self.startBtn, alignment=Qt.AlignmentFlag.AlignCenter)
+        self.startBtn.setText(t('start', self.lang) )
+        self.languageBtn.setText(t('language', self.lang) )
+        self.aboutBtn.setText(t('about', self.lang) )
+        self.exitBtn.setText(t('exit', self.lang) )
 
-        self.languageBtn = QPushButton("Idioma")
-        self.languageBtn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
-        layout.addWidget(self.languageBtn, alignment=Qt.AlignmentFlag.AlignCenter)
-
-        self.aboutBtn = QPushButton("Acerca De")
-        self.aboutBtn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
-        layout.addWidget(self.aboutBtn, alignment=Qt.AlignmentFlag.AlignCenter)
-        
-        self.exitBtn = QPushButton("Salir")
-        self.exitBtn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
-        self.exitBtn.clicked.connect(QApplication.instance().quit)
-        layout.addWidget(self.exitBtn, alignment=Qt.AlignmentFlag.AlignCenter)
-
-        layout.addStretch(2)
-        
-        # Conexiones
-        # Originará señales hacia MainContainer
-        self.languageBtn.clicked.connect(self.cambiar_idioma)
-        self.aboutBtn.clicked.connect(self.acercaDe)
         
     def cambiar_idioma(self):
-        opciones = ["Español", "English"]
-        idioma, ok = QInputDialog.getItem(
-            self, "Seleccionar idioma", "Idioma:", opciones, 0, False
+        # Lista de opciones traducidas
+        labels = [
+            ("Español", "es"),
+            ("English", "en"),
+            ("Italiano", "it"),
+            ("Deutsch", "de"),
+            ("Français", "fr")
+        ]
+        display = [l[0] for l in labels]
+        elegido, ok = QInputDialog.getItem(
+            self,
+            t('select_lenguage', self.lang),
+            t('language',        self.lang),
+            display, 0, False
         )
         if ok:
-            # Aquí puedes emitir una señal o cambiar texto de la UI
-            QMessageBox.information(self, "Idioma seleccionado", f"Has seleccionado: {idioma}")
+            # Encontrar el código ISO correspondiente
+            new_lang = dict(labels)[elegido]
+            self.main_container.changeLanguage(new_lang)
 
     def acercaDe(self):
         QMessageBox.about(
             self,
-            "Acerca de Cubo Rubik",
-            "<b>Cubo Rubik App</b><br>Versión 1.0<br>Desarrollado por RanaCGames<br>"
-            "Este programa te permite resolver la última cara de un cubo Rubik de forma interactiva.<br>"
-            "Tiene en cuenta tamnién las distintas órbitas del grupo de Rubik.<br>"
-            "Es un prooyecto de TFG, Universidad Alfonso X, 2025<br>"
-            "Es posible que haya errores, pero no dudes en reportarlos.<br>"
-            "¡Gracias por usarlo!<br>"
-        )
+            t('about', self.lang),
+            t('about_text', self.lang))
 
 
 class MainContainer(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.stacked = QStackedWidget()
+        self.lang = 'es'  # Idioma por defecto
 
         self.menuWidget = MainMenuWidget()
         self.cubeWidget = MainWidget()  # Creamos una primera instancia (por si acaso)
@@ -928,6 +948,7 @@ class MainContainer(QWidget):
         # Elimina el widget anterior del cubo
         self.stacked.removeWidget(self.cubeWidget)
         self.cubeWidget.deleteLater()
+        self.cubeWidget = MainWidget(self.lang, self)
 
         # Crea una nueva instancia de MainWidget
         self.cubeWidget = MainWidget()
@@ -941,6 +962,12 @@ class MainContainer(QWidget):
         
         # Cambia a la nueva instancia
         self.stacked.setCurrentWidget(self.cubeWidget)
+    
+    def changeLanguage(self, new_lang):
+        self.lang = new_lang
+        # avisar a todos los widgets para que reescriban sus textos
+        self.menuWidget.retranslate()
+        self.cubeWidget.retranslate()
 
 class MainWindow(QMainWindow):
     def __init__(self):
