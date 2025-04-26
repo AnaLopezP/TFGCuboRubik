@@ -19,6 +19,7 @@ TRADUCCIONES = {
                             "  3) 'Descorrección' final para devolver la pieza a su órbita original.\n\n"
                             "Sigue los pasos en el panel de la derecha\n\n"
                             "Muchas gracias por usar el programa y espero que te haya sido útil.\n\n",
+        'step':          'Paso',
         'next_step':       'Siguiente paso',
         'goto_menu':       'Volver al menú',
         'solution_complete': '¡Solución completada!',
@@ -48,6 +49,360 @@ TRADUCCIONES = {
                             "Es un proyecto de TFG, Universidad Alfonso X, 2025<br>"
                             "Es posible que haya errores, pero no dudes en reportarlos.<br>"
                             "¡Gracias por usarlo!<br>",
+        'b1': "Gira la cara blanca 1 vez.",
+        'b3': "Gira la cara blanca 3 veces.",
+        'g1b2g3b2g3a1g1a3': (
+            "1. Gira la cara roja 1 vez.\n"
+            "2. Gira la cara blanca 2 veces.\n"
+            "3. Gira la cara roja 3 veces.\n"
+            "4. Gira la cara blanca 2 veces.\n"
+            "5. Gira la cara roja 3 veces.\n"
+            "6. Gira la cara azul 1 vez.\n"
+            "7. Gira la cara roja 1 vez.\n"
+            "8. Gira la cara azul 3 veces."
+        ),
+        'g3b2g1b2g1v3g3v1': (
+            "1. Gira la cara roja 3 veces.\n"
+            "2. Gira la cara blanca 2 veces.\n"
+            "3. Gira la cara roja 1 vez.\n"
+            "4. Gira la cara blanca 2 veces.\n"
+            "5. Gira la cara roja 1 vez.\n"
+            "6. Gira la cara verde 3 veces.\n"
+            "7. Gira la cara roja 3 veces.\n"
+            "8. Gira la cara verde 1 vez."
+        ),
+        "g1b1g3b3g3a1g1a3": (
+        "1. Gira la cara roja 1 vez.\n"
+        "2. Gira la cara blanca 1 vez.\n"
+        "3. Gira la cara roja 3 veces.\n"
+        "4. Gira la cara blanca 3 veces.\n"
+        "5. Gira la cara roja 3 veces.\n"
+        "6. Gira la cara azul 1 vez.\n"
+        "7. Gira la cara roja 1 vez.\n"
+        "8. Gira la cara azul 3 veces."
+    ),
+    
+    "g3b3g1b1g1v3g3v1": (
+        "1. Gira la cara roja 3 veces.\n"
+        "2. Gira la cara blanca 3 veces.\n"
+        "3. Gira la cara roja 1 vez.\n"
+        "4. Gira la cara blanca 1 vez.\n"
+        "5. Gira la cara roja 1 vez.\n"
+        "6. Gira la cara verde 3 veces.\n"
+        "7. Gira la cara roja 3 veces.\n"
+        "8. Gira la cara verde 1 vez."
+    ),
+    
+    "a1b2a3b2a3n1a1n3": (
+        "1. Gira la cara azul 1 vez.\n"
+        "2. Gira la cara blanca 2 veces.\n"
+        "3. Gira la cara azul 3 veces.\n"
+        "4. Gira la cara blanca 2 veces.\n"
+        "5. Gira la cara azul 3 veces.\n"
+        "6. Gira la cara naranja 1 vez.\n"
+        "7. Gira la cara azul 1 vez.\n"
+        "8. Gira la cara naranja 3 veces."
+    ),
+    
+    "a3b2a1b2a1g3a3g1": (
+        "1. Gira la cara azul 3 veces.\n"
+        "2. Gira la cara blanca 2 veces.\n"
+        "3. Gira la cara azul 1 vez.\n"
+        "4. Gira la cara blanca 2 veces.\n"
+        "5. Gira la cara azul 1 vez.\n"
+        "6. Gira la cara roja 3 veces.\n"
+        "7. Gira la cara azul 3 veces.\n"
+        "8. Gira la cara roja 1 vez."
+    ),
+    
+    "a1b1a3b3a3n1a1n3": (
+        "1. Gira la cara azul 1 vez.\n"
+        "2. Gira la cara blanca 1 vez.\n"
+        "3. Gira la cara azul 3 veces.\n"
+        "4. Gira la cara blanca 3 veces.\n"
+        "5. Gira la cara azul 3 veces.\n"
+        "6. Gira la cara naranja 1 vez.\n"
+        "7. Gira la cara azul 1 vez.\n"
+        "8. Gira la cara naranja 3 veces."
+    ),
+    
+    "a3b3a1b1a1g3a3g1": (
+        "1. Gira la cara azul 3 veces.\n"
+        "2. Gira la cara blanca 3 veces.\n"
+        "3. Gira la cara azul 1 vez.\n"
+        "4. Gira la cara blanca 1 vez.\n"
+        "5. Gira la cara azul 1 vez.\n"
+        "6. Gira la cara roja 3 veces.\n"
+        "7. Gira la cara azul 3 veces.\n"
+        "8. Gira la cara roja 1 vez."
+    ),
+    
+    "n1b2n3b2n3v1n1v3": (
+        "1. Gira la cara naranja 1 vez.\n"
+        "2. Gira la cara blanca 2 veces.\n"
+        "3. Gira la cara naranja 3 veces.\n"
+        "4. Gira la cara blanca 2 veces.\n"
+        "5. Gira la cara naranja 3 veces.\n"
+        "6. Gira la cara verde 1 vez.\n"
+        "7. Gira la cara naranja 1 vez.\n"
+        "8. Gira la cara verde 3 veces."
+    ),
+    
+    "n3b2n1b2n1a3n3a1": (
+        "1. Gira la cara naranja 3 veces.\n"
+        "2. Gira la cara blanca 2 veces.\n"
+        "3. Gira la cara naranja 1 vez.\n"
+        "4. Gira la cara blanca 2 veces.\n"
+        "5. Gira la cara naranja 1 vez.\n"
+        "6. Gira la cara azul 3 veces.\n"
+        "7. Gira la cara naranja 3 veces.\n"
+        "8. Gira la cara azul 1 vez."
+    ),
+    
+    "n1b1n3b3n3v1n1v3": (
+        "1. Gira la cara naranja 1 vez.\n"
+        "2. Gira la cara blanca 1 vez.\n"
+        "3. Gira la cara naranja 3 veces.\n"
+        "4. Gira la cara blanca 3 veces.\n"
+        "5. Gira la cara naranja 3 veces.\n"
+        "6. Gira la cara verde 1 vez.\n"
+        "7. Gira la cara naranja 1 vez.\n"
+        "8. Gira la cara verde 3 veces."
+    ),
+    
+    "n3b3n1b1n1a3n3a1": (
+        "1. Gira la cara naranja 3 veces.\n"
+        "2. Gira la cara blanca 3 veces.\n"
+        "3. Gira la cara naranja 1 vez.\n"
+        "4. Gira la cara blanca 1 vez.\n"
+        "5. Gira la cara naranja 1 vez.\n"
+        "6. Gira la cara azul 3 veces.\n"
+        "7. Gira la cara naranja 3 veces.\n"
+        "8. Gira la cara azul 1 vez."
+    ),
+    
+    "v1b2v3b2v3g1v1g3": (
+        "1. Gira la cara verde 1 vez.\n"
+        "2. Gira la cara blanca 2 veces.\n"
+        "3. Gira la cara verde 3 veces.\n"
+        "4. Gira la cara blanca 2 veces.\n"
+        "5. Gira la cara verde 3 veces.\n"
+        "6. Gira la cara roja 1 vez.\n"
+        "7. Gira la cara verde 1 vez.\n"
+        "8. Gira la cara roja 3 veces."
+    ),
+    
+    "v3b2v1b2v1n3v3n1": (
+        "1. Gira la cara verde 3 veces.\n"
+        "2. Gira la cara blanca 2 veces.\n"
+        "3. Gira la cara verde 1 vez.\n"
+        "4. Gira la cara blanca 2 veces.\n"
+        "5. Gira la cara verde 1 vez.\n"
+        "6. Gira la cara naranja 3 veces.\n"
+        "7. Gira la cara verde 3 veces.\n"
+        "8. Gira la cara naranja 1 vez."
+    ),
+    
+    "v1b1v3b3v3g1v1g3": (
+        "1. Gira la cara verde 1 vez.\n"
+        "2. Gira la cara blanca 1 vez.\n"
+        "3. Gira la cara verde 3 veces.\n"
+        "4. Gira la cara blanca 3 veces.\n"
+        "5. Gira la cara verde 3 veces.\n"
+        "6. Gira la cara roja 1 vez.\n"
+        "7. Gira la cara verde 1 vez.\n"
+        "8. Gira la cara roja 3 veces."
+    ),
+    
+    "v3b3v1b1v1n3v3n1": (
+        "1. Gira la cara verde 3 veces.\n"
+        "2. Gira la cara blanca 3 veces.\n"
+        "3. Gira la cara verde 1 vez.\n"
+        "4. Gira la cara blanca 1 vez.\n"
+        "5. Gira la cara verde 1 vez.\n"
+        "6. Gira la cara naranja 3 veces.\n"
+        "7. Gira la cara verde 3 veces.\n"
+        "8. Gira la cara naranja 1 vez."
+    ),
+    
+    "b3": "Gira la cara blanca 3 veces.",
+    
+    "a1g3a3g1b2g1b2g3": (
+        "1. Gira la cara azul 1 vez.\n"
+        "2. Gira la cara roja 3 veces.\n"
+        "3. Gira la cara azul 3 veces.\n"
+        "4. Gira la cara roja 1 vez.\n"
+        "5. Gira la cara blanca 2 veces.\n"
+        "6. Gira la cara roja 1 vez.\n"
+        "7. Gira la cara blanca 2 veces.\n"
+        "8. Gira la cara roja 3 veces."
+    ),
+    
+    "v3g1v1g3b2g3b2g1": (
+        "1. Gira la cara verde 3 veces.\n"
+        "2. Gira la cara roja 1 vez.\n"
+        "3. Gira la cara verde 1 vez.\n"
+        "4. Gira la cara roja 3 veces.\n"
+        "5. Gira la cara blanca 2 veces.\n"
+        "6. Gira la cara roja 3 veces.\n"
+        "7. Gira la cara blanca 2 veces.\n"
+        "8. Gira la cara roja 1 vez."
+    ),
+    
+    "a1g3a3g1b1g1b3g3": (
+        "1. Gira la cara azul 1 vez.\n"
+        "2. Gira la cara roja 3 veces.\n"
+        "3. Gira la cara azul 3 veces.\n"
+        "4. Gira la cara roja 1 vez.\n"
+        "5. Gira la cara blanca 1 vez.\n"
+        "6. Gira la cara roja 1 vez.\n"
+        "7. Gira la cara blanca 3 veces.\n"
+        "8. Gira la cara roja 3 veces."
+    ),
+    
+    "v3g1v1g3b3g3b1g1": (
+        "1. Gira la cara verde 3 veces.\n"
+        "2. Gira la cara roja 1 vez.\n"
+        "3. Gira la cara verde 1 vez.\n"
+        "4. Gira la cara roja 3 veces.\n"
+        "5. Gira la cara blanca 3 veces.\n"
+        "6. Gira la cara roja 3 veces.\n"
+        "7. Gira la cara blanca 1 vez.\n"
+        "8. Gira la cara roja 1 vez."
+    ),
+    
+    "n1a3n3a1b2a1b2a3": (
+        "1. Gira la cara naranja 1 vez.\n"
+        "2. Gira la cara azul 3 veces.\n"
+        "3. Gira la cara naranja 3 veces.\n"
+        "4. Gira la cara azul 1 vez.\n"
+        "5. Gira la cara blanca 2 veces.\n"
+        "6. Gira la cara azul 1 vez.\n"
+        "7. Gira la cara blanca 2 veces.\n"
+        "8. Gira la cara azul 3 veces."
+    ),
+    
+    "g3a1g1a3b2a3b2a1": (
+        "1. Gira la cara roja 3 veces.\n"
+        "2. Gira la cara azul 1 vez.\n"
+        "3. Gira la cara roja 1 vez.\n"
+        "4. Gira la cara azul 3 veces.\n"
+        "5. Gira la cara blanca 2 veces.\n"
+        "6. Gira la cara azul 3 veces.\n"
+        "7. Gira la cara blanca 2 veces.\n"
+        "8. Gira la cara azul 1 vez."
+    ),
+    
+    "n1a3n3a1b1a1b3a3": (
+        "1. Gira la cara naranja 1 vez.\n"
+        "2. Gira la cara azul 3 veces.\n"
+        "3. Gira la cara naranja 3 veces.\n"
+        "4. Gira la cara azul 1 vez.\n"
+        "5. Gira la cara blanca 1 vez.\n"
+        "6. Gira la cara azul 1 vez.\n"
+        "7. Gira la cara blanca 3 veces.\n"
+        "8. Gira la cara azul 3 veces."
+    ),
+    
+    "g3a1g1a3b3a3b1a1": (
+        "1. Gira la cara roja 3 veces.\n"
+        "2. Gira la cara azul 1 vez.\n"
+        "3. Gira la cara roja 1 vez.\n"
+        "4. Gira la cara azul 3 veces.\n"
+        "5. Gira la cara blanca 3 veces.\n"
+        "6. Gira la cara azul 3 veces.\n"
+        "7. Gira la cara blanca 1 vez.\n"
+        "8. Gira la cara azul 1 vez."
+    ),
+    
+    "v1n3v3n1b2n1b2n3": (
+        "1. Gira la cara verde 1 vez.\n"
+        "2. Gira la cara naranja 3 veces.\n"
+        "3. Gira la cara verde 3 veces.\n"
+        "4. Gira la cara naranja 1 vez.\n"
+        "5. Gira la cara blanca 2 veces.\n"
+        "6. Gira la cara naranja 1 vez.\n"
+        "7. Gira la cara blanca 2 veces.\n"
+        "8. Gira la cara naranja 3 veces."
+    ),
+    
+    "a3n1a1n3b2n3b2n1": (
+        "1. Gira la cara azul 3 veces.\n"
+        "2. Gira la cara naranja 1 vez.\n"
+        "3. Gira la cara azul 1 vez.\n"
+        "4. Gira la cara naranja 3 veces.\n"
+        "5. Gira la cara blanca 2 veces.\n"
+        "6. Gira la cara naranja 3 veces.\n"
+        "7. Gira la cara blanca 2 veces.\n"
+        "8. Gira la cara naranja 1 vez."
+    ),
+    
+    "v1n3v3n1b1n1b3n3": (
+        "1. Gira la cara verde 1 vez.\n"
+        "2. Gira la cara naranja 3 veces.\n"
+        "3. Gira la cara verde 3 veces.\n"
+        "4. Gira la cara naranja 1 vez.\n"
+        "5. Gira la cara blanca 1 vez.\n"
+        "6. Gira la cara naranja 1 vez.\n"
+        "7. Gira la cara blanca 3 veces.\n"
+        "8. Gira la cara naranja 3 veces."
+    ),
+    
+    "a3n1a1n3b3n3b1n1": (
+        "1. Gira la cara azul 3 veces.\n"
+        "2. Gira la cara naranja 1 vez.\n"
+        "3. Gira la cara azul 1 vez.\n"
+        "4. Gira la cara naranja 3 veces.\n"
+        "5. Gira la cara blanca 3 veces.\n"
+        "6. Gira la cara naranja 3 veces.\n"
+        "7. Gira la cara blanca 1 vez.\n"
+        "8. Gira la cara naranja 1 vez."
+    ),
+    
+    "g1v3g3v1b2v1b2v3": (
+        "1. Gira la cara roja 1 vez.\n"
+        "2. Gira la cara verde 3 veces.\n"
+        "3. Gira la cara roja 3 veces.\n"
+        "4. Gira la cara verde 1 vez.\n"
+        "5. Gira la cara blanca 2 veces.\n"
+        "6. Gira la cara verde 1 vez.\n"
+        "7. Gira la cara blanca 2 veces.\n"
+        "8. Gira la cara verde 3 veces."
+    ),
+    
+    "n3v1n1v3b2v3b2v1": (
+        "1. Gira la cara naranja 3 veces.\n"
+        "2. Gira la cara verde 1 vez.\n"
+        "3. Gira la cara naranja 1 vez.\n"
+        "4. Gira la cara verde 3 veces.\n"
+        "5. Gira la cara blanca 2 veces.\n"
+        "6. Gira la cara verde 3 veces.\n"
+        "7. Gira la cara blanca 2 veces.\n"
+        "8. Gira la cara verde 1 vez."
+    ),
+    
+    "g1v3g3v1b1v1b3v3": (
+        "1. Gira la cara roja 1 vez.\n"
+        "2. Gira la cara verde 3 veces.\n"
+        "3. Gira la cara roja 3 veces.\n"
+        "4. Gira la cara verde 1 vez.\n"
+        "5. Gira la cara blanca 1 vez.\n"
+        "6. Gira la cara verde 1 vez.\n"
+        "7. Gira la cara blanca 3 veces.\n"
+        "8. Gira la cara verde 3 veces."
+    ),
+    
+    "n3v1n1v3b3v3b1v1": (
+        "1. Gira la cara naranja 3 veces.\n"
+        "2. Gira la cara verde 1 vez.\n"
+        "3. Gira la cara naranja 1 vez.\n"
+        "4. Gira la cara verde 3 veces.\n"
+        "5. Gira la cara blanca 3 veces.\n"
+        "6. Gira la cara verde 3 veces.\n"
+        "7. Gira la cara blanca 1 vez.\n"
+        "8. Gira la cara verde 1 vez."
+    )
+
     },
     'en': {
         'welcome':         'Welcome to the Rubik Cube',
@@ -69,6 +424,7 @@ TRADUCCIONES = {
                             "  3) Final 'uncorrection' to return the piece to its original orbit.\n\n"
                             "Follow the steps in the right panel.\n\n"
                             "Thank you very much for using the program, and I hope you found it useful.\n\n",
+        'step':          'Step',
         'next_step':       'Next Step',
         'goto_menu':       'Return to Menu',
         'solution_complete': 'Solution Complete!',
@@ -98,6 +454,329 @@ TRADUCCIONES = {
                             "A final-year project, Universidad Alfonso X, 2025<br>" \
                             "There may be errors, but please feel free to report them.<br>" \
                             "Thank you for using it!<br>",
+        'b1': 'Rotate the white face once.',
+        'g1b2g3b2g3a1g1a3': (
+            '1. Rotate the red face once.\n'
+            '2. Rotate the white face twice.\n'
+            '3. Rotate the red face three times.\n'
+            '4. Rotate the white face twice.\n'
+            '5. Rotate the red face three times.\n'
+            '6. Rotate the blue face once.\n'
+            '7. Rotate the red face once.\n'
+            '8. Rotate the blue face three times.'
+        ),
+        'g3b2g1b2g1v3g3v1': (
+            '1. Rotate the red face three times.\n'
+            '2. Rotate the white face twice.\n'
+            '3. Rotate the red face once.\n'
+            '4. Rotate the white face twice.\n'
+            '5. Rotate the red face once.\n'
+            '6. Rotate the green face three times.\n'
+            '7. Rotate the red face three times.\n'
+            '8. Rotate the green face once.'
+        ),
+        'g1b1g3b3g3a1g1a3': (
+            '1. Rotate the red face once.\n'
+            '2. Rotate the white face once.\n'
+            '3. Rotate the red face three times.\n'
+            '4. Rotate the white face three times.\n'
+            '5. Rotate the red face three times.\n'
+            '6. Rotate the blue face once.\n'
+            '7. Rotate the red face once.\n'
+            '8. Rotate the blue face three times.'
+        ),
+        'g3b3g1b1g1v3g3v1': (
+            '1. Rotate the red face three times.\n'
+            '2. Rotate the white face three times.\n'
+            '3. Rotate the red face once.\n'
+            '4. Rotate the white face once.\n'
+            '5. Rotate the red face once.\n'
+            '6. Rotate the green face three times.\n'
+            '7. Rotate the red face three times.\n'
+            '8. Rotate the green face once.'
+        ),
+        'a1b2a3b2a3n1a1n3': (
+            '1. Rotate the blue face once.\n'
+            '2. Rotate the white face twice.\n'
+            '3. Rotate the blue face three times.\n'
+            '4. Rotate the white face twice.\n'
+            '5. Rotate the blue face three times.\n'
+            '6. Rotate the orange face once.\n'
+            '7. Rotate the blue face once.\n'
+            '8. Rotate the orange face three times.'
+        ),
+        'a3b2a1b2a1g3a3g1': (
+            '1. Rotate the blue face three times.\n'
+            '2. Rotate the white face twice.\n'
+            '3. Rotate the blue face once.\n'
+            '4. Rotate the white face twice.\n'
+            '5. Rotate the blue face once.\n'
+            '6. Rotate the red face three times.\n'
+            '7. Rotate the blue face three times.\n'
+            '8. Rotate the red face once.'
+        ),
+        'a1b1a3b3a3n1a1n3': (
+            '1. Rotate the blue face once.\n'
+            '2. Rotate the white face once.\n'
+            '3. Rotate the blue face three times.\n'
+            '4. Rotate the white face three times.\n'
+            '5. Rotate the blue face three times.\n'
+            '6. Rotate the orange face once.\n'
+            '7. Rotate the blue face once.\n'
+            '8. Rotate the orange face three times.'
+        ),
+        'a3b3a1b1a1g3a3g1': (
+            '1. Rotate the blue face three times.\n'
+            '2. Rotate the white face three times.\n'
+            '3. Rotate the blue face once.\n'
+            '4. Rotate the white face once.\n'
+            '5. Rotate the blue face once.\n'
+            '6. Rotate the red face three times.\n'
+            '7. Rotate the blue face three times.\n'
+            '8. Rotate the red face once.'
+        ),
+        'n1b2n3b2n3v1n1v3': (
+            '1. Rotate the orange face once.\n'
+            '2. Rotate the white face twice.\n'
+            '3. Rotate the orange face three times.\n'
+            '4. Rotate the white face twice.\n'
+            '5. Rotate the orange face three times.\n'
+            '6. Rotate the green face once.\n'
+            '7. Rotate the orange face once.\n'
+            '8. Rotate the green face three times.'
+        ),
+        'n3b2n1b2n1a3n3a1': (
+            '1. Rotate the orange face three times.\n'
+            '2. Rotate the white face twice.\n'
+            '3. Rotate the orange face once.\n'
+            '4. Rotate the white face twice.\n'
+            '5. Rotate the orange face once.\n'
+            '6. Rotate the blue face three times.\n'
+            '7. Rotate the orange face three times.\n'
+            '8. Rotate the blue face once.'
+        ),
+        'n1b1n3b3n3v1n1v3': (
+            '1. Rotate the orange face once.\n'
+            '2. Rotate the white face once.\n'
+            '3. Rotate the orange face three times.\n'
+            '4. Rotate the white face three times.\n'
+            '5. Rotate the orange face three times.\n'
+            '6. Rotate the green face once.\n'
+            '7. Rotate the orange face once.\n'
+            '8. Rotate the green face three times.'
+        ),
+        'n3b3n1b1n1a3n3a1': (
+            '1. Rotate the orange face three times.\n'
+            '2. Rotate the white face three times.\n'
+            '3. Rotate the orange face once.\n'
+            '4. Rotate the white face once.\n'
+            '5. Rotate the orange face once.\n'
+            '6. Rotate the blue face three times.\n'
+            '7. Rotate the orange face three times.\n'
+            '8. Rotate the blue face once.'
+        ),
+        'v1b2v3b2v3g1v1g3': (
+            '1. Rotate the green face once.\n'
+            '2. Rotate the white face twice.\n'
+            '3. Rotate the green face three times.\n'
+            '4. Rotate the white face twice.\n'
+            '5. Rotate the green face three times.\n'
+            '6. Rotate the red face once.\n'
+            '7. Rotate the green face once.\n'
+            '8. Rotate the red face three times.'
+        ),
+        'v3b2v1b2v1n3v3n1': (
+            '1. Rotate the green face three times.\n'
+            '2. Rotate the white face twice.\n'
+            '3. Rotate the green face once.\n'
+            '4. Rotate the white face twice.\n'
+            '5. Rotate the green face once.\n'
+            '6. Rotate the orange face three times.\n'
+            '7. Rotate the green face three times.\n'
+            '8. Rotate the orange face once.'
+        ),
+        'v1b1v3b3v3g1v1g3': (
+            '1. Rotate the green face once.\n'
+            '2. Rotate the white face once.\n'
+            '3. Rotate the red face three times.\n'
+            '4. Rotate the white face three times.\n'
+            '5. Rotate the red face three times.\n'
+            '6. Rotate the blue face once.\n'
+            '7. Rotate the red face once.\n'
+            '8. Rotate the blue face three times.'
+        ),
+        'v3b3v1b1v1n3v3n1': (
+            '1. Rotate the green face three times.\n'
+            '2. Rotate the white face three times.\n'
+            '3. Rotate the red face once.\n'
+            '4. Rotate the white face once.\n'
+            '5. Rotate the red face once.\n'
+            '6. Rotate the orange face three times.\n'
+            '7. Rotate the red face three times.\n'
+            '8. Rotate the orange face once.'
+        ),
+        'b3': 'Rotate the white face three times.',
+        'a1g3a3g1b2g1b2g3': (
+            '1. Rotate the blue face once.\n'
+            '2. Rotate the red face three times.\n'
+            '3. Rotate the blue face three times.\n'
+            '4. Rotate the red face once.\n'
+            '5. Rotate the white face twice.\n'
+            '6. Rotate the red face once.\n'
+            '7. Rotate the white face twice.\n'
+            '8. Rotate the red face three times.'
+        ),
+        'v3g1v1g3b2g3b2g1': (
+            '1. Rotate the green face three times.\n'
+            '2. Rotate the red face once.\n'
+            '3. Rotate the green face once.\n'
+            '4. Rotate the red face three times.\n'
+            '5. Rotate the white face twice.\n'
+            '6. Rotate the red face three times.\n'
+            '7. Rotate the white face twice.\n'
+            '8. Rotate the red face once.'
+        ),
+        'a1g3a3g1b1g1b3g3': (
+            '1. Rotate the blue face once.\n'
+            '2. Rotate the red face three times.\n'
+            '3. Rotate the blue face three times.\n'
+            '4. Rotate the red face once.\n'
+            '5. Rotate the white face once.\n'
+            '6. Rotate the red face once.\n'
+            '7. Rotate the white face three times.\n'
+            '8. Rotate the red face three times.'
+        ),
+        'v3g1v1g3b3g3b1g1': (
+            '1. Rotate the green face three times.\n'
+            '2. Rotate the red face once.\n'
+            '3. Rotate the green face once.\n'
+            '4. Rotate the red face three times.\n'
+            '5. Rotate the white face three times.\n'
+            '6. Rotate the red face three times.\n'
+            '7. Rotate the white face once.\n'
+            '8. Rotate the red face once.'
+        ),
+        'n1a3n3a1b2a1b2a3': (
+            '1. Rotate the orange face once.\n'
+            '2. Rotate the blue face three times.\n'
+            '3. Rotate the orange face three times.\n'
+            '4. Rotate the blue face once.\n'
+            '5. Rotate the white face twice.\n'
+            '6. Rotate the blue face once.\n'
+            '7. Rotate the white face twice.\n'
+            '8. Rotate the blue face three times.'
+        ),
+        'g3a1g1a3b2a3b2a1': (
+            '1. Rotate the red face three times.\n'
+            '2. Rotate the blue face once.\n'
+            '3. Rotate the red face once.\n'
+            '4. Rotate the blue face three times.\n'
+            '5. Rotate the white face twice.\n'
+            '6. Rotate the blue face three times.\n'
+            '7. Rotate the white face twice.\n'
+            '8. Rotate the blue face once.'
+        ),
+        'n1a3n3a1b1a1b3a3': (
+            '1. Rotate the orange face once.\n'
+            '2. Rotate the blue face three times.\n'
+            '3. Rotate the orange face three times.\n'
+            '4. Rotate the blue face once.\n'
+            '5. Rotate the white face once.\n'
+            '6. Rotate the blue face once.\n'
+            '7. Rotate the white face three times.\n'
+            '8. Rotate the blue face three times.'
+        ),
+        'g3a1g1a3b3a3b1a1': (
+            '1. Rotate the red face three times.\n'
+            '2. Rotate the blue face once.\n'
+            '3. Rotate the red face once.\n'
+            '4. Rotate the blue face three times.\n'
+            '5. Rotate the white face three times.\n'
+            '6. Rotate the blue face three times.\n'
+            '7. Rotate the white face once.\n'
+            '8. Rotate the blue face once.'
+        ),
+        'v1n3v3n1b2n1b2n3': (
+            '1. Rotate the green face once.\n'
+            '2. Rotate the orange face three times.\n'
+            '3. Rotate the green face three times.\n'
+            '4. Rotate the orange face once.\n'
+            '5. Rotate the white face twice.\n'
+            '6. Rotate the orange face once.\n'
+            '7. Rotate the white face twice.\n'
+            '8. Rotate the orange face three times.'
+        ),
+        'a3n1a1n3b2n3b2n1': (
+            '1. Rotate the blue face three times.\n'
+            '2. Rotate the orange face once.\n'
+            '3. Rotate the blue face once.\n'
+            '4. Rotate the orange face three times.\n'
+            '5. Rotate the white face twice.\n'
+            '6. Rotate the orange face three times.\n'
+            '7. Rotate the white face twice.\n'
+            '8. Rotate the orange face once.'
+        ),
+        'v1n3v3n1b1n1b3n3': (
+            '1. Rotate the green face once.\n'
+            '2. Rotate the orange face three times.\n'
+            '3. Rotate the green face three times.\n'
+            '4. Rotate the orange face once.\n'
+            '5. Rotate the white face once.\n'
+            '6. Rotate the orange face once.\n'
+            '7. Rotate the white face three times.\n'
+            '8. Rotate the orange face three times.'
+        ),
+        'a3n1a1n3b3n3b1n1': (
+            '1. Rotate the blue face three times.\n'
+            '2. Rotate the orange face once.\n'
+            '3. Rotate the blue face once.\n'
+            '4. Rotate the orange face three times.\n'
+            '5. Rotate the white face three times.\n'
+            '6. Rotate the orange face three times.\n'
+            '7. Rotate the white face once.\n'
+            '8. Rotate the orange face once.'
+        ),
+        'g1v3g3v1b2v1b2v3': (
+            '1. Rotate the red face once.\n'
+            '2. Rotate the green face three times.\n'
+            '3. Rotate the red face three times.\n'
+            '4. Rotate the green face once.\n'
+            '5. Rotate the white face twice.\n'
+            '6. Rotate the green face once.\n'
+            '7. Rotate the white face twice.\n'
+            '8. Rotate the green face three times.'
+        ),
+        'n3v1n1v3b2v3b2v1': (
+            '1. Rotate the orange face three times.\n'
+            '2. Rotate the green face once.\n'
+            '3. Rotate the orange face once.\n'
+            '4. Rotate the green face three times.\n'
+            '5. Rotate the white face twice.\n'
+            '6. Rotate the green face three times.\n'
+            '7. Rotate the white face twice.\n'
+            '8. Rotate the green face once.'
+        ),
+        'g1v3g3v1b1v1b3v3': (
+            '1. Rotate the red face once.\n'
+            '2. Rotate the green face three times.\n'
+            '3. Rotate the red face three times.\n'
+            '4. Rotate the green face once.\n'
+            '5. Rotate the white face once.\n'
+            '6. Rotate the green face once.\n'
+            '7. Rotate the white face three times.\n'
+            '8. Rotate the green face three times.'
+        ),
+        'n3v1n1v3b3v3b1v1': (
+            '1. Rotate the orange face three times.\n'
+            '2. Rotate the green face once.\n'
+            '3. Rotate the orange face once.\n'
+            '4. Rotate the green face three times.\n'
+            '5. Rotate the white face three times.\n'
+            '6. Rotate the green face three times.\n'
+            '7. Rotate the white face once.\n'
+            '8. Rotate the green face once.'
+        ),
+        
     },
     'it': {
         'welcome':         'Benvenuto al Cubo di Rubik',
@@ -119,6 +798,7 @@ TRADUCCIONES = {
                             "  3) 'Scorrezione' finale per riportare il pezzo alla sua orbita originale.\n\n"
                             "Segui i passaggi nel pannello di destra.\n\n"
                             "Grazie mille per aver usato il programma e spero ti sia stato utile.\n\n",
+        'step':          'Passo',
         'next_step':       'Passo successivo',
         'goto_menu':       'Torna al menu',
         'solution_complete': 'Soluzione completata!',
@@ -148,6 +828,519 @@ TRADUCCIONES = {
                             "Progetto di TFG, Universidad Alfonso X, 2025<br>" \
                             "Potrebbero esserci errori, ma non esitare a segnalarli.<br>" \
                             "Grazie per averlo usato!<br>",
+        'b1': 'Ruota la faccia bianca una volta.',
+        
+        'g1b2g3b2g3a1g1a3': (
+            '1. Ruota la faccia rossa una volta.\n'
+            '2. Ruota la faccia bianca due volte.\n'
+            '3. Ruota la faccia rossa tre volte.\n'
+            '4. Ruota la faccia bianca due volte.\n'
+            '5. Ruota la faccia rossa tre volte.\n'
+            '6. Ruota la faccia blu una volta.\n'
+            '7. Ruota la faccia rossa una volta.\n'
+            '8. Ruota la faccia blu tre volte.'
+        ),
+        
+        'g3b2g1b2g1v3g3v1': (
+            '1. Ruota la faccia rossa tre volte.\n'
+            '2. Ruota la faccia bianca due volte.\n'
+            '3. Ruota la faccia rossa una volta.\n'
+            '4. Ruota la faccia bianca due volte.\n'
+            '5. Ruota la faccia rossa una volta.\n'
+            '6. Ruota la faccia verde tre volte.\n'
+            '7. Ruota la faccia rossa tre volte.\n'
+            '8. Ruota la faccia verde una volta.'
+        ),
+        
+        'g1b1g3b3g3a1g1a3': (
+            '1. Ruota la faccia rossa una volta.\n'
+            '2. Ruota la faccia bianca una volta.\n'
+            '3. Ruota la faccia rossa tre volte.\n'
+            '4. Ruota la faccia bianca tre volte.\n'
+            '5. Ruota la faccia rossa tre volte.\n'
+            '6. Ruota la faccia blu una volta.\n'
+            '7. Ruota la faccia rossa una volta.\n'
+            '8. Ruota la faccia blu tre volte.'
+        ),
+        
+        'g3b3g1b1g1v3g3v1': (
+            '1. Ruota la faccia rossa tre volte.\n'
+            '2. Ruota la faccia bianca tre volte.\n'
+            '3. Ruota la faccia rossa una volta.\n'
+            '4. Ruota la faccia bianca una volta.\n'
+            '5. Ruota la faccia rossa una volta.\n'
+            '6. Ruota la faccia verde tre volte.\n'
+            '7. Ruota la faccia rossa tre volte.\n'
+            '8. Ruota la faccia verde una volta.'
+        ),
+        
+        'a1b2a3b2a3n1a1n3': (
+            '1. Ruota la faccia blu una volta.\n'
+            '2. Ruota la faccia bianca due volte.\n'
+            '3. Ruota la faccia blu tre volte.\n'
+            '4. Ruota la faccia bianca due volte.\n'
+            '5. Ruota la faccia blu tre volte.\n'
+            '6. Ruota la faccia arancione una volta.\n'
+            '7. Ruota la faccia blu una volta.\n'
+            '8. Ruota la faccia arancione tre volte.'
+        ),
+        
+        'a3b2a1b2a1g3a3g1': (
+            '1. Ruota la faccia blu tre volte.\n'
+            '2. Ruota la faccia bianca due volte.\n'
+            '3. Ruota la faccia blu una volta.\n'
+            '4. Ruota la faccia bianca due volte.\n'
+            '5. Ruota la faccia blu una volta.\n'
+            '6. Ruota la faccia rossa tre volte.\n'
+            '7. Ruota la faccia blu tre volte.\n'
+            '8. Ruota la faccia rossa una volta.'
+        ),
+        
+        'a1b1a3b3a3n1a1n3': (
+            '1. Ruota la faccia blu una volta.\n'
+            '2. Ruota la faccia bianca una volta.\n'
+            '3. Ruota la faccia blu tre volte.\n'
+            '4. Ruota la faccia bianca tre volte.\n'
+            '5. Ruota la faccia blu tre volte.\n'
+            '6. Ruota la faccia arancione una volta.\n'
+            '7. Ruota la faccia blu una volta.\n'
+            '8. Ruota la faccia arancione tre volte.'
+        ),
+        
+        'a3b3a1b1a1g3a3g1': (
+            '1. Ruota la faccia blu tre volte.\n'
+            '2. Ruota la faccia bianca tre volte.\n'
+            '3. Ruota la faccia blu una volta.\n'
+            '4. Ruota la faccia bianca una volta.\n'
+            '5. Ruota la faccia blu una volta.\n'
+            '6. Ruota la faccia rossa tre volte.\n'
+            '7. Ruota la faccia blu tre volte.\n'
+            '8. Ruota la faccia rossa una volta.'
+        ),
+        
+        'n1b2n3b2n3v1n1v3': (
+            '1. Ruota la faccia arancione una volta.\n'
+            '2. Ruota la faccia bianca due volte.\n'
+            '3. Ruota la faccia arancione tre volte.\n'
+            '4. Ruota la faccia bianca due volte.\n'
+            '5. Ruota la faccia arancione tre volte.\n'
+            '6. Ruota la faccia verde una volta.\n'
+            '7. Ruota la faccia arancione una volta.\n'
+            '8. Ruota la faccia verde tre volte.'
+        ),
+        
+        'n3b2n1b2n1a3n3a1': (
+            '1. Ruota la faccia arancione tre volte.\n'
+            '2. Ruota la faccia bianca due volte.\n'
+            '3. Ruota la faccia arancione una volta.\n'
+            '4. Ruota la faccia bianca due volte.\n'
+            '5. Ruota la faccia arancione una volta.\n'
+            '6. Ruota la faccia blu tre volte.\n'
+            '7. Ruota la faccia arancione tre volte.\n'
+            '8. Ruota la faccia blu una volta.'
+        ),
+        'n1b1n3b3n3v1n1v3': (
+            '1. Ruota la faccia arancione una volta.\n'
+            '2. Ruota la faccia bianca una volta.\n'
+            '3. Ruota la faccia arancione tre volte.\n'
+            '4. Ruota la faccia bianca tre volte.\n'
+            '5. Ruota la faccia arancione tre volte.\n'
+            '6. Ruota la faccia verde una volta.\n'
+            '7. Ruota la faccia arancione una volta.\n'
+            '8. Ruota la faccia verde tre volte.'
+        ),
+        'n3b3n1b1n1a3n3a1': (
+            '1. Ruota la faccia arancione tre volte.\n'
+            '2. Ruota la faccia bianca tre volte.\n'
+            '3. Ruota la faccia arancione una volta.\n'
+            '4. Ruota la faccia bianca una volta.\n'
+            '5. Ruota la faccia arancione una volta.\n'
+            '6. Ruota la faccia blu tre volte.\n'
+            '7. Ruota la faccia arancione tre volte.\n'
+            '8. Ruota la faccia blu una volta.'
+        ),
+        'v1b2v3b2v3g1v1g3': (
+            '1. Ruota la faccia verde una volta.\n'
+            '2. Ruota la faccia bianca due volte.\n'
+            '3. Ruota la faccia verde tre volte.\n'
+            '4. Ruota la faccia bianca due volte.\n'
+            '5. Ruota la faccia verde tre volte.\n'
+            '6. Ruota la faccia rossa una volta.\n'
+            '7. Ruota la faccia verde una volta.\n'
+            '8. Ruota la faccia rossa tre volte.'
+        ),
+        'v3b2v1b2v1n3v3n1': (
+            '1. Ruota la faccia verde tre volte.\n'
+            '2. Ruota la faccia bianca due volte.\n'
+            '3. Ruota la faccia verde una volta.\n'
+            '4. Ruota la faccia bianca due volte.\n'
+            '5. Ruota la faccia verde una volta.\n'
+            '6. Ruota la faccia arancione tre volte.\n'
+            '7. Ruota la faccia verde tre volte.\n'
+            '8. Ruota la faccia arancione una volta.'
+        ),
+        'v1b1v3b3v3g1v1g3': (
+            '1. Ruota la faccia verde una volta.\n'
+            '2. Ruota la faccia bianca una volta.\n'
+            '3. Ruota la faccia rossa tre volte.\n'
+            '4. Ruota la faccia bianca tre volte.\n'
+            '5. Ruota la faccia rossa tre volte.\n'
+            '6. Ruota la faccia blu una volta.\n'
+            '7. Ruota la faccia rossa una volta.\n'
+            '8. Ruota la faccia blu tre volte.'
+        ),
+        'v3b3v1b1v1n3v3n1': (
+            '1. Ruota la faccia verde tre volte.\n'
+            '2. Ruota la faccia bianca tre volte.\n'
+            '3. Ruota la faccia rossa una volta.\n'
+            '4. Ruota la faccia bianca una volta.\n'
+            '5. Ruota la faccia rossa una volta.\n'
+            '6. Ruota la faccia arancione tre volte.\n'
+            '7. Ruota la faccia rossa tre volte.\n'
+            '8. Ruota la faccia arancione una volta.'
+        ),
+        'b3': 'Ruota la faccia bianca tre volte.',
+
+        'g1b2g3b2g3a1g1a3': (
+            '1. Ruota la faccia rossa una volta.\n'
+            '2. Ruota la faccia bianca due volte.\n'
+            '3. Ruota la faccia rossa tre volte.\n'
+            '4. Ruota la faccia bianca due volte.\n'
+            '5. Ruota la faccia rossa tre volte.\n'
+            '6. Ruota la faccia blu una volta.\n'
+            '7. Ruota la faccia rossa una volta.\n'
+            '8. Ruota la faccia blu tre volte.'
+        ),
+
+        'g3b2g1b2g1v3g3v1': (
+            '1. Ruota la faccia rossa tre volte.\n'
+            '2. Ruota la faccia bianca due volte.\n'
+            '3. Ruota la faccia rossa una volta.\n'
+            '4. Ruota la faccia bianca due volte.\n'
+            '5. Ruota la faccia rossa una volta.\n'
+            '6. Ruota la faccia verde tre volte.\n'
+            '7. Ruota la faccia rossa tre volte.\n'
+            '8. Ruota la faccia verde una volta.'
+        ),
+
+        'g1b1g3b3g3a1g1a3': (
+            '1. Ruota la faccia rossa una volta.\n'
+            '2. Ruota la faccia bianca una volta.\n'
+            '3. Ruota la faccia rossa tre volte.\n'
+            '4. Ruota la faccia bianca tre volte.\n'
+            '5. Ruota la faccia rossa tre volte.\n'
+            '6. Ruota la faccia blu una volta.\n'
+            '7. Ruota la faccia rossa una volta.\n'
+            '8. Ruota la faccia blu tre volte.'
+        ),
+
+        'g3b3g1b1g1v3g3v1': (
+            '1. Ruota la faccia rossa tre volte.\n'
+            '2. Ruota la faccia bianca tre volte.\n'
+            '3. Ruota la faccia rossa una volta.\n'
+            '4. Ruota la faccia bianca una volta.\n'
+            '5. Ruota la faccia rossa una volta.\n'
+            '6. Ruota la faccia verde tre volte.\n'
+            '7. Ruota la faccia rossa tre volte.\n'
+            '8. Ruota la faccia verde una volta.'
+        ),
+
+        'a1b2a3b2a3n1a1n3': (
+            '1. Ruota la faccia blu una volta.\n'
+            '2. Ruota la faccia bianca due volte.\n'
+            '3. Ruota la faccia blu tre volte.\n'
+            '4. Ruota la faccia bianca due volte.\n'
+            '5. Ruota la faccia blu tre volte.\n'
+            '6. Ruota la faccia arancione una volta.\n'
+            '7. Ruota la faccia blu una volta.\n'
+            '8. Ruota la faccia arancione tre volte.'
+        ),
+
+        'a3b2a1b2a1g3a3g1': (
+            '1. Ruota la faccia blu tre volte.\n'
+            '2. Ruota la faccia bianca due volte.\n'
+            '3. Ruota la faccia blu una volta.\n'
+            '4. Ruota la faccia bianca due volte.\n'
+            '5. Ruota la faccia blu una volta.\n'
+            '6. Ruota la faccia rossa tre volte.\n'
+            '7. Ruota la faccia blu tre volte.\n'
+            '8. Ruota la faccia rossa una volta.'
+        ),
+
+        'a1b1a3b3a3n1a1n3': (
+            '1. Ruota la faccia blu una volta.\n'
+            '2. Ruota la faccia bianca una volta.\n'
+            '3. Ruota la faccia blu tre volte.\n'
+            '4. Ruota la faccia bianca tre volte.\n'
+            '5. Ruota la faccia blu tre volte.\n'
+            '6. Ruota la faccia arancione una volta.\n'
+            '7. Ruota la faccia blu una volta.\n'
+            '8. Ruota la faccia arancione tre volte.'
+        ),
+
+        'a3b3a1b1a1g3a3g1': (
+            '1. Ruota la faccia blu tre volte.\n'
+            '2. Ruota la faccia bianca tre volte.\n'
+            '3. Ruota la faccia blu una volta.\n'
+            '4. Ruota la faccia bianca una volta.\n'
+            '5. Ruota la faccia blu una volta.\n'
+            '6. Ruota la faccia rossa tre volte.\n'
+            '7. Ruota la faccia blu tre volte.\n'
+            '8. Ruota la faccia rossa una volta.'
+        ),
+
+        'n1b2n3b2n3v1n1v3': (
+            '1. Ruota la faccia arancione una volta.\n'
+            '2. Ruota la faccia bianca due volte.\n'
+            '3. Ruota la faccia arancione tre volte.\n'
+            '4. Ruota la faccia bianca due volte.\n'
+            '5. Ruota la faccia arancione tre volte.\n'
+            '6. Ruota la faccia verde una volta.\n'
+            '7. Ruota la faccia arancione una volta.\n'
+            '8. Ruota la faccia verde tre volte.'
+        ),
+
+        'n1b1n3b3n3v1n1v3': (
+            '1. Ruota la faccia arancione una volta.\n'
+            '2. Ruota la faccia bianca una volta.\n'
+            '3. Ruota la faccia arancione tre volte.\n'
+            '4. Ruota la faccia bianca tre volte.\n'
+            '5. Ruota la faccia arancione tre volte.\n'
+            '6. Ruota la faccia verde una volta.\n'
+            '7. Ruota la faccia arancione una volta.\n'
+            '8. Ruota la faccia verde tre volte.'
+        ),
+
+        'n3b3n1b1n1a3n3a1': (
+            '1. Ruota la faccia arancione tre volte.\n'
+            '2. Ruota la faccia bianca tre volte.\n'
+            '3. Ruota la faccia arancione una volta.\n'
+            '4. Ruota la faccia bianca una volta.\n'
+            '5. Ruota la faccia arancione una volta.\n'
+            '6. Ruota la faccia blu tre volte.\n'
+            '7. Ruota la faccia arancione tre volte.\n'
+            '8. Ruota la faccia blu una volta.'
+        ),
+
+        'v1b2v3b2v3g1v1g3': (
+            '1. Ruota la faccia verde una volta.\n'
+            '2. Ruota la faccia bianca due volte.\n'
+            '3. Ruota la faccia verde tre volte.\n'
+            '4. Ruota la faccia bianca due volte.\n'
+            '5. Ruota la faccia verde tre volte.\n'
+            '6. Ruota la faccia rossa una volta.\n'
+            '7. Ruota la faccia verde una volta.\n'
+            '8. Ruota la faccia rossa tre volte.'
+        ),
+
+        'v3b2v1b2v1n3v3n1': (
+            '1. Ruota la faccia verde tre volte.\n'
+            '2. Ruota la faccia bianca due volte.\n'
+            '3. Ruota la faccia verde una volta.\n'
+            '4. Ruota la faccia bianca due volte.\n'
+            '5. Ruota la faccia verde una volta.\n'
+            '6. Ruota la faccia arancione tre volte.\n'
+            '7. Ruota la faccia verde tre volte.\n'
+            '8. Ruota la faccia arancione una volta.'
+        ),
+
+        'v1b1v3b3v3g1v1g3': (
+            '1. Ruota la faccia verde una volta.\n'
+            '2. Ruota la faccia bianca una volta.\n'
+            '3. Ruota la faccia verde tre volte.\n'
+            '4. Ruota la faccia bianca tre volte.\n'
+            '5. Ruota la faccia verde tre volte.\n'
+            '6. Ruota la faccia rossa una volta.\n'
+            '7. Ruota la faccia verde una volta.\n'
+            '8. Ruota la faccia rossa tre volte.'
+        ),
+
+        'v3b3v1b1v1n3v3n1': (
+            '1. Ruota la faccia verde tre volte.\n'
+            '2. Ruota la faccia bianca tre volte.\n'
+            '3. Ruota la faccia verde una volta.\n'
+            '4. Ruota la faccia bianca una volta.\n'
+            '5. Ruota la faccia verde una volta.\n'
+            '6. Ruota la faccia arancione tre volte.\n'
+            '7. Ruota la faccia verde tre volte.\n'
+            '8. Ruota la faccia arancione una volta.'
+        ),
+
+        'a1g3a3g1b2g1b2g3': (
+            '1. Ruota la faccia blu una volta.\n'
+            '2. Ruota la faccia rossa tre volte.\n'
+            '3. Ruota la faccia blu tre volte.\n'
+            '4. Ruota la faccia rossa una volta.\n'
+            '5. Ruota la faccia bianca due volte.\n'
+            '6. Ruota la faccia rossa una volta.\n'
+            '7. Ruota la faccia bianca due volte.\n'
+            '8. Ruota la faccia rossa tre volte.'
+        ),
+
+        'v3g1v1g3b2g3b2g1': (
+            '1. Ruota la faccia verde tre volte.\n'
+            '2. Ruota la faccia rossa una volta.\n'
+            '3. Ruota la faccia verde una volta.\n'
+            '4. Ruota la faccia rossa tre volte.\n'
+            '5. Ruota la faccia bianca due volte.\n'
+            '6. Ruota la faccia rossa tre volte.\n'
+            '7. Ruota la faccia bianca due volte.\n'
+            '8. Ruota la faccia rossa una volta.'
+        ),
+
+        'a1g3a3g1b1g1b3g3': (
+            '1. Ruota la faccia blu una volta.\n'
+            '2. Ruota la faccia rossa tre volte.\n'
+            '3. Ruota la faccia blu tre volte.\n'
+            '4. Ruota la faccia rossa una volta.\n'
+            '5. Ruota la faccia bianca una volta.\n'
+            '6. Ruota la faccia rossa una volta.\n'
+            '7. Ruota la faccia bianca tre volte.\n'
+            '8. Ruota la faccia rossa tre volte.'
+        ),
+
+        'v3g1v1g3b3g3b1g1': (
+            '1. Ruota la faccia verde tre volte.\n'
+            '2. Ruota la faccia rossa una volta.\n'
+            '3. Ruota la faccia verde una volta.\n'
+            '4. Ruota la faccia rossa tre volte.\n'
+            '5. Ruota la faccia bianca tre volte.\n'
+            '6. Ruota la faccia rossa tre volte.\n'
+            '7. Ruota la faccia bianca una volta.\n'
+            '8. Ruota la faccia rossa una volta.'
+        ),
+
+        'n1a3n3a1b2a1b2a3': (
+            '1. Ruota la faccia arancione una volta.\n'
+            '2. Ruota la faccia blu tre volte.\n'
+            '3. Ruota la faccia arancione tre volte.\n'
+            '4. Ruota la faccia blu una volta.\n'
+            '5. Ruota la faccia bianca due volte.\n'
+            '6. Ruota la faccia blu una volta.\n'
+            '7. Ruota la faccia bianca due volte.\n'
+            '8. Ruota la faccia blu tre volte.'
+        ),
+
+        'g3a1g1a3b2a3b2a1': (
+            '1. Ruota la faccia rossa tre volte.\n'
+            '2. Ruota la faccia blu una volta.\n'
+            '3. Ruota la faccia rossa una volta.\n'
+            '4. Ruota la faccia blu tre volte.\n'
+            '5. Ruota la faccia bianca due volte.\n'
+            '6. Ruota la faccia blu tre volte.\n'
+            '7. Ruota la faccia bianca due volte.\n'
+            '8. Ruota la faccia blu una volta.'
+        ),
+
+        'n1a3n3a1b1a1b3a3': (
+            '1. Ruota la faccia arancione una volta.\n'
+            '2. Ruota la faccia blu tre volte.\n'
+            '3. Ruota la faccia arancione tre volte.\n'
+            '4. Ruota la faccia blu una volta.\n'
+            '5. Ruota la faccia bianca una volta.\n'
+            '6. Ruota la faccia blu una volta.\n'
+            '7. Ruota la faccia bianca tre volte.\n'
+            '8. Ruota la faccia blu tre volte.'
+        ),
+
+        'g3a1g1a3b3a3b1a1': (
+            '1. Ruota la faccia rossa tre volte.\n'
+            '2. Ruota la faccia blu una volta.\n'
+            '3. Ruota la faccia rossa una volta.\n'
+            '4. Ruota la faccia blu tre volte.\n'
+            '5. Ruota la faccia bianca tre volte.\n'
+            '6. Ruota la faccia blu tre volte.\n'
+            '7. Ruota la faccia bianca una volta.\n'
+            '8. Ruota la faccia blu una volta.'
+        ),
+
+        'v1n3v3n1b2n1b2n3': (
+            '1. Ruota la faccia verde una volta.\n'
+            '2. Ruota la faccia arancione tre volte.\n'
+            '3. Ruota la faccia verde tre volte.\n'
+            '4. Ruota la faccia arancione una volta.\n'
+            '5. Ruota la faccia bianca due volte.\n'
+            '6. Ruota la faccia arancione una volta.\n'
+            '7. Ruota la faccia bianca due volte.\n'
+            '8. Ruota la faccia arancione tre volte.'
+        ),
+
+        'a3n1a1n3b2n3b2n1': (
+            '1. Ruota la faccia blu tre volte.\n'
+            '2. Ruota la faccia arancione una volta.\n'
+            '3. Ruota la faccia blu una volta.\n'
+            '4. Ruota la faccia arancione tre volte.\n'
+            '5. Ruota la faccia bianca due volte.\n'
+            '6. Ruota la faccia arancione tre volte.\n'
+            '7. Ruota la faccia bianca due volte.\n'
+            '8. Ruota la faccia arancione una volta.'
+        ),
+
+        'v1n3v3n1b1n1b3n3': (
+            '1. Ruota la faccia verde una volta.\n'
+            '2. Ruota la faccia arancione tre volte.\n'
+            '3. Ruota la faccia verde tre volte.\n'
+            '4. Ruota la faccia arancione una volta.\n'
+            '5. Ruota la faccia bianca una volta.\n'
+            '6. Ruota la faccia arancione una volta.\n'
+            '7. Ruota la faccia bianca tre volte.\n'
+            '8. Ruota la faccia arancione tre volte.'
+        ),
+
+        'a3n1a1n3b3n3b1n1': (
+            '1. Ruota la faccia blu tre volte.\n'
+            '2. Ruota la faccia arancione una volta.\n'
+            '3. Ruota la faccia blu una volta.\n'
+            '4. Ruota la faccia arancione tre volte.\n'
+            '5. Ruota la faccia bianca tre volte.\n'
+            '6. Ruota la faccia arancione tre volte.\n'
+            '7. Ruota la faccia bianca una volta.\n'
+            '8. Ruota la faccia arancione una volta.'
+        ),
+
+        'g1v3g3v1b2v1b2v3': (
+            '1. Ruota la faccia rossa una volta.\n'
+            '2. Ruota la faccia verde tre volte.\n'
+            '3. Ruota la faccia rossa tre volte.\n'
+            '4. Ruota la faccia verde una volta.\n'
+            '5. Ruota la faccia bianca due volte.\n'
+            '6. Ruota la faccia verde una volta.\n'
+            '7. Ruota la faccia bianca due volte.\n'
+            '8. Ruota la faccia verde tre volte.'
+        ),
+
+        'n3v1n1v3b2v3b2v1': (
+            '1. Ruota la faccia arancione tre volte.\n'
+            '2. Ruota la faccia verde una volta.\n'
+            '3. Ruota la faccia arancione una volta.\n'
+            '4. Ruota la faccia verde tre volte.\n'
+            '5. Ruota la faccia bianca due volte.\n'
+            '6. Ruota la faccia verde tre volte.\n'
+            '7. Ruota la faccia bianca due volte.\n'
+            '8. Ruota la faccia verde una volta.'
+        ),
+
+        'g1v3g3v1b1v1b3v3': (
+            '1. Ruota la faccia rossa una volta.\n'
+            '2. Ruota la faccia verde tre volte.\n'
+            '3. Ruota la faccia rossa tre volte.\n'
+            '4. Ruota la faccia verde una volta.\n'
+            '5. Ruota la faccia bianca una volta.\n'
+            '6. Ruota la faccia verde una volta.\n'
+            '7. Ruota la faccia bianca tre volte.\n'
+            '8. Ruota la faccia verde tre volte.'
+        ),
+
+        'n3v1n1v3b3v3b1v1': (
+            '1. Ruota la faccia arancione tre volte.\n'
+            '2. Ruota la faccia verde una volta.\n'
+            '3. Ruota la faccia arancione una volta.\n'
+            '4. Ruota la faccia verde tre volte.\n'
+            '5. Ruota la faccia bianca tre volte.\n'
+            '6. Ruota la faccia verde tre volte.\n'
+            '7. Ruota la faccia bianca una volta.\n'
+            '8. Ruota la faccia verde una volta.'
+        )
     },
     'de': {
         'welcome':         "Willkommen beim Rubik's Cube",
@@ -169,6 +1362,7 @@ TRADUCCIONES = {
                             "  3) Letzte 'Entkorrektur', um das Teil in seine ursprüngliche Bahn zurückzuführen.\n\n"
                             "Folge den Schritten im rechten Bedienfeld.\n\n"
                             "Vielen Dank für die Nutzung des Programms. Ich hoffe, es war hilfreich für dich.\n\n",
+        'step':          'Schritt',
         'next_step':       'Nächster Schritt',
         'goto_menu':       'Zum Menü zurück',
         'solution_complete': 'Lösung abgeschlossen!',
@@ -198,6 +1392,350 @@ TRADUCCIONES = {
                             "Ein TFG-Projekt, Universidad Alfonso X, 2025<br>" \
                             "Fehler sind möglich, zögere aber nicht, sie zu melden.<br>" \
                             "Vielen Dank für die Nutzung!<br>",
+        'b1': 'Drehe die weiße Fläche einmal.',
+
+        'g1b2g3b2g3a1g1a3': (
+            '1. Drehe die rote Fläche einmal.\n'
+            '2. Drehe die weiße Fläche zweimal.\n'
+            '3. Drehe die rote Fläche dreimal.\n'
+            '4. Drehe die weiße Fläche zweimal.\n'
+            '5. Drehe die rote Fläche dreimal.\n'
+            '6. Drehe die blaue Fläche einmal.\n'
+            '7. Drehe die rote Fläche einmal.\n'
+            '8. Drehe die blaue Fläche dreimal.'
+        ),
+
+        'g3b2g1b2g1v3g3v1': (
+            '1. Drehe die rote Fläche dreimal.\n'
+            '2. Drehe die weiße Fläche zweimal.\n'
+            '3. Drehe die rote Fläche einmal.\n'
+            '4. Drehe die weiße Fläche zweimal.\n'
+            '5. Drehe die rote Fläche einmal.\n'
+            '6. Drehe die grüne Fläche dreimal.\n'
+            '7. Drehe die rote Fläche dreimal.\n'
+            '8. Drehe die grüne Fläche einmal.'
+        ),
+
+        'g1b1g3b3g3a1g1a3': (
+            '1. Drehe die rote Fläche einmal.\n'
+            '2. Drehe die weiße Fläche einmal.\n'
+            '3. Drehe die rote Fläche dreimal.\n'
+            '4. Drehe die weiße Fläche dreimal.\n'
+            '5. Drehe die rote Fläche dreimal.\n'
+            '6. Drehe die blaue Fläche einmal.\n'
+            '7. Drehe die rote Fläche einmal.\n'
+            '8. Drehe die blaue Fläche dreimal.'
+        ),
+
+        'g3b3g1b1g1v3g3v1': (
+            '1. Drehe die rote Fläche dreimal.\n'
+            '2. Drehe die weiße Fläche dreimal.\n'
+            '3. Drehe die rote Fläche einmal.\n'
+            '4. Drehe die weiße Fläche einmal.\n'
+            '5. Drehe die rote Fläche einmal.\n'
+            '6. Drehe die grüne Fläche dreimal.\n'
+            '7. Drehe die rote Fläche dreimal.\n'
+            '8. Drehe die grüne Fläche einmal.'
+        ),
+
+        'a1b2a3b2a3n1a1n3': (
+            '1. Drehe die blaue Fläche einmal.\n'
+            '2. Drehe die weiße Fläche zweimal.\n'
+            '3. Drehe die blaue Fläche dreimal.\n'
+            '4. Drehe die weiße Fläche zweimal.\n'
+            '5. Drehe die blaue Fläche dreimal.\n'
+            '6. Drehe die orange Fläche einmal.\n'
+            '7. Drehe die blaue Fläche einmal.\n'
+            '8. Drehe die orange Fläche dreimal.'
+        ),
+
+        'a3b2a1b2a1g3a3g1': (
+            '1. Drehe die blaue Fläche dreimal.\n'
+            '2. Drehe die weiße Fläche zweimal.\n'
+            '3. Drehe die blaue Fläche einmal.\n'
+            '4. Drehe die weiße Fläche zweimal.\n'
+            '5. Drehe die blaue Fläche einmal.\n'
+            '6. Drehe die rote Fläche dreimal.\n'
+            '7. Drehe die blaue Fläche dreimal.\n'
+            '8. Drehe die rote Fläche einmal.'
+        ),
+
+        'a1b1a3b3a3n1a1n3': (
+            '1. Drehe die blaue Fläche einmal.\n'
+            '2. Drehe die weiße Fläche einmal.\n'
+            '3. Drehe die blaue Fläche dreimal.\n'
+            '4. Drehe die weiße Fläche dreimal.\n'
+            '5. Drehe die blaue Fläche dreimal.\n'
+            '6. Drehe die orange Fläche einmal.\n'
+            '7. Drehe die blaue Fläche einmal.\n'
+            '8. Drehe die orange Fläche dreimal.'
+        ),
+
+        'a3b3a1b1a1g3a3g1': (
+            '1. Drehe die blaue Fläche dreimal.\n'
+            '2. Drehe die weiße Fläche dreimal.\n'
+            '3. Drehe die blaue Fläche einmal.\n'
+            '4. Drehe die weiße Fläche einmal.\n'
+            '5. Drehe die blaue Fläche einmal.\n'
+            '6. Drehe die rote Fläche dreimal.\n'
+            '7. Drehe die blaue Fläche dreimal.\n'
+            '8. Drehe die rote Fläche einmal.'
+        ),
+
+        'n1b2n3b2n3v1n1v3': (
+            '1. Drehe die orange Fläche einmal.\n'
+            '2. Drehe die weiße Fläche zweimal.\n'
+            '3. Drehe die orange Fläche dreimal.\n'
+            '4. Drehe die weiße Fläche zweimal.\n'
+            '5. Drehe die orange Fläche dreimal.\n'
+            '6. Drehe die grüne Fläche einmal.\n'
+            '7. Drehe die orange Fläche einmal.\n'
+            '8. Drehe die grüne Fläche dreimal.'
+        ),
+
+        'n3b2n1b2n1a3n3a1': (
+            '1. Drehe die orange Fläche dreimal.\n'
+            '2. Drehe die weiße Fläche zweimal.\n'
+            '3. Drehe die orange Fläche einmal.\n'
+            '4. Drehe die weiße Fläche zweimal.\n'
+            '5. Drehe die orange Fläche einmal.\n'
+            '6. Drehe die blaue Fläche dreimal.\n'
+            '7. Drehe die orange Fläche dreimal.\n'
+            '8. Drehe die blaue Fläche einmal.'
+        ),
+        'n1b1n3b3n3v1n1v3': (
+            '1. Drehe die orange Fläche einmal.\n'
+            '2. Drehe die weiße Fläche einmal.\n'
+            '3. Drehe die orange Fläche dreimal.\n'
+            '4. Drehe die weiße Fläche dreimal.\n'
+            '5. Drehe die orange Fläche dreimal.\n'
+            '6. Drehe die grüne Fläche einmal.\n'
+            '7. Drehe die orange Fläche einmal.\n'
+            '8. Drehe die grüne Fläche dreimal.'
+        ),
+        'n3b3n1b1n1a3n3a1': (
+            '1. Drehe die orange Fläche dreimal.\n'
+            '2. Drehe die weiße Fläche dreimal.\n'
+            '3. Drehe die orange Fläche einmal.\n'
+            '4. Drehe die weiße Fläche einmal.\n'
+            '5. Drehe die orange Fläche einmal.\n'
+            '6. Drehe die blaue Fläche dreimal.\n'
+            '7. Drehe die orange Fläche dreimal.\n'
+            '8. Drehe die blaue Fläche einmal.'
+        ),
+        'v1b2v3b2v3g1v1g3': (
+            '1. Drehe die grüne Fläche einmal.\n'
+            '2. Drehe die weiße Fläche zweimal.\n'
+            '3. Drehe die grüne Fläche dreimal.\n'
+            '4. Drehe die weiße Fläche zweimal.\n'
+            '5. Drehe die grüne Fläche dreimal.\n'
+            '6. Drehe die rote Fläche einmal.\n'
+            '7. Drehe die grüne Fläche einmal.\n'
+            '8. Drehe die rote Fläche dreimal.'
+        ),
+        'v3b2v1b2v1n3v3n1': (
+            '1. Drehe die grüne Fläche dreimal.\n'
+            '2. Drehe die weiße Fläche zweimal.\n'
+            '3. Drehe die grüne Fläche einmal.\n'
+            '4. Drehe die weiße Fläche zweimal.\n'
+            '5. Drehe die grüne Fläche einmal.\n'
+            '6. Drehe die orange Fläche dreimal.\n'
+            '7. Drehe die grüne Fläche dreimal.\n'
+            '8. Drehe die orange Fläche einmal.'
+        ),
+        'v1b1v3b3v3g1v1g3': (
+            '1. Drehe die grüne Fläche einmal.\n'
+            '2. Drehe die weiße Fläche einmal.\n'
+            '3. Drehe die grüne Fläche dreimal.\n'
+            '4. Drehe die weiße Fläche dreimal.\n'
+            '5. Drehe die grüne Fläche dreimal.\n'
+            '6. Drehe die rote Fläche einmal.\n'
+            '7. Drehe die grüne Fläche einmal.\n'
+            '8. Drehe die rote Fläche dreimal.'
+        ),
+        'v3b3v1b1v1n3v3n1': (
+            '1. Drehe die grüne Fläche dreimal.\n'
+            '2. Drehe die weiße Fläche dreimal.\n'
+            '3. Drehe die grüne Fläche einmal.\n'
+            '4. Drehe die weiße Fläche einmal.\n'
+            '5. Drehe die grüne Fläche einmal.\n'
+            '6. Drehe die orange Fläche dreimal.\n'
+            '7. Drehe die grüne Fläche dreimal.\n'
+            '8. Drehe die orange Fläche einmal.'
+        ),
+        'b3': 'Die weiße Fläche dreimal drehen.',
+        
+        'a1g3a3g1b2g1b2g3': (
+            '1. Drehe die blaue Fläche einmal.\n'
+            '2. Drehe die rote Fläche dreimal.\n'
+            '3. Drehe die blaue Fläche dreimal.\n'
+            '4. Drehe die rote Fläche einmal.\n'
+            '5. Drehe die weiße Fläche zweimal.\n'
+            '6. Drehe die rote Fläche einmal.\n'
+            '7. Drehe die weiße Fläche zweimal.\n'
+            '8. Drehe die rote Fläche dreimal.'
+        ),
+
+        'v3g1v1g3b2g3b2g1': (
+            '1. Drehe die grüne Fläche dreimal.\n'
+            '2. Drehe die rote Fläche einmal.\n'
+            '3. Drehe die grüne Fläche einmal.\n'
+            '4. Drehe die rote Fläche dreimal.\n'
+            '5. Drehe die weiße Fläche zweimal.\n'
+            '6. Drehe die rote Fläche dreimal.\n'
+            '7. Drehe die weiße Fläche zweimal.\n'
+            '8. Drehe die rote Fläche einmal.'
+        ),
+
+        'a1g3a3g1b1g1b3g3': (
+            '1. Drehe die blaue Fläche einmal.\n'
+            '2. Drehe die rote Fläche dreimal.\n'
+            '3. Drehe die blaue Fläche dreimal.\n'
+            '4. Drehe die rote Fläche einmal.\n'
+            '5. Drehe die weiße Fläche einmal.\n'
+            '6. Drehe die rote Fläche einmal.\n'
+            '7. Drehe die weiße Fläche dreimal.\n'
+            '8. Drehe die rote Fläche dreimal.'
+        ),
+
+        'v3g1v1g3b3g3b1g1': (
+            '1. Drehe die grüne Fläche dreimal.\n'
+            '2. Drehe die rote Fläche einmal.\n'
+            '3. Drehe die grüne Fläche einmal.\n'
+            '4. Drehe die rote Fläche dreimal.\n'
+            '5. Drehe die weiße Fläche dreimal.\n'
+            '6. Drehe die rote Fläche dreimal.\n'
+            '7. Drehe die weiße Fläche einmal.\n'
+            '8. Drehe die rote Fläche einmal.'
+        ),
+
+        'n1a3n3a1b2a1b2a3': (
+            '1. Drehe die orange Fläche einmal.\n'
+            '2. Drehe die blaue Fläche dreimal.\n'
+            '3. Drehe die orange Fläche dreimal.\n'
+            '4. Drehe die blaue Fläche einmal.\n'
+            '5. Drehe die weiße Fläche zweimal.\n'
+            '6. Drehe die blaue Fläche einmal.\n'
+            '7. Drehe die weiße Fläche zweimal.\n'
+            '8. Drehe die blaue Fläche dreimal.'
+        ),
+
+        'g3a1g1a3b2a3b2a1': (
+            '1. Drehe die rote Fläche dreimal.\n'
+            '2. Drehe die blaue Fläche einmal.\n'
+            '3. Drehe die rote Fläche einmal.\n'
+            '4. Drehe die blaue Fläche dreimal.\n'
+            '5. Drehe die weiße Fläche zweimal.\n'
+            '6. Drehe die blaue Fläche dreimal.\n'
+            '7. Drehe die weiße Fläche zweimal.\n'
+            '8. Drehe die blaue Fläche einmal.'
+        ),
+
+        'n1a3n3a1b1a1b3a3': (
+            '1. Drehe die orange Fläche einmal.\n'
+            '2. Drehe die blaue Fläche dreimal.\n'
+            '3. Drehe die orange Fläche dreimal.\n'
+            '4. Drehe die blaue Fläche einmal.\n'
+            '5. Drehe die weiße Fläche einmal.\n'
+            '6. Drehe die blaue Fläche einmal.\n'
+            '7. Drehe die weiße Fläche dreimal.\n'
+            '8. Drehe die blaue Fläche dreimal.'
+        ),
+
+        'g3a1g1a3b3a3b1a1': (
+            '1. Drehe die rote Fläche dreimal.\n'
+            '2. Drehe die blaue Fläche einmal.\n'
+            '3. Drehe die rote Fläche einmal.\n'
+            '4. Drehe die blaue Fläche dreimal.\n'
+            '5. Drehe die weiße Fläche dreimal.\n'
+            '6. Drehe die blaue Fläche dreimal.\n'
+            '7. Drehe die weiße Fläche einmal.\n'
+            '8. Drehe die blaue Fläche einmal.'
+        ),
+
+        'v1n3v3n1b2n1b2n3': (
+            '1. Drehe die grüne Fläche einmal.\n'
+            '2. Drehe die orange Fläche dreimal.\n'
+            '3. Drehe die grüne Fläche dreimal.\n'
+            '4. Drehe die orange Fläche einmal.\n'
+            '5. Drehe die weiße Fläche zweimal.\n'
+            '6. Drehe die orange Fläche einmal.\n'
+            '7. Drehe die weiße Fläche zweimal.\n'
+            '8. Drehe die orange Fläche dreimal.'
+        ),
+
+        'a3n1a1n3b2n3b2n1': (
+            '1. Drehe die blaue Fläche dreimal.\n'
+            '2. Drehe die orange Fläche einmal.\n'
+            '3. Drehe die blaue Fläche einmal.\n'
+            '4. Drehe die orange Fläche dreimal.\n'
+            '5. Drehe die weiße Fläche zweimal.\n'
+            '6. Drehe die orange Fläche dreimal.\n'
+            '7. Drehe die weiße Fläche zweimal.\n'
+            '8. Drehe die orange Fläche einmal.'
+        ),
+
+        'v1n3v3n1b1n1b3n3': (
+            '1. Drehe die grüne Fläche einmal.\n'
+            '2. Drehe die orange Fläche dreimal.\n'
+            '3. Drehe die grüne Fläche dreimal.\n'
+            '4. Drehe die orange Fläche einmal.\n'
+            '5. Drehe die weiße Fläche einmal.\n'
+            '6. Drehe die orange Fläche einmal.\n'
+            '7. Drehe die weiße Fläche dreimal.\n'
+            '8. Drehe die orange Fläche dreimal.'
+        ),
+
+        'a3n1a1n3b3n3b1n1': (
+            '1. Drehe die blaue Fläche dreimal.\n'
+            '2. Drehe die orange Fläche einmal.\n'
+            '3. Drehe die blaue Fläche einmal.\n'
+            '4. Drehe die orange Fläche dreimal.\n'
+            '5. Drehe die weiße Fläche dreimal.\n'
+            '6. Drehe die orange Fläche dreimal.\n'
+            '7. Drehe die weiße Fläche einmal.\n'
+            '8. Drehe die orange Fläche einmal.'
+        ),
+        'g1v3g3v1b2v1b2v3': (
+            '1. Drehe die rote Fläche einmal.\n'
+            '2. Drehe die grüne Fläche dreimal.\n'
+            '3. Drehe die rote Fläche dreimal.\n'
+            '4. Drehe die grüne Fläche einmal.\n'
+            '5. Drehe die weiße Fläche zweimal.\n'
+            '6. Drehe die grüne Fläche einmal.\n'
+            '7. Drehe die weiße Fläche zweimal.\n'
+            '8. Drehe die grüne Fläche dreimal.'
+        ),
+        'n3v1n1v3b2v3b2v1': (
+            '1. Drehe die orange Fläche dreimal.\n'
+            '2. Drehe die grüne Fläche einmal.\n'
+            '3. Drehe die orange Fläche einmal.\n'
+            '4. Drehe die grüne Fläche dreimal.\n'
+            '5. Drehe die weiße Fläche zweimal.\n'
+            '6. Drehe die grüne Fläche dreimal.\n'
+            '7. Drehe die weiße Fläche zweimal.\n'
+            '8. Drehe die grüne Fläche einmal.'
+        ),
+        'g1v3g3v1b1v1b3v3': (
+            '1. Drehe die rote Fläche einmal.\n'
+            '2. Drehe die grüne Fläche dreimal.\n'
+            '3. Drehe die rote Fläche dreimal.\n'
+            '4. Drehe die grüne Fläche einmal.\n'
+            '5. Drehe die weiße Fläche einmal.\n'
+            '6. Drehe die grüne Fläche einmal.\n'
+            '7. Drehe die weiße Fläche dreimal.\n'
+            '8. Drehe die grüne Fläche dreimal.'
+        ),
+        'n3v1n1v3b3v3b1v1': (
+            '1. Drehe die orange Fläche dreimal.\n'
+            '2. Drehe die grüne Fläche einmal.\n'
+            '3. Drehe die orange Fläche einmal.\n'
+            '4. Drehe die grüne Fläche dreimal.\n'
+            '5. Drehe die weiße Fläche dreimal.\n'
+            '6. Drehe die grüne Fläche dreimal.\n'
+            '7. Drehe die weiße Fläche einmal.\n'
+            '8. Drehe die grüne Fläche einmal.'
+        ),
     },
     'fr': {
         'welcome':         'Bienvenue sur le Rubik\'s Cube',
@@ -219,6 +1757,7 @@ TRADUCCIONES = {
                             "  3) 'Dé-correction' finale pour renvoyer la pièce dans son orbite d'origine.\n\n"
                             "Suivez les étapes dans le panneau de droite.\n\n"
                             "Merci beaucoup d'utiliser le programme et j'espère qu'il vous a été utile.\n\n",
+        'step':          'Étape',
         'next_step':       'Étape suivante',
         'goto_menu':       'Retour au menu',
         'solution_complete': 'Solution terminée !',
@@ -248,6 +1787,319 @@ TRADUCCIONES = {
                             "Projet de TFG, Universidad Alfonso X, 2025<br>" \
                             "Des erreurs peuvent survenir, n'hésitez pas à les signaler.<br>" \
                             "Merci de l'utiliser !<br>",
+        'b1': 'Tournez la face blanche une fois.',
+
+        'g1b2g3b2g3a1g1a3': (
+            '1. Tournez la face rouge une fois.\n'
+            '2. Tournez la face blanche deux fois.\n'
+            '3. Tournez la face rouge trois fois.\n'
+            '4. Tournez la face blanche deux fois.\n'
+            '5. Tournez la face rouge trois fois.\n'
+            '6. Tournez la face bleue une fois.\n'
+            '7. Tournez la face rouge une fois.\n'
+            '8. Tournez la face bleue trois fois.'
+        ),
+
+        'g3b2g1b2g1v3g3v1': (
+            '1. Tournez la face rouge trois fois.\n'
+            '2. Tournez la face blanche deux fois.\n'
+            '3. Tournez la face rouge une fois.\n'
+            '4. Tournez la face blanche deux fois.\n'
+            '5. Tournez la face rouge une fois.\n'
+            '6. Tournez la face verte trois fois.\n'
+            '7. Tournez la face rouge trois fois.\n'
+            '8. Tournez la face verte une fois.'
+        ),
+
+        'g1b1g3b3g3a1g1a3': (
+            '1. Tournez la face rouge une fois.\n'
+            '2. Tournez la face blanche une fois.\n'
+            '3. Tournez la face rouge trois fois.\n'
+            '4. Tournez la face blanche trois fois.\n'
+            '5. Tournez la face rouge trois fois.\n'
+            '6. Tournez la face bleue une fois.\n'
+            '7. Tournez la face rouge une fois.\n'
+            '8. Tournez la face bleue trois fois.'
+        ),
+
+        'g3b3g1b1g1v3g3v1': (
+            '1. Tournez la face rouge trois fois.\n'
+            '2. Tournez la face blanche trois fois.\n'
+            '3. Tournez la face rouge une fois.\n'
+            '4. Tournez la face blanche une fois.\n'
+            '5. Tournez la face rouge une fois.\n'
+            '6. Tournez la face verte trois fois.\n'
+            '7. Tournez la face rouge trois fois.\n'
+            '8. Tournez la face verte une fois.'
+        ),
+
+        'a1b2a3b2a3n1a1n3': (
+            '1. Tournez la face bleue une fois.\n'
+            '2. Tournez la face blanche deux fois.\n'
+            '3. Tournez la face bleue trois fois.\n'
+            '4. Tournez la face blanche deux fois.\n'
+            '5. Tournez la face bleue trois fois.\n'
+            '6. Tournez la face orange une fois.\n'
+            '7. Tournez la face bleue une fois.\n'
+            '8. Tournez la face orange trois fois.'
+        ),
+
+        'a3b2a1b2a1g3a3g1': (
+            '1. Tournez la face bleue trois fois.\n'
+            '2. Tournez la face blanche deux fois.\n'
+            '3. Tournez la face bleue une fois.\n'
+            '4. Tournez la face blanche deux fois.\n'
+            '5. Tournez la face bleue une fois.\n'
+            '6. Tournez la face rouge trois fois.\n'
+            '7. Tournez la face bleue trois fois.\n'
+            '8. Tournez la face rouge une fois.'
+        ),
+
+        'a1b1a3b3a3n1a1n3': (
+            '1. Tournez la face bleue une fois.\n'
+            '2. Tournez la face blanche une fois.\n'
+            '3. Tournez la face bleue trois fois.\n'
+            '4. Tournez la face blanche trois fois.\n'
+            '5. Tournez la face bleue trois fois.\n'
+            '6. Tournez la face orange une fois.\n'
+            '7. Tournez la face bleue une fois.\n'
+            '8. Tournez la face orange trois fois.'
+        ),
+
+        'a3b3a1b1a1g3a3g1': (
+            '1. Tournez la face bleue trois fois.\n'
+            '2. Tournez la face blanche trois fois.\n'
+            '3. Tournez la face bleue une fois.\n'
+            '4. Tournez la face blanche une fois.\n'
+            '5. Tournez la face bleue une fois.\n'
+            '6. Tournez la face rouge trois fois.\n'
+            '7. Tournez la face bleue trois fois.\n'
+            '8. Tournez la face rouge une fois.'
+        ),
+
+        'n1b2n3b2n3v1n1v3': (
+            '1. Tournez la face orange une fois.\n'
+            '2. Tournez la face blanche deux fois.\n'
+            '3. Tournez la face orange trois fois.\n'
+            '4. Tournez la face blanche deux fois.\n'
+            '5. Tournez la face orange trois fois.\n'
+            '6. Tournez la face verte une fois.\n'
+            '7. Tournez la face orange une fois.\n'
+            '8. Tournez la face verte trois fois.'
+        ),
+
+        'n3b2n1b2n1a3n3a1': (
+            '1. Tournez la face orange trois fois.\n'
+            '2. Tournez la face blanche deux fois.\n'
+            '3. Tournez la face orange une fois.\n'
+            '4. Tournez la face blanche deux fois.\n'
+            '5. Tournez la face orange une fois.\n'
+            '6. Tournez la face bleue trois fois.\n'
+            '7. Tournez la face orange trois fois.\n'
+            '8. Tournez la face bleue une fois.'
+        ),
+        'n1b1n3b3n3v1n1v3': (
+            '1. Tournez la face orange une fois.\n'
+            '2. Tournez la face blanche une fois.\n'
+            '3. Tournez la face orange trois fois.\n'
+            '4. Tournez la face blanche trois fois.\n'
+            '5. Tournez la face orange trois fois.\n'
+            '6. Tournez la face verte une fois.\n'
+            '7. Tournez la face orange une fois.\n'
+            '8. Tournez la face verte trois fois.'
+        ),
+        'n3b3n1b1n1a3n3a1': (
+            '1. Tournez la face orange trois fois.\n'
+            '2. Tournez la face blanche trois fois.\n'
+            '3. Tournez la face orange une fois.\n'
+            '4. Tournez la face blanche une fois.\n'
+            '5. Tournez la face orange une fois.\n'
+            '6. Tournez la face bleue trois fois.\n'
+            '7. Tournez la face orange trois fois.\n'
+            '8. Tournez la face bleue une fois.'
+        ),
+        'v1b2v3b2v3g1v1g3': (
+            '1. Tournez la face verte une fois.\n'
+            '2. Tournez la face blanche deux fois.\n'
+            '3. Tournez la face verte trois fois.\n'
+            '4. Tournez la face blanche deux fois.\n'
+            '5. Tournez la face verte trois fois.\n'
+            '6. Tournez la face rouge une fois.\n'
+            '7. Tournez la face verte une fois.\n'
+            '8. Tournez la face rouge trois fois.'
+        ),
+        'v3b2v1b2v1n3v3n1': (
+            '1. Tournez la face verte trois fois.\n'
+            '2. Tournez la face blanche deux fois.\n'
+            '3. Tournez la face verte une fois.\n'
+            '4. Tournez la face blanche deux fois.\n'
+            '5. Tournez la face verte une fois.\n'
+            '6. Tournez la face orange trois fois.\n'
+            '7. Tournez la face verte trois fois.\n'
+            '8. Tournez la face orange une fois.'
+        ),
+        'v1b1v3b3v3g1v1g3': (
+            '1. Tournez la face verte une fois.\n'
+            '2. Tournez la face blanche une fois.\n'
+            '3. Tournez la face verte trois fois.\n'
+            '4. Tournez la face blanche trois fois.\n'
+            '5. Tournez la face verte trois fois.\n'
+            '6. Tournez la face rouge une fois.\n'
+            '7. Tournez la face verte une fois.\n'
+            '8. Tournez la face rouge trois fois.'
+        ),
+        'v3b3v1b1v1n3v3n1': (
+            '1. Tournez la face verte trois fois.\n'
+            '2. Tournez la face blanche trois fois.\n'
+            '3. Tournez la face verte une fois.\n'
+            '4. Tournez la face blanche une fois.\n'
+            '5. Tournez la face verte une fois.\n'
+            '6. Tournez la face orange trois fois.\n'
+            '7. Tournez la face verte trois fois.\n'
+            '8. Tournez la face orange une fois.'
+        ),
+        'b3': 'Tournez la face blanche trois fois.',
+        'a1g3a3g1b2g1b2g3': (
+            '1. Tournez la face bleue une fois.\n'
+            '2. Tournez la face rouge trois fois.\n'
+            '3. Tournez la face bleue trois fois.\n'
+            '4. Tournez la face rouge une fois.\n'
+            '5. Tournez la face blanche deux fois.\n'
+            '6. Tournez la face rouge une fois.\n'
+            '7. Tournez la face blanche deux fois.\n'
+            '8. Tournez la face rouge trois fois.'
+        ),
+        'v3g1v1g3b2g3b2g1': (
+            '1. Tournez la face verte trois fois.\n'
+            '2. Tournez la face rouge une fois.\n'
+            '3. Tournez la face verte une fois.\n'
+            '4. Tournez la face rouge trois fois.\n'
+            '5. Tournez la face blanche deux fois.\n'
+            '6. Tournez la face rouge trois fois.\n'
+            '7. Tournez la face blanche deux fois.\n'
+            '8. Tournez la face rouge une fois.'
+        ),
+        'a1g3a3g1b1g1b3g3': (
+            '1. Tournez la face bleue une fois.\n'
+            '2. Tournez la face rouge trois fois.\n'
+            '3. Tournez la face bleue trois fois.\n'
+            '4. Tournez la face rouge une fois.\n'
+            '5. Tournez la face blanche une fois.\n'
+            '6. Tournez la face rouge une fois.\n'
+            '7. Tournez la face blanche trois fois.\n'
+            '8. Tournez la face rouge trois fois.'
+        ),
+        'v3g1v1g3b3g3b1g1': (
+            '1. Tournez la face verte trois fois.\n'
+            '2. Tournez la face rouge une fois.\n'
+            '3. Tournez la face verte une fois.\n'
+            '4. Tournez la face rouge trois fois.\n'
+            '5. Tournez la face blanche trois fois.\n'
+            '6. Tournez la face rouge trois fois.\n'
+            '7. Tournez la face blanche une fois.\n'
+            '8. Tournez la face rouge une fois.'
+        ),
+        'n1a3n3a1b2a1b2a3': (
+            '1. Tournez la face orange une fois.\n'
+            '2. Tournez la face bleue trois fois.\n'
+            '3. Tournez la face orange trois fois.\n'
+            '4. Tournez la face bleue une fois.\n'
+            '5. Tournez la face blanche deux fois.\n'
+            '6. Tournez la face bleue une fois.\n'
+            '7. Tournez la face blanche deux fois.\n'
+            '8. Tournez la face bleue trois fois.'
+        ),
+        'g3a1g1a3b2a3b2a1': (
+            '1. Tournez la face rouge trois fois.\n'
+            '2. Tournez la face bleue une fois.\n'
+            '3. Tournez la face rouge une fois.\n'
+            '4. Tournez la face bleue trois fois.\n'
+            '5. Tournez la face blanche deux fois.\n'
+            '6. Tournez la face bleue trois fois.\n'
+            '7. Tournez la face blanche deux fois.\n'
+            '8. Tournez la face bleue une fois.'
+        ),
+        'v1n3v3n1b2n1b2n3': (
+            '1. Tournez la face verte une fois.\n'
+            '2. Tournez la face orange trois fois.\n'
+            '3. Tournez la face verte trois fois.\n'
+            '4. Tournez la face orange une fois.\n'
+            '5. Tournez la face blanche deux fois.\n'
+            '6. Tournez la face orange une fois.\n'
+            '7. Tournez la face blanche deux fois.\n'
+            '8. Tournez la face orange trois fois.'
+        ),
+        'a3n1a1n3b2n3b2n1': (
+            '1. Tournez la face bleue trois fois.\n'
+            '2. Tournez la face orange une fois.\n'
+            '3. Tournez la face bleue une fois.\n'
+            '4. Tournez la face orange trois fois.\n'
+            '5. Tournez la face blanche deux fois.\n'
+            '6. Tournez la face orange trois fois.\n'
+            '7. Tournez la face blanche deux fois.\n'
+            '8. Tournez la face orange une fois.'
+        ),
+        'v1n3v3n1b1n1b3n3': (
+            '1. Tournez la face verte une fois.\n'
+            '2. Tournez la face orange trois fois.\n'
+            '3. Tournez la face verte trois fois.\n'
+            '4. Tournez la face orange une fois.\n'
+            '5. Tournez la face blanche une fois.\n'
+            '6. Tournez la face orange une fois.\n'
+            '7. Tournez la face blanche trois fois.\n'
+            '8. Tournez la face orange trois fois.'
+        ),
+        'a3n1a1n3b3n3b1n1': (
+            '1. Tournez la face bleue trois fois.\n'
+            '2. Tournez la face orange une fois.\n'
+            '3. Tournez la face bleue une fois.\n'
+            '4. Tournez la face orange trois fois.\n'
+            '5. Tournez la face blanche trois fois.\n'
+            '6. Tournez la face orange trois fois.\n'
+            '7. Tournez la face blanche une fois.\n'
+            '8. Tournez la face orange une fois.'
+        ),
+        'g1v3g3v1b2v1b2v3': (
+            '1. Tournez la face rouge une fois.\n'
+            '2. Tournez la face verte trois fois.\n'
+            '3. Tournez la face rouge trois fois.\n'
+            '4. Tournez la face verte une fois.\n'
+            '5. Tournez la face blanche deux fois.\n'
+            '6. Tournez la face verte une fois.\n'
+            '7. Tournez la face blanche deux fois.\n'
+            '8. Tournez la face verte trois fois.'
+        ),
+        'n3v1n1v3b2v3b2v1': (
+            '1. Tournez la face orange trois fois.\n'
+            '2. Tournez la face verte une fois.\n'
+            '3. Tournez la face orange une fois.\n'
+            '4. Tournez la face verte trois fois.\n'
+            '5. Tournez la face blanche deux fois.\n'
+            '6. Tournez la face verte trois fois.\n'
+            '7. Tournez la face blanche deux fois.\n'
+            '8. Tournez la face verte une fois.'
+        ),
+        'g1v3g3v1b1v1b3v3': (
+            '1. Tournez la face rouge une fois.\n'
+            '2. Tournez la face verte trois fois.\n'
+            '3. Tournez la face rouge trois fois.\n'
+            '4. Tournez la face verte une fois.\n'
+            '5. Tournez la face blanche une fois.\n'
+            '6. Tournez la face verte une fois.\n'
+            '7. Tournez la face blanche trois fois.\n'
+            '8. Tournez la face verte trois fois.'
+        ),
+        'n3v1n1v3b3v3b1v1': (
+            '1. Tournez la face orange trois fois.\n'
+            '2. Tournez la face verte une fois.\n'
+            '3. Tournez la face orange une fois.\n'
+            '4. Tournez la face verte trois fois.\n'
+            '5. Tournez la face blanche trois fois.\n'
+            '6. Tournez la face verte trois fois.\n'
+            '7. Tournez la face blanche une fois.\n'
+            '8. Tournez la face verte une fois.'
+        )
+
     }
 }
 

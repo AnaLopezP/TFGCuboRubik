@@ -297,14 +297,18 @@ class SolutionWidget(QWidget):
         self.lang = lang
         self.setWindowTitle(t('solution_complete', self.lang))  # o título específico si lo añades
 
+        # Estados de vista
+        self.showingFullCube = False
+        self.flip_shown = (piecita_cambiada is None)
+        self.flip_end_shown = False
+        self.current_step = 0
+
+        # Datos del algoritmo
         self.cubo = cubo_modelo
         self.secuencia_movimientos = secuencia_movimientos
         self.historial = historial
         self.piecita_cambiada = piecita_cambiada
         self.movimiento_origen = movimiento_origen
-        self.current_step = 0
-        self.flip_end_shown = False
-        self.flip_shown = (self.piecita_cambiada is None)
 
         # Layout principal
         self.mainLayout = QHBoxLayout(self)
@@ -332,6 +336,7 @@ class SolutionWidget(QWidget):
         # Botón toggle central
         self.toggleViewBtn = QPushButton()
         self.toggleViewBtn.setFixedSize(40, 40)
+        self.toggleViewBtn.setText("<<")
         self.toggleViewBtn.setStyleSheet("""
             QPushButton { border-radius: 20px; background-color: #E74C3C;
                          color: white; font-weight: bold; font-size: 18px; }
@@ -369,29 +374,48 @@ class SolutionWidget(QWidget):
 
     def updateStep(self):
         total = len(self.secuencia_movimientos) + 2
-        # Paso 0
+        # --- Si no hay pieza desorientada (órbita canónica), vamos directo a movimientos canónicos ---
+        if self.piecita_cambiada is None:
+            total = len(self.secuencia_movimientos)
+            # Muestra el primer movimiento canónico
+            if self.current_step < len(self.secuencia_movimientos):
+                mov = self.secuencia_movimientos[self.current_step]
+                texto = t(f"{mov}", self.lang)
+                self.instructionsText.setPlainText(
+                    f"{t('step', self.lang)} {self.current_step+1}/{total}:\n{texto}"
+                )
+            else:
+                self.instructionsText.setPlainText(t('solution_complete', self.lang))
+                self.nextStepBtn.setEnabled(False)
+            return
+
+        # --- Paso 0: flip inicial ---
         if not self.flip_shown:
-            self.instructionsText.setText(
-                f"0/{total}: {t('arista_flipped', self.lang)}"
+            self.instructionsText.setPlainText(
+                f"{t('step', self.lang)} 0/{total}:\n{t('arista_flipped', self.lang)}"
             )
             return
-        # Paso final antes de flip final
+
+        # --- Paso final: flip de vuelta ---
         if self.flip_shown and not self.flip_end_shown and self.current_step >= len(self.secuencia_movimientos):
-            self.instructionsText.setText(
-                f"{len(self.secuencia_movimientos)+1}/{total}: {t('arista_flipped', self.lang)}"
+            paso = len(self.secuencia_movimientos) + 1
+            self.instructionsText.setPlainText(
+                f"{t('step', self.lang)} {paso}/{total}:\n{t('arista_flipped', self.lang)}"
             )
             return
-        # Pasos intermedios
+
+        # --- Pasos intermedios canónicos ---
         idx = self.current_step
         if idx < len(self.secuencia_movimientos):
             mov = self.secuencia_movimientos[idx]
-            texto = instrucciones.get(mov, f"{t('solution_complete', self.lang)}: {mov}")
-            self.instructionsText.setText(
-                f"{idx+1}/{total}: {texto}"
+            texto = t(f"{mov}", self.lang)
+            self.instructionsText.setPlainText(
+                f"{t('step', self.lang)} {idx+1}/{total}:\n{texto}"
             )
         else:
-            self.instructionsText.setText( t('solution_complete', self.lang) )
+            self.instructionsText.setPlainText(t('solution_complete', self.lang))
             self.nextStepBtn.setEnabled(False)
+
             
     def nextStep(self):
         # --- Paso 0: flip inicial ---
@@ -793,7 +817,8 @@ class MainWidget(QWidget):
                     historial=hist,
                     piecita_cambiada=pieza,
                     cubo_modelo=self.cubo,
-                    movimiento_origen=mov_orig
+                    movimiento_origen=mov_orig,
+                    lang=self.lang
                 )
                 self.stacked.addWidget(self.solutionWidget)
                 self.stacked.setCurrentWidget(self.solutionWidget)
@@ -822,15 +847,15 @@ class MainMenuWidget(QWidget):
         layout = QVBoxLayout(self)
 
         # Títulos con identificadores para aplicar estilos
-        titulo = QLabel()
-        titulo.setObjectName("titleLabel")
-        titulo.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        layout.addWidget(titulo)
+        self.titulo = QLabel()
+        self.titulo.setObjectName("titleLabel")
+        self.titulo.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(self.titulo)
         
-        subtitulo = QLabel()
-        subtitulo.setObjectName("subtitleLabel")
-        subtitulo.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        layout.addWidget(subtitulo)
+        self.subtitulo = QLabel()
+        self.subtitulo.setObjectName("subtitleLabel")
+        self.subtitulo.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(self.subtitulo)
         
         layout.addStretch(1) # espacio bonito
         
@@ -915,9 +940,11 @@ class MainMenuWidget(QWidget):
             display, 0, False
         )
         if ok:
-            # Encontrar el código ISO correspondiente
             new_lang = dict(labels)[elegido]
             self.main_container.changeLanguage(new_lang)
+            self.retranslate()
+            self.update()    
+            QApplication.processEvents()
 
     def acercaDe(self):
         QMessageBox.about(
@@ -932,8 +959,8 @@ class MainContainer(QWidget):
         self.stacked = QStackedWidget()
         self.lang = 'es'  # Idioma por defecto
 
-        self.menuWidget = MainMenuWidget()
-        self.cubeWidget = MainWidget()  # Creamos una primera instancia (por si acaso)
+        self.menuWidget = MainMenuWidget(self.lang, self)
+        self.cubeWidget = MainWidget(self.lang)  # Creamos una primera instancia (por si acaso)
         
         self.stacked.addWidget(self.menuWidget)
         self.stacked.addWidget(self.cubeWidget)
@@ -945,14 +972,6 @@ class MainContainer(QWidget):
         self.menuWidget.startBtn.clicked.connect(self.startNewSession)
 
     def startNewSession(self):
-        # Elimina el widget anterior del cubo
-        self.stacked.removeWidget(self.cubeWidget)
-        self.cubeWidget.deleteLater()
-        self.cubeWidget = MainWidget(self.lang, self)
-
-        # Crea una nueva instancia de MainWidget
-        self.cubeWidget = MainWidget()
-        self.stacked.addWidget(self.cubeWidget)
         
         # Asegúrate de que el cubo esté en su estado inicial
         for cara in cube_state:
@@ -960,14 +979,22 @@ class MainContainer(QWidget):
                 for j in range(3):
                     cube_state[cara][i][j] = cara
         
+        new_cubo = MainWidget(self.lang)  # Crea una nueva instancia de MainWidget
+        self.stacked.addWidget(new_cubo)  # Asegúrate de que la vista 3D esté en el stack
         # Cambia a la nueva instancia
-        self.stacked.setCurrentWidget(self.cubeWidget)
+        self.stacked.setCurrentWidget(new_cubo)
+        old = getattr(self, 'cubeWidget', None)
+        self.cubeWidget = new_cubo  # Actualiza la referencia al cubo
     
     def changeLanguage(self, new_lang):
         self.lang = new_lang
-        # avisar a todos los widgets para que reescriban sus textos
+        # retranslate en ambos widgets
+        self.menuWidget.lang = new_lang
         self.menuWidget.retranslate()
+        self.cubeWidget.lang = new_lang
         self.cubeWidget.retranslate()
+        # Si quieres que cambie también el título de la ventana:
+        #self.window().setWindowTitle(t('welcome', new_lang))
 
 class MainWindow(QMainWindow):
     def __init__(self):
