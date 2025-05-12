@@ -1,6 +1,6 @@
 import sys
 from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,  QPushButton, QStackedWidget, QGraphicsView, QGraphicsScene, QGraphicsRectItem
-from PyQt6.QtWidgets import QTextEdit, QHBoxLayout, QWidget, QVBoxLayout, QWidget, QPushButton, QLabel, QMessageBox, QInputDialog
+from PyQt6.QtWidgets import QTextEdit,QGridLayout, QHBoxLayout, QWidget, QVBoxLayout, QWidget, QPushButton, QLabel, QMessageBox, QInputDialog
 from PyQt6.QtOpenGLWidgets import QOpenGLWidget
 from PyQt6.QtCore import Qt, QPoint
 from PyQt6.QtGui import QBrush, QColor, QPen
@@ -285,7 +285,7 @@ class SolutionWidget(QWidget):
     ):
         super().__init__(parent)
         self.lang = lang
-        self.setWindowTitle(t('solution_complete', self.lang))  # o título específico si lo añades
+        self.setWindowTitle(t('solution_complete', self.lang))
 
         # Estados de vista
         self.showingFullCube = False
@@ -328,9 +328,9 @@ class SolutionWidget(QWidget):
         self.toggleViewBtn.setFixedSize(40, 40)
         self.toggleViewBtn.setText("<<")
         self.toggleViewBtn.setStyleSheet("""
-            QPushButton { border-radius: 20px; background-color: #E74C3C;
-                         color: white; font-weight: bold; font-size: 18px; }
-            QPushButton:hover { background-color: #C0392B; }
+            QPushButton { border-radius: 20px; background-color: #B8F58E;
+                         color: #55917F; font-weight: bold; font-size: 18px; }
+            QPushButton:hover { background-color: #9bf15f; }
         """)
         self.toggleViewBtn.clicked.connect(self.toggleView)
         self.toggleViewBtn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
@@ -560,7 +560,7 @@ class MainWidget(QWidget):
         # Label de mensajes temporales
         self.messageLabel = QLabel("")
         self.messageLabel.setStyleSheet(
-            "background-color: red; color: white; font-size: 16px; padding: 10px; border-radius: 5px;"
+            "background-color: #ff3333; color: white; font-size: 16px; padding: 10px; border-radius: 5px;"
         )
         self.messageLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(self.messageLabel)
@@ -824,11 +824,16 @@ class MainMenuWidget(QWidget):
         
     def buildUI(self):
         layout = QVBoxLayout(self)
+        layout.setContentsMargins(20, 20, 20, 20)
+        layout.setSpacing(10)
+        layout.addStretch(2)
 
         self.titulo = QLabel()
         self.titulo.setObjectName("titleLabel")
         self.titulo.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.titulo.setFixedHeight(60)
         layout.addWidget(self.titulo)
+        layout.addStretch(1) 
         
         self.subtitulo = QLabel()
         self.subtitulo.setObjectName("subtitleLabel")
@@ -852,40 +857,55 @@ class MainMenuWidget(QWidget):
         
         self.exitBtn = QPushButton()
         self.exitBtn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
-        self.exitBtn.clicked.connect(QApplication.instance().quit)
         layout.addWidget(self.exitBtn, alignment=Qt.AlignmentFlag.AlignCenter)
 
         layout.addStretch(2)
         
+        grid = QGridLayout()
+        grid.setHorizontalSpacing(15)
+        grid.setVerticalSpacing(15)
+        grid.addWidget(self.startBtn,   0, 0)
+        grid.addWidget(self.languageBtn,0, 1)
+        grid.addWidget(self.aboutBtn,   1, 0)
+        grid.addWidget(self.exitBtn,    1, 1)
+        layout.addLayout(grid)
+
+        layout.addStretch(3)
+        
         # Conexiones
         self.languageBtn.clicked.connect(self.cambiar_idioma)
         self.aboutBtn.clicked.connect(self.acercaDe)
+        self.exitBtn.clicked.connect(QApplication.instance().quit)
+
         
         # Definir un estilo global para el menú
         self.setStyleSheet("""
-            QWidget {
-                background-color: #2C3E50;  /* Color de fondo azul oscuro */
-            }
-            QLabel#titleLabel {
-                color: #ECF0F1;    /* Texto blanco */
-                font-size: 32px;
-                font-weight: bold;
-            }
-            QLabel#subtitleLabel {
-                color: #BDC3C7;   /* Gris claro */
-                font-size: 18px;
-            }
-            QPushButton {
-                background-color: #E74C3C; /* Botón rojo brillante */
-                color: white;
-                padding: 10px;
-                font-size: 16px;
-                border: none;
-                border-radius: 8px;
-            }
-            QPushButton:hover {
-                background-color: #C0392B;
-            }
+        QWidget {
+            background-color: #C4D7F2;  
+            border-radius: 15px;
+            padding: 10px;
+        }
+        QLabel#titleLabel {
+            background-color: #F48FB1;  
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+            border-radius: 15px;
+            padding: 10px;
+        }
+        QPushButton {
+            background-color: #B8F58E;
+            color: #55917F;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            min-width: 120px;
+        }
+        QPushButton:hover {
+            background-color: #9bf15f;
+        }
         """)
         
     def retranslate(self):
